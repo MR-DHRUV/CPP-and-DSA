@@ -70,6 +70,8 @@ public:
     int Get(int index);
     int Sum();
     int Max();
+    int Min();
+    Array MinMax();
     double Avg();
     void Reverse();
     void Lshift();
@@ -82,6 +84,8 @@ public:
     void Intersection(Array arr1, Array arr2);
     void Diffrence(Array arr1, Array arr2);
     void Union(Array arr1, Array arr2);
+    Array isMissing();
+    Array Duplicate();
 };
 
 // adding a elemnt in the last, i.e jo block khaali haii sabse kam index pr uspe aadd krdo
@@ -242,6 +246,50 @@ int Array ::Max()
     }
 
     return max;
+    // O(n) always
+};
+
+int Array ::Min()
+{
+    int min = A[0];
+
+    for (int i = 0; i < length; i++)
+    {
+        if (A[i] < min)
+        {
+            min = A[i];
+        }
+    }
+
+    return min;
+    // O(n) always
+};
+
+Array Array ::MinMax()
+{
+    Array returnArray(2);
+    returnArray.length  = 2;
+    
+    //min
+    returnArray.A[0] = A[0];
+    
+    //max
+    returnArray.A[1] = 0;
+
+    for (int i = 0; i < length; i++)
+    {
+        if (A[i] < returnArray.A[0])
+        {
+            returnArray.A[0] = A[i];
+        }
+
+        if (A[i] > returnArray.A[1])
+        {
+            returnArray.A[1] = A[i];
+        };
+    }
+
+    return returnArray;
     // O(n) always
 };
 
@@ -545,6 +593,84 @@ void Array ::Diffrence(Array arr1, Array arr2)
 
     // O(n^2)
 };
+
+
+// univarsal method , works for 1 , more 1 one missing , sorted , unsorted
+Array Array ::isMissing()
+{
+    // this technique is called hash table 
+    int max = Max();
+    cout<<"Max : "<<max<<endl;
+
+    Array returnArr(length);
+    Array missing(max);
+
+    for (int l = 0; l < max; l++)
+    {
+        missing.A[l] = 0; 
+    }
+
+    missing.length = max;
+    
+    for (int i = 0; i < length; i++)
+    {
+        int element = A[i];
+        missing.A[element-1] = 1;
+    }
+
+    for (int j = 0; j < max; j++)
+    {
+        if(missing.A[j] == 0){
+            returnArr.A[returnArr.length] = (j+1);
+            cout<<returnArr.A[returnArr.length]<<endl; 
+            returnArr.length++;
+        }
+    }
+    
+
+    // time complexity : O(n) , n is no of elments in an array
+
+    return returnArr;
+}
+
+//method 2 
+// univarsal method , works for 1 , more 1 one duplicate , sorted , unsorted
+Array Array ::Duplicate()
+{
+    // this technique is called hash table 
+    
+    Array returnArr(length);
+    Array duplicate(length);
+
+    // initialised hash table
+    for (int l = 0; l < length; l++)
+    {
+        duplicate.A[l] = 0; 
+    }
+
+    duplicate.length = length;
+    
+    for (int i = 0; i < length; i++)
+    {
+        duplicate.A[A[i] - 1] ++;
+    }
+
+    duplicate.Display();
+
+    for (int j = 0; j < length; j++)
+    {
+        if(duplicate.A[j] > 1){
+            returnArr.A[returnArr.length++] = (j+1);
+        }
+    }
+    
+
+    // time complexity : O(n) , n is no of elments in an array
+
+    return returnArr;
+}
+
+
 
 // Commented code is to perform opertations that will make array unsorted
 int main()
