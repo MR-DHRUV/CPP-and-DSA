@@ -19,6 +19,7 @@ void Display(struct Array arr)
     cout << endl;
 }
 
+// if arrays are sorted then sorted array will be output else unsorted for unsorted array
 struct Array *Merge(struct Array *arr1, struct Array *arr2)
 {
     int i, j, k;

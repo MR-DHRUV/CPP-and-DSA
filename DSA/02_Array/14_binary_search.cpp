@@ -64,9 +64,12 @@ int binarySearch(struct Array arr, int key)
     }
 
     return -1;
+    // Complexity of binary search  for both methods are same;
+    //  best = O(1)
+    //  worst = O(log2N) log N base 2
 };
 
-int binarySearchReccursive(struct Array arr,int low, int high, int key)
+int binarySearchReccursive(struct Array arr, int low, int high, int key)
 {
 
     int mid = (low + high) / 2;
@@ -83,7 +86,7 @@ int binarySearchReccursive(struct Array arr,int low, int high, int key)
 
     else
     {
-        return binarySearchReccursive(arr, mid +1, high, key);
+        return binarySearchReccursive(arr, mid + 1, high, key);
     }
 
     return -1;
@@ -107,7 +110,7 @@ int main()
 
     arr.length = 11;
     Display(arr);
-    cout<<endl;
+    cout << endl;
 
     cout << binarySearch(arr, 2) << endl;
     cout << binarySearch(arr, 3) << endl;
@@ -117,15 +120,15 @@ int main()
     cout << binarySearch(arr, 7) << endl;
     cout << binarySearch(arr, 8) << endl;
 
-    cout<<endl;
+    cout << endl;
 
-    cout << binarySearchReccursive(arr,0, arr.length ,2) << endl;
-    cout << binarySearchReccursive(arr,0, arr.length ,3) << endl;
-    cout << binarySearchReccursive(arr,0, arr.length ,4) << endl;
-    cout << binarySearchReccursive(arr,0, arr.length ,5) << endl;
-    cout << binarySearchReccursive(arr,0, arr.length ,6) << endl;
-    cout << binarySearchReccursive(arr,0, arr.length ,7) << endl;
-    cout << binarySearchReccursive(arr,0, arr.length ,8) << endl;
+    cout << binarySearchReccursive(arr, 0, arr.length, 2) << endl;
+    cout << binarySearchReccursive(arr, 0, arr.length, 3) << endl;
+    cout << binarySearchReccursive(arr, 0, arr.length, 4) << endl;
+    cout << binarySearchReccursive(arr, 0, arr.length, 5) << endl;
+    cout << binarySearchReccursive(arr, 0, arr.length, 6) << endl;
+    cout << binarySearchReccursive(arr, 0, arr.length, 7) << endl;
+    cout << binarySearchReccursive(arr, 0, arr.length, 8) << endl;
 
     return 0;
 }

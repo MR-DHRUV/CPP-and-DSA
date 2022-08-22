@@ -33,7 +33,10 @@ void SortedInsert(struct Array *arr, int element)
 
     if (len < arr->size)
     {
-
+        // ulta start hoga loop
+        // last se check karega small haii ya bada 
+        // if element to be insterted small then element at  i-1 ko i pe copu krdega as i empty haii  and loopp will continue  
+        // if element to be insterted larger then usse i pr laga dega aur break;  
         for (int i = len; i > 0; i--)
         {
             if (element < arr->A[i - 1])
