@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-class __declspec(dllexport) Array
+class Array
 {
 
 public:
@@ -61,61 +61,11 @@ public:
         }
     }
 
-    int isMissingSorted();
-    Array isMissingSortedN();
-    Array isMissing();
+    Array isSum(int sum);
+    Array isSumHash(int sum);
+    Array isSumSorted(int sum);
     int Max();
 };
-
-// finding missiong elements in a sorted array
-// 1 2 4 5 me 3 missing haii aise
-
-// it works on the fact that in in a sorted array like 1 2 3 4 5 6 , the diffrence of values corresponding to their index will be always constant;
-
-// 1 2 3 4 5 6
-// 0 1 2 3 4 5
-// - - - - - -
-// 1 1 1 1 1 1
-int Array ::isMissingSorted()
-{
-    // this only works for 1 missing element
-    int val = A[0];
-
-    for (int i = 0; i < length; i++)
-    {
-        if (A[i] - i != val)
-        {
-            return (i + val);
-        }
-    }
-
-    return 0;
-}
-
-Array Array ::isMissingSortedN()
-{
-    // this works for N  missing element
-    Array missing(length);
-
-    int val = A[0];
-
-    for (int i = 0; i < length; i++)
-    {
-        if (A[i] - i != val)
-        {
-            while (val < A[i] - i)
-            {
-                missing.A[missing.length] = i + val;
-                missing.length++;
-                val++;
-            }
-        }
-    }
-
-    // time complexity : O(n) , n is no of elments in an array
-
-    return missing;
-}
 
 int Array ::Max()
 {
@@ -133,59 +83,109 @@ int Array ::Max()
     // O(n) always
 };
 
-
-
-
-//method 2 
-// univarsal method , works for 1 , more 1 one missing , sorted , unsorted
-Array Array ::isMissing()
+Array Array ::isSum(int sum)
 {
-    // this technique is called hash table 
+
+    Array returnArr(length);
+
+    for (int i = 0; i < length; i++)
+    {
+        for (int j = i + 1; j < length; j++)
+        {
+            if (A[i] + A[j] == sum)
+            {
+                returnArr.A[returnArr.length++] = A[i];
+                returnArr.A[returnArr.length++] = A[j];
+                cout << A[i] << " and " << A[j] << endl;
+            }
+        }
+    }
+
+    return returnArr;
+    // time complexity : O(n^2)
+    // space complexity : kam haii
+}
+
+// isSum by hash table
+Array Array ::isSumHash(int sum)
+{
+    // this technique is called hash table
     int max = Max();
-    cout<<"Max : "<<max<<endl;
+    cout << "Max : " << max << endl;
 
     Array returnArr(length);
     Array missing(max);
 
     for (int l = 0; l < max; l++)
     {
-        missing.A[l] = 0; 
+        missing.A[l] = 0;
     }
 
     missing.length = max;
-    
+
     for (int i = 0; i < length; i++)
     {
         int element = A[i];
-        missing.A[element-1] = 1;
+        missing.A[element - 1] = 1;
     }
 
     for (int j = 0; j < max; j++)
     {
-        if(missing.A[j] == 0){
-            returnArr.A[returnArr.length] = (j+1);
-            cout<<returnArr.A[returnArr.length]<<endl; 
-            returnArr.length++;
+        if (missing.A[sum - A[j]] != 0)
+        {
+
+            returnArr.A[returnArr.length++] = sum - A[j];
+            returnArr.A[returnArr.length++] = A[j];
+            // cout<<returnArr.A[returnArr.length]<<endl;
         }
     }
-    
     // time complexity : O(n) , n is no of elments in an array
+    /// space complexity : more
 
     return returnArr;
-}
+};
 
+Array Array ::isSumSorted(int sum)
+{
 
+    Array returnArr(length);
 
+    // start
+    int i = 0;
 
+    // end
+    int j = length-1;
+
+    while (i != j)
+    {
+        if (A[i] + A[j] > sum)
+        {
+            j--;
+        }
+        else if (A[i] + A[j] < sum)
+        {
+            i++;
+        }
+        else{
+            returnArr.A[returnArr.length++] = A[i]; 
+            returnArr.A[returnArr.length++] = A[j]; 
+            i++;
+            j--;
+        }
+    }
+
+    return returnArr;
+    // time complxity : O(n);
+};
 
 int main()
 {
     Array arr(10);
-    arr.SetArray(5);
+    arr.SetArray(8);
 
-    // cout << "Missing Element : " << arr.isMissingSorted();
+    // cout << "duplicate Element : " << arr.isduplicateSorted();
 
-    Array arrResult = arr.isMissing();
+    Array arrResult = arr.isSumHash(10);
     arrResult.Display();
 
     return 0;
