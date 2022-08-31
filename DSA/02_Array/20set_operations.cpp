@@ -142,7 +142,7 @@ struct Array *Intersection(struct Array arr1, struct Array arr2)
             if (arr2.A[j] == arr1.A[i])
             {
                 arr3->A[length] = arr1.A[i];
-                length++;
+                length++;   
             }
         }
     }
