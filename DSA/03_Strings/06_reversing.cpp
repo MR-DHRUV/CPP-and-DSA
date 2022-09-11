@@ -1,46 +1,39 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
 
-
-int length(char str[]){
+int length(char str[])
+{
 
     int i = 0;
-    while(str[i] != '\0'){
+    while (str[i] != '\0')
+    {
         i++;
     }
     return i;
 }
 
+void reverse(char str[], int n)
+{
+    int s = 0;
+    int e = n - 1;
 
-// regular expression
-void reverse(char *ptr, char str[]){
-    
-    int len = length(str) -1;
-    int i = 0;
-
-    while (i<len)
+    while (s < e)
     {
-        char temp = *ptr;
-        char *value2 = ptr+len;
-
-        *ptr = 
-
-        i++;
-        len--;
+        swap(str[s++], str[e--]);
     }
-    
-
-} 
-
-
-
-
+}
 
 int main()
 {
     // strings are imutable so use char arrays
 
+    char str[20] = {'D', 'H', 'R', 'U', 'V'};
 
+    cout << str << endl;
+
+    reverse(str, length(str));
+
+    cout << str << endl;
 
     return 0;
 }

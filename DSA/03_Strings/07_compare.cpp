@@ -35,5 +35,6 @@ int main()
 
     cout<<compare(str1,str2)<<endl;
 
+
     return 0;
 }

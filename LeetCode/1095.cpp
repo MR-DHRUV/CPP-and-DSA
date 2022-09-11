@@ -1,99 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
 
-class MountainArray
+int sqrtN(long long int N)
 {
-public:
-    int get(int index);
-    int length();
-};
+    // Write your code here.
+    int s = 0;
+    int e = N/2;
 
-int peak(MountainArray &mountainArr)
-{
-    int start = 0;
-    int end = mountainArr.length() - 1;
+    int ans = -1;
 
-    while (start < end)
+    while (s <= e)
     {
-        int mid = start + (end - start) / 2;
+        int mid = s + (e - s) / 2;
 
-        if (mountainArr.get(mid) > mountainArr.get(mid + 1))
+        long long int square = abs(mid * mid);
+        cout << mid << endl;
+        // cout << square << endl;
+
+        if (square == N)
         {
-            end = mid;
+            return mid;
+        };
+
+        if (square < N)
+        {
+            ans = mid;
+            s = mid+1;
         }
-        else
+        else if(square > N)
         {
-            start = mid + 1;
+            e = mid - 1;
         }
     }
 
-    return start;
+    return ans;
 }
 
-int BinarySearch(MountainArray &mountainArr, int start, int end, int target)
+int main()
 {
-    if (mountainArr.get(0) <= mountainArr.get(mountainArr.length() - 1))
-    {
-        while (start <= end)
-        {
-            int mid = start + (end - start) / 2;
+    vector<int> a = {0, 1, 0, 1, 1, 2, 2, 3, 3, 4};
 
-            if (mountainArr.get(mid) == target)
-            {
-                return mid;
-            }
+    cout << sqrtN(777777);
 
-            else if (mountainArr.get(mid) > target)
-            {
-                end = mid - 1;
-            }
-
-            else
-            {
-                start = mid + 1;
-            }
-        }
-    }
-    else
-    {
-        while (start <= end)
-        {
-            int mid = start + (end - start) / 2;
-
-            if (mountainArr.get(mid) == target)
-            {
-                return mid;
-            }
-
-            else if (mountainArr.get(mid) > target)
-            {
-                start = mid + 1;
-            }
-
-            else
-            {
-                end = mid - 1;
-            }
-        }
-    }
-    return -1;
+    return 0;
 }
-
-class Solution
-{
-public:
-    int findInMountainArray(int target, MountainArray &mountainArr)
-    {
-        int max = peak(mountainArr);
-        int a = BinarySearch(mountainArr, 0, max, target);
-
-        if (a == -1)
-        {
-            int b = BinarySearch(mountainArr, max+1, mountainArr.length() - 1, target);
-            return b;
-        }
-
-        else
-        {
-            return a;
-        }
-    }
-};
