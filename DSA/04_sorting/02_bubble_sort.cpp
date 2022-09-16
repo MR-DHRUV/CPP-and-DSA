@@ -60,3 +60,10 @@ int main()
 
     return 0;
 }
+
+
+// it is called bubble sort as heaviest element gets sorted at first, like heavy bubble goes down earliest
+// adaptive, jaise hi sort ho jayga ruk jayga bekar ke comparisions nahi krega
+// stable
+
+

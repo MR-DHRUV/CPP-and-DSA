@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-// tail recursion
+// head recursion
 int func(int n)
 {
     if (n > 0)

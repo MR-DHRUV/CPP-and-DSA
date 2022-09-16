@@ -35,7 +35,73 @@ int main()
     p = new int[5];
 
     // freeing it
-    delete []p;
+    delete[] p;
+
+    int *a;
+    a = new int;
+    *a = 5;
+    cout << *a << endl;
+
+    delete a;
+
+    // never declare array like this, as stack can run out of memory
+    // int n;
+    // cin>>n;
+    // int arr[n];
+
+    // for larger n stack will run out of memory and the program will crash.
+    // so use dynamic array for creating arrays at runtime
+
+    // CREATING 2-D ARRAY IN HEAP
+    int row, col;
+    cin >> row >> col;
+
+    int **arr2d;
+
+    // it is an array of type int * , that is it is an array of pointers in which every pointer points to a array of size m
+    arr2d = new int *[row]; // this part makes row
+
+    for (int i = 0; i < row; i++)
+    {
+        arr2d[i] = new int[col]; // this part makes columns
+    }
+
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            cin >> arr2d[i][j];
+        }
+    }
+
+    cout << endl;
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            cout << arr2d[i][j] << " ";
+        }
+
+        cout << endl;
+    }
+
+    // remember to free the heap
+    for (int i = 0; i < row; i++)
+    {
+        delete[] arr2d[i];// pahle colums free honge then pointer array free hoga jo row bnata haii, ulta krdia toh internal arrays reh jayenge aur memory leak ho jaygi 
+    }
+
+    delete[] arr2d;
+
+    // Jagged array is array of arrays such that member arrays can be of different sizes, i.e., we can create a 2-D array but with a variable number of columns in each row. These type of arrays are also known as Jagged arrays.
+
+//   arr[][] ={{0, 1, 2},
+//             {6, 4},
+//             {1, 7, 6, 8, 9},
+//             {5} 
+//           };
+
+    // ref - gfg
 
     return 0;
 }

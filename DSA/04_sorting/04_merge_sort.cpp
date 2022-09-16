@@ -1,11 +1,28 @@
-#include<bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-int main()
+
+void printArr(int *arr, int n)
 {
-    
-    return 0;
+    for (int i = 0; i < n; i++)
+    {
+        cout << arr[i] << " ";
+    }
+
+    cout << endl;
 }
+
+
+// 1 array ko half me break krte jao jab tak har element alag alag na ho jaye
+// then un parts ko sorted order me join krte jaoo
+
+// faster than bubble , insertion and selection sort
+
+// Approach I
+// create new array of hal size and copy values
+
+// Approach II
+// use indexes , (calculate mid ...)
 
 void merge(int *arr, int start, int end)
 {
@@ -64,12 +81,9 @@ void merge(int *arr, int start, int end)
     {
         arr[k++] = second[index2++];
     }
-
-    delete[]first;
-    delete[]second;
 }
 
-void mergeSortI(vector<int>& arr, int start, int end)
+void mergeSortI(int *arr, int start, int end)
 {
     // base case
 
@@ -89,7 +103,12 @@ void mergeSortI(vector<int>& arr, int start, int end)
     merge(arr, start, end);
 }
 
-void mergeSort(vector < int > & arr, int n) {
-    // Write your code here.
-    mergeSortI(arr,0,n-1);
+int main()
+{
+
+    int arr[] = {6, 8, 3, 5, 9, 2, 1, 2, 4, 0};
+
+    mergeSortI(arr,0 , 10);
+    printArr(arr , 10);
+    return 0;
 }
