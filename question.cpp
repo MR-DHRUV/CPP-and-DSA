@@ -1,95 +1,43 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+int equalParity(vector<int> &v, int k){
+    
+    int odd = 0;
+    int even = 0;
+
+    for (int i = 0; i < v.size(); i++)
+    {
+        if(v[i]%2 == 0)
+        {
+            even++;
+        }
+        else
+        {
+            odd++;
+        }
+    }
+    
+    if(odd > even)
+    {
+        if(k <= even)
+        {
+            return odd+k;
+        }
+    }
+    else
+    {
+        if(k <= odd)
+        {
+            return even+k;
+        }
+    }
+
+    return odd+even;
+}
+
 int main()
 {
     
     return 0;
-}
-
-void merge(int *arr, int start, int end)
-{
-    int mid = start + (end - start) / 2;
-
-    // length haii index nahi isiliye +1 hua
-    int len1 = mid - start + 1;
-
-    // end has already 1 added
-    int len2 = end - mid;
-
-    int *first = new int[len1];
-    int *second = new int[len2];
-
-    // copying half arrays (total complexity : O(N) )
-    int k = start;
-    for (int i = 0; i < len1; i++)
-    {
-        first[i] = arr[k];
-        k++;
-    }
-
-    for (int i = 0; i < len2; i++)
-    {
-        second[i] = arr[k];
-        k++;
-    }
-
-    // merge 2 sorted arrays
-    int index1 = 0;
-    int index2 = 0;
-
-    // index of main array
-    k = start;
-
-    // Total complexity : O(N)
-    while (index1 < len1 && index2 < len2)
-    {
-        if (first[index1] < second[index2])
-        {
-            arr[k++] = first[index1++];
-        }
-        else
-        {
-            arr[k++] = second[index2++];
-        }
-    }
-
-    // agar koi part lamba hua
-    while (index1 < len1)
-    {
-        arr[k++] = first[index1++];
-    }
-
-    while (index2 < len2)
-    {
-        arr[k++] = second[index2++];
-    }
-
-    delete[]first;
-    delete[]second;
-}
-
-void mergeSortI(vector<int>& arr, int start, int end)
-{
-    // base case
-
-    if (start >= end)
-    {
-        return;
-    }
-
-    int mid = start + (end - start) / 2;
-
-    // sorting left part;
-    mergeSortI(arr, start, mid);
-
-    // sorting right part;
-    mergeSortI(arr, mid + 1, end);
-
-    merge(arr, start, end);
-}
-
-void mergeSort(vector < int > & arr, int n) {
-    // Write your code here.
-    mergeSortI(arr,0,n-1);
 }

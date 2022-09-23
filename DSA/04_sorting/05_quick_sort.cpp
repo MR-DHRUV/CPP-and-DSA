@@ -69,9 +69,12 @@ void quickSort(int arr[], int start, int end)
 
     // sorting left part
     quickSort(arr, start, p - 1);
+    printArr(arr,4);
 
     // sorting right part
     quickSort(arr, p + 1, end);
+    printArr(arr,4);
+
 
     return;
 }
@@ -115,11 +118,13 @@ int main()
 
     // ALSO CALLED selection exchange sort , partion exchange sort
 
-    int arr[] = {6, 8, 3, 5, 9, 2, 1, 2, 4, 0};
-    int n = 10;
+    int arr[] = {2,8,5,4};
+    int n = 4;
+    // int arr[] = {6, 8, 3, 5, 9, 2, 1, 2, 4, 0};
+    // int n = 10;
 
     quickSort(arr, 0, n-1);
-    printArr(arr,10);
+    printArr(arr,4);
 
     return 0;
 }
