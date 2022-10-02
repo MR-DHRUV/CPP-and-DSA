@@ -54,6 +54,20 @@ void printList(struct Node *p)
 
 struct Node *mergeList(struct Node *A, struct Node *B)
 {
+    // base case
+    if (A == NULL && B == NULL)
+    {
+        return A;
+    }
+    else if (A == NULL)
+    {
+        return B;
+    }
+    else if (B == NULL)
+    {
+        return A;
+    }
+
     // points to first element of new mergerd list
     struct Node *third;
 

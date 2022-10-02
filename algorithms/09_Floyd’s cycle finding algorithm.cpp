@@ -54,8 +54,6 @@ struct Node *createLoopedList(int arr[], int n, int loopedIndex)
     first->data = arr[0];
     first->next = NULL;
 
-
-
     // last is first as 1 element only
     last = first;
 
@@ -72,7 +70,7 @@ struct Node *createLoopedList(int arr[], int n, int loopedIndex)
         // update last
         last = t;
 
-        if(i == loopedIndex)
+        if (i == loopedIndex)
         {
             loopedPosition = last;
         }
@@ -82,7 +80,6 @@ struct Node *createLoopedList(int arr[], int n, int loopedIndex)
 
     return first;
 };
-
 
 void printList(struct Node *p)
 {
@@ -96,8 +93,8 @@ void printList(struct Node *p)
     cout << endl;
 };
 
-
 // called as Floyd’s cycle finding algorithm;
+
 // looped linked list : those list in which last node does not have its next as null , rather it points to some element before it
 // so while traversing it we will never stop
 
@@ -107,38 +104,36 @@ void printList(struct Node *p)
 
 bool isLooped(struct Node *A)
 {
-    struct Node * slow = A;
-    struct Node * fast = A;
+    struct Node *slow = A;
+    struct Node *fast = A;
 
-    while(fast->next != NULL)
+    while (fast->next != NULL)
     {
         // moved 2 nodes at a time
         fast = fast->next;
+        if (fast->next == NULL)
+        {
+            return false;
+        }
+
         fast = fast->next;
 
         slow = slow->next;
 
         // agar beech me null aagaya toh return ho gaye function
-        if(fast->next == NULL)
+        if (fast->next == NULL)
         {
             return false;
         }
 
-        if(slow == fast)
+        if (slow == fast)
         {
             return true;
         }
-
     }
 
     return false;
-
 }
-
-
-
-
-
 
 int main()
 {
@@ -146,15 +141,14 @@ int main()
     int arr2[] = {16, 27, 19, 103, 108, 589, 700};
     int n = 7;
     struct Node *A = createList(arr1, n);
-    struct Node *B = createLoopedList(arr2, n , 3);
+    struct Node *B = createLoopedList(arr2, n, 3);
     printList(A);
 
     // looped list cant be printed
     // printList(B);
 
-    cout<<isLooped(A)<<endl;
-    cout<<isLooped(B)<<endl;
-
+    cout << isLooped(A) << endl;
+    cout << isLooped(B) << endl;
 
     return 0;
 }
