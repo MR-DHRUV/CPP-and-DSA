@@ -1,13 +1,8 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-// sieve_of_eratosthernes
-
-// mark every number as a prime number;
-// jaise 2 prime haii , toh 2 ke saare multiples ko non prime mark krdo
 
 // complexity O(log(log N))
-
 int count_prime(int n)
 {
     int count = 0;
@@ -38,10 +33,8 @@ int count_prime(int n)
         }
 
     }
-    
 
     return count;
-
 }
 
 

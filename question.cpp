@@ -1,290 +1,129 @@
 //{ Driver Code Starts
-// driver
-
 #include <bits/stdc++.h>
+
 using namespace std;
 
-/* Linked list Node */
-struct Node {
+struct Node
+{
     int data;
-    struct Node* next;
-    Node(int x) {
+    Node *next;
+
+    Node(int x)
+    {
         data = x;
         next = NULL;
     }
 };
 
-struct Node* buildList(int size)
+void print(Node *root)
 {
-    int val;
-    cin>> val;
-    
-    Node* head = new Node(val);
-    Node* tail = head;
-    
-    for(int i=0; i<size-1; i++)
+    Node *temp = root;
+    while (temp != NULL)
     {
-        cin>> val;
-        tail->next = new Node(val);
-        tail = tail->next;
+        cout << temp->data << " ";
+        temp = temp->next;
     }
-    
-    return head;
+    cout << endl;
 }
-
-void printList(Node* n)
-{
-    while(n)
-    {
-        cout<< n->data << " ";
-        n = n->next;
-    }
-    cout<< endl;
-}
-
 
 // } Driver Code Ends
-/* node for linked list:
+/*
 
-struct Node {
+The structure of linked list is the following
+
+struct Node
+{
     int data;
-    struct Node* next;
-    Node(int x) {
+    Node* next;
+
+    Node(int x){
         data = x;
         next = NULL;
     }
 };
-
 */
-
-// problem with this logic is that list can be as long as 5000 nodes
-// and no data type can sture such a large number togher
-// so we have to reverse both the lists and start to sum individual nodes
-
-// reverse isilie karenge kyuki addition last se start hota haii 
-// class Solution
-// {
-//     struct Node* reverseList(struct Node *head)
-//     {
-//         struct Node* prev = NULL;
-//         struct Node* curr = head;
-//         struct Node* next = NULL;
-
-//         while (curr != NULL)
-//         {
-//             next = curr->next;
-//             curr->next = prev;
-//             prev = curr;
-//             curr = next;
-//         }
-
-//         head = prev;
-//         return head;
-//     }
-
-//     public:
-//     //Function to add two numbers represented by linked list.
-//     struct Node* addTwoLists(struct Node* first, struct Node* second)
-//     {
-//         // code here
-        
-//         if(first == NULL)
-//         {
-//             return second;
-//         }
-//         else if(second == NULL)
-//         {
-//             return first;
-//         }
-//         else if(first == NULL && second == NULL)
-//         {
-//             return first;
-//         }
-        
-        
-//         int a = 0;
-//         int b = 0;
-        
-//         while(first != 0)
-//         {
-//             a = a*10 + first->data;
-//             first = first->next;
-//         }
-        
-//         while(second != 0)
-//         {
-//             b = b*10 + second->data;
-//             second = second->next;
-//         }
-        
-//         int sum = a+b;
-        
-//         struct Node*res;
-//         res = new struct Node(sum%10);
-//         sum = sum/10;
-//         struct Node *head = res;
-        
-//         while(sum != 0)
-//         {
-//             struct Node *nextn;
-//             nextn = new struct Node(sum%10);
-//             sum = sum/10;
-//             res->next = nextn;
-//             res = res->next;
-//         }
-        
-//         head = reverseList(head);
-//         return head;
-//     }
-// };
-
-
-// so we have to reverse both the lists and start to sum individual nodes
-
-// reverse isilie karenge kyuki addition last se start hota haii 
 class Solution
 {
-    struct Node* reverseList(struct Node *head)
-    {
-        struct Node* prev = NULL;
-        struct Node* curr = head;
-        struct Node* next = NULL;
 
-        while (curr != NULL)
-        {
-            next = curr->next;
-            curr->next = prev;
-            prev = curr;
-            curr = next;
-        }
+Node *reverse(Node *head)
+{
+    Node *curr = head;
+    Node *prev = NULL;
+    Node *next = NULL;
 
-        head = prev;
-        return head;
-    }
-    
-    void insertAtTail(struct Node* &ansHead, struct Node* &ansTail , int val)
+    while(curr != NULL)
     {
-        Node *temp = new Node(val);
-        
-        if(ansHead == NULL)
-        {
-            ansHead = temp;
-            ansTail = temp;
-        }
-        else
-        {
-            ansTail->next = temp;
-            ansTail = temp;
-        }
-        return;
-    }
-    
-    struct Node* addList(struct Node* first, struct Node* second)
-    {
-        int carry =0;
-        
-        Node*ansHead = NULL;
-        Node*ansTail = NULL;
-        
-        while(first != NULL && second != NULL)
-        {
-            int sum = first->data + second->data + carry;
-            int digit = sum%10;
-           
-            // will create node and add it in and list 
-            insertAtTail(ansHead,ansTail,digit);
-            
-            carry = sum/10;
-            first = first->next;
-            second = second->next;
-        }
-        
-       while(first != NULL)
-       {
-           int sum = carry + first->data;
-           int digit = sum%10;
-           
-           // will create node and add it in and list 
-           insertAtTail(ansHead,ansTail,digit);
-           carry = sum/10;
-           first = first->next;
-       }
-        
-       while(second != NULL)
-       {
-           int sum = carry + second->data;
-           int digit = sum%10;
-           
-           // will create node and add it in and list 
-           insertAtTail(ansHead,ansTail,digit);
-           carry = sum/10;
-           second = second->next;
-       }
-       
-       while(carry != 0)
-       {
-           int sum = carry;
-           int digit = sum%10;
-           
-           // will create node and add it in and list 
-           insertAtTail(ansHead,ansTail,digit);
-           carry = sum/10;
-       }
-            
-        return ansHead;
-        
-        
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
     }
 
-    public:
-    //Function to add two numbers represented by linked list.
-    struct Node* addTwoLists(struct Node* first, struct Node* second)
+    return prev;
+}
+
+public:
+    Node *compute(Node *head)
     {
-        if(first == NULL)
+        if (head == NULL || head->next == NULL)
         {
-            return second;
+            return head;
         }
-        else if(second == NULL)
+
+        head = reverse(head);
+
+        Node *prev = head;
+        Node *curr = head->next;
+
+        while(curr != NULL)
         {
-            return first;
+            if(prev->data > curr->data)
+            {
+                prev->next = curr->next;
+                curr = curr->next;
+            }
+            else
+            {
+                prev = curr;
+                curr = curr->next;
+            }
         }
-        else if(first == NULL && second == NULL)
-        {
-            return first;
-        }
-        
-        first = reverseList(first);
-        second = reverseList(second);
-        
-        struct Node*ans = addList(first,second);
-        
-        ans = reverseList(ans);
-        return ans;
-        
+
+        return reverse(head); 
     }
 };
-
 
 //{ Driver Code Starts.
 
 int main()
 {
-    int t;
-    cin>>t;
-    while(t--)
+    int T;
+    cin >> T;
+
+    while (T--)
     {
-        int n, m;
-        
-        cin>>n;
-        Node* first = buildList(n);
-        
-        cin>>m;
-        Node* second = buildList(m);
+        int K;
+        cin >> K;
+        struct Node *head = NULL;
+        struct Node *temp = head;
+
+        for (int i = 0; i < K; i++)
+        {
+            int data;
+            cin >> data;
+            if (head == NULL)
+                head = temp = new Node(data);
+            else
+            {
+                temp->next = new Node(data);
+                temp = temp->next;
+            }
+        }
         Solution ob;
-        Node* res = ob.addTwoLists(first,second);
-        printList(res);
+        Node *result = ob.compute(head);
+        print(result);
+        cout << endl;
     }
-    return 0;
 }
 
 // } Driver Code Ends
