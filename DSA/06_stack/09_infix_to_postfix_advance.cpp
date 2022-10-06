@@ -3,7 +3,7 @@ using namespace std;
 
 bool isOperand(char x)
 {
-    if (x == '+' || x == '-' || x == '*' || x == '\\' || x == '^' || x == '(' || x == ')')
+    if (x == '+' || x == '-' || x == '*' || x == '/' || x == '^' || x == '(' || x == ')')
     {
         return false;
     }
@@ -68,7 +68,7 @@ string topostfix(string exp)
 
     for (int i = 0; i < exp.length(); i++)
     {
-        if (isOperand(exp[i]) && exp[i])
+        if (isOperand(exp[i]))
         {
             postfix.push_back(exp[i]);
         }

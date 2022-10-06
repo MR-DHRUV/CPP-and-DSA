@@ -8,7 +8,7 @@ int getPrecedence(char x)
     {
         return 1;
     }
-    else if (x == '*' || x == '\\')
+    else if (x == '*' || x == '/')
     {
         return 2;
     }
@@ -19,7 +19,7 @@ int getPrecedence(char x)
 // will hceck given character is operator or symbol
 int isOperand(char x)
 {
-    if (x == '+' || x == '-' || x == '*' || x == '\\')
+    if (x == '+' || x == '-' || x == '*' || x == '/')
     {
         return 0;
     }
