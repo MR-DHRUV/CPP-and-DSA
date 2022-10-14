@@ -1,129 +1,118 @@
+// //{ Driver Code Starts
+// //Initial Template for C++
+
+// #include <bits/stdc++.h>
+// using namespace std;
+
+
+// // } Driver Code Ends
+// //User function Template for C++
+
+// // return a string formed by compressing string s
+// // do not print anything
+
+
+// class Solution{
+
+//     pair<int,int> longestRepeting(string s)
+//     {
+//         int start 
+
+
+
+        
+//     }
+
+//     public:
+//     string compress(string s)
+//     {
+//         // step 1 : finding longest possible repeating string
+        
+
+//     }
+// };
+
+
+
+// //{ Driver Code Starts.
+
+// int main()
+// {
+//     int t;
+//     cin>>t;
+//     while(t--)
+//     {
+//         string s;
+//         cin>>s;
+//         Solution obj;
+//         cout<< obj.compress(s) << "\n";
+//     }
+//     return 0;
+// }
+
+// // } Driver Code Ends
+
+
+
 //{ Driver Code Starts
-#include <bits/stdc++.h>
+//Initial Template for C++
 
-using namespace std;
+#include <bits/stdc++.h> 
+using namespace std; 
 
-struct Node
-{
-    int data;
-    Node *next;
-
-    Node(int x)
-    {
-        data = x;
-        next = NULL;
-    }
-};
-
-void print(Node *root)
-{
-    Node *temp = root;
-    while (temp != NULL)
-    {
-        cout << temp->data << " ";
-        temp = temp->next;
-    }
-    cout << endl;
-}
 
 // } Driver Code Ends
-/*
+//User function Template for C++
 
-The structure of linked list is the following
+class Solution{
+    
+    public:
+    vector<int> help_classmate(vector<int> arr, int n) 
+    { 
+        vector<int>ans;
+        stack<int> st;
+        st.push(-1);
 
-struct Node
-{
-    int data;
-    Node* next;
-
-    Node(int x){
-        data = x;
-        next = NULL;
-    }
-};
-*/
-class Solution
-{
-
-Node *reverse(Node *head)
-{
-    Node *curr = head;
-    Node *prev = NULL;
-    Node *next = NULL;
-
-    while(curr != NULL)
-    {
-        next = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = next;
-    }
-
-    return prev;
-}
-
-public:
-    Node *compute(Node *head)
-    {
-        if (head == NULL || head->next == NULL)
+        for (int i = n-1; i >= 0; i--)
         {
-            return head;
-        }
-
-        head = reverse(head);
-
-        Node *prev = head;
-        Node *curr = head->next;
-
-        while(curr != NULL)
-        {
-            if(prev->data > curr->data)
+            while (arr[i] <= st.top())
             {
-                prev->next = curr->next;
-                curr = curr->next;
+                st.pop();
             }
-            else
-            {
-                prev = curr;
-                curr = curr->next;
-            }
-        }
 
-        return reverse(head); 
-    }
+            ans.push_back(st.top());
+            st.push(arr[i]);
+        }
+        
+        return ans;
+    } 
 };
 
 //{ Driver Code Starts.
 
-int main()
-{
-    int T;
-    cin >> T;
-
-    while (T--)
-    {
-        int K;
-        cin >> K;
-        struct Node *head = NULL;
-        struct Node *temp = head;
-
-        for (int i = 0; i < K; i++)
-        {
-            int data;
-            cin >> data;
-            if (head == NULL)
-                head = temp = new Node(data);
-            else
-            {
-                temp->next = new Node(data);
-                temp = temp->next;
-            }
-        }
-        Solution ob;
-        Node *result = ob.compute(head);
-        print(result);
-        cout << endl;
-    }
+int main() 
+{ 
+	int t;
+	cin>>t;
+	while(t--)
+	{
+		int n;
+		cin>>n;
+		vector<int> array(n);
+		for (int i = 0; i < n; ++i)
+		{
+			cin>>array[i];
+		}
+		Solution obj;
+		vector<int> result = obj.help_classmate(array,n);
+		for (int i = 0; i < n; ++i)
+		{
+			cout<<result[i]<<" ";
+		}
+		cout<<"\n";
+	}
+	return 0; 
 }
+
 
 // } Driver Code Ends

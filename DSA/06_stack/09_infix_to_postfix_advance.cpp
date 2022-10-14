@@ -1,119 +1,123 @@
+//{ Driver Code Starts
+// C++ implementation to convert infix expression to postfix
 #include <bits/stdc++.h>
 using namespace std;
 
-bool isOperand(char x)
+
+// } Driver Code Ends
+
+
+class Solution
 {
-    if (x == '+' || x == '-' || x == '*' || x == '/' || x == '^' || x == '(' || x == ')')
+    bool isOperand(char x)
     {
-        return false;
-    }
-    return true;
-}
-
-int getPrecidence(char x, bool inStack)
-{
-    if ((x == '+' || x == '-') && inStack == true)
-    {
-        return 2;
-    }
-
-    else if ((x == '+' || x == '-') && inStack == false)
-    {
-        return 1;
-    }
-
-    else if ((x == '*' || x == '/') && inStack == true)
-    {
-        return 4;
-    }
-
-    else if ((x == '*' || x == '/') && inStack == false)
-    {
-        return 3;
-    }
-
-    else if ((x == '^') && inStack == false)
-    {
-        return 6;
-    }
-
-    else if ((x == '^') && inStack == true)
-    {
-        return 5;
-    }
-
-    else if ((x == '(') && inStack == true)
-    {
-        return 0;
-    }
-
-    else if ((x == '(') && inStack == false)
-    {
-        return 7;
-    }
-
-    else if ((x == ')') && inStack == false)
-    {
-        return 0;
-    }
-
-    return -1;
-}
-
-string topostfix(string exp)
-{
-    string postfix;
-    stack<char> st;
-    st.push('#');
-
-    for (int i = 0; i < exp.length(); i++)
-    {
-        if (isOperand(exp[i]))
+        if (x == '*' || x == '/' || x == '+' || x == '-' || x == '(' || x == ')' || x == '^')
         {
-            postfix.push_back(exp[i]);
+            return false;
         }
 
-        else
+        return true;
+    }
+
+    int getPriority(char x)
+    {
+        if (x == '^')
         {
-            if (getPrecidence(exp[i], false) > getPrecidence(st.top(), true))
+            return 4;
+        }
+        if (x == '*' || x == '/')
+        {
+            return 3;
+        }
+        if (x == '+' || x == '-')
+        {
+            return 2;
+        }
+        if(x == '(' || x == ')')
+        {
+            return 1;
+        }
+
+        return -1;
+    }
+
+public:
+    // Function to convert an infix expression to a postfix expression.
+    string infixToPostfix(string s)
+    {
+        stack<char> st;
+        string ans;
+        st.push('#');
+
+        for (int i = 0; i < s.length(); i++)
+        {
+            if (isOperand(s[i]))
             {
-                st.push(exp[i]);
-            }
-            else if (getPrecidence(exp[i], false) == getPrecidence(st.top(), true))
-            {
-                st.pop();
+                ans.push_back(s[i]);
             }
             else
             {
-                while (getPrecidence(exp[i], false) < getPrecidence(st.top(), true))
+                if (s[i] == '(')
                 {
-                    if (st.top() != '(' && st.top() != ')')
-                    {
-                        postfix.push_back(st.top());
-                    }
-                    st.pop();
+                    st.push(s[i]);
                 }
+                else if (s[i] == ')')
+                {
+                    while (st.top() != '(')
+                    {
+                        ans.push_back(st.top());
+                        st.pop();
+                    }
 
-                st.push(exp[i]);
+                    if(st.top() == '(')
+                    {
+                      st.pop();  
+                    }
+  
+                }
+                else if (getPriority(s[i]) > getPriority(st.top()))
+                {
+                    st.push(s[i]);
+                }
+                else
+                {
+                    while (getPriority(s[i]) <= getPriority(st.top()))
+                    {
+                        ans.push_back(st.top());
+                        st.pop();
+                    }
+                    
+                    st.push(s[i]);
+                }
             }
         }
-    }
 
-    while (st.empty() == false && st.top() != '#')
-    {
-        if (st.top() != '(' && st.top() != ')')
+        while (st.empty() == false && st.top() != '#')
         {
-            postfix.push_back(st.top());
+            ans.push_back(st.top());
+            
+            st.pop();
         }
-        st.pop();
+
+        return ans;
     }
+};
 
-    return postfix;
-}
 
-int main()
-{
-    cout << topostfix("((a+b)*c)-d^e^f") << endl;
 
+//{ Driver Code Starts.
+// Driver program to test above functions
+int main() {
+    int t;
+    cin >> t;
+    cin.ignore(INT_MAX, '\n');
+    while (t--) {
+        string exp;
+        cin >> exp;
+        Solution ob;
+        cout << ob.infixToPostfix(exp) << endl;
+    }
     return 0;
 }
+
+// } Driver Code Ends

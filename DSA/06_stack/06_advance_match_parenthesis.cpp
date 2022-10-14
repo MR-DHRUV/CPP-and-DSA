@@ -13,77 +13,80 @@ using namespace std;
 // agar last me after iteration koi opening bach jaye that means missing haii
 // ya agar beech me opening khatam ho jaye aur closing aajaye that means opening kam hain
 
-bool matchParenthesis(string s)
-{
-    stack<char> st;
-    stack<char> st1;
-    stack<char> st2;
+// ISSUE IN THIS : cant detect : ({)}
+// as it just coounts and check equality and dosent check ki jo last open hua haii fist close hoga
 
-    int i = 0;
+// bool matchParenthesis(string s)
+// {
+//     stack<char> st;
+//     stack<char> st1;
+//     stack<char> st2;
 
-    while (s[i] != '\0')
-    {
-        // for parenthesis (
-        if (s[i] == '(')
-        {
-            st.push('(');
-        }
-        if (s[i] == ')')
-        {
-            // if stack is empty in between
-            if (st.empty())
-            {
-                return false;
-            }
+//     int i = 0;
 
-            st.pop();
-        }
+//     while (s[i] != '\0')
+//     {
+//         // for parenthesis (
+//         if (s[i] == '(')
+//         {
+//             st.push('(');
+//         }
+//         if (s[i] == ')')
+//         {
+//             // if stack is empty in between
+//             if (st.empty())
+//             {
+//                 return false;
+//             }
 
-        // for curly braces {
-        if (s[i] == '{')
-        {
-            st1.push('{');
-        }
+//             st.pop();
+//         }
 
-        if (s[i] == '}')
-        {
-            // if stack is empty in between
-            if (st1.empty())
-            {
-                return false;
-            }
+//         // for curly braces {
+//         if (s[i] == '{')
+//         {
+//             st1.push('{');
+//         }
 
-            st1.pop();
-        }
+//         if (s[i] == '}')
+//         {
+//             // if stack is empty in between
+//             if (st1.empty())
+//             {
+//                 return false;
+//             }
 
-        // for square brackets [
-        if (s[i] == '[')
-        {
-            st2.push('[');
-        }
+//             st1.pop();
+//         }
 
-        if (s[i] == ']')
-        {
-            // if stack is empty in between
-            if (st2.empty())
-            {
-                return false;
-            }
+//         // for square brackets [
+//         if (s[i] == '[')
+//         {
+//             st2.push('[');
+//         }
 
-            st2.pop();
-        }
+//         if (s[i] == ']')
+//         {
+//             // if stack is empty in between
+//             if (st2.empty())
+//             {
+//                 return false;
+//             }
 
-        i++;
-    }
+//             st2.pop();
+//         }
 
-    // agar last me empty ho gaya toh koi bracket missing nahi , sab ok haii
-    if (st.empty() && st1.empty() && st2.empty())
-    {
-        return true;
-    }
+//         i++;
+//     }
 
-    return false;
-}
+//     // agar last me empty ho gaya toh koi bracket missing nahi , sab ok haii
+//     if (st.empty() && st1.empty() && st2.empty())
+//     {
+//         return true;
+//     }
+
+//     return false;
+// }
 
 
 // approach2 : instead of making multiple stacks we chan check for the last opened bracked and that should close first;
@@ -152,7 +155,7 @@ int main()
 
     string s = "({[(a+b(]))[ * {(a-b)}]]})";
 
-    cout << matchParenthesis(s) << endl;
+    // cout << matchParenthesis(s) << endl;
     cout << matchParenthesisOnce(s) << endl;
 
     return 0;
