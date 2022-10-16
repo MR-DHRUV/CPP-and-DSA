@@ -22,11 +22,11 @@ public:
     bool isFull();
     bool isEmpty();
     int atFornt();
-    void printArr(); 
+    void printArr();
 };
 
 // for testing
-void Queue :: printArr()
+void Queue ::printArr()
 {
     for (int i = 0; i < size; i++)
     {
@@ -87,7 +87,7 @@ int Queue::dequeue()
 
         // we are returning the element obtained after dequeue operation
         x = q[front];
-
+        q[front] = -1;
         // reseting Pointers
         // if(isEmpty())
         // {
@@ -134,31 +134,29 @@ int Queue ::atFornt()
 
 int main()
 {
-    Queue q(8);
+    Queue q(3);
     cout << q.atFornt() << endl;
-    q.enqueue(5);
+    q.enqueue(2);
     q.enqueue(3);
-    q.enqueue(1);
-    q.enqueue(1);
-    q.enqueue(1);
-    q.enqueue(1);
-    q.enqueue(1);
-
-    q.printArr();
-    
-    q.dequeue();
-    q.dequeue();
-    cout << q.atFornt() << endl;
-    q.dequeue();
-
     q.printArr();
 
-    q.enqueue(100);
-    q.enqueue(100);
-
+    q.dequeue();
     q.printArr();
 
-    cout << q.atFornt() << endl;
+    q.enqueue(4);
+    q.printArr();
+
+    q.enqueue(6);
+    q.printArr();
+
+    q.enqueue(7);
+    q.printArr();
+
+    q.dequeue();
+    q.printArr();
+
+
+
 
     return 0;
 }
