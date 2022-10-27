@@ -1,90 +1,61 @@
 //{ Driver Code Starts
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-struct petrolPump
-{
-    int petrol;
-    int distance;
-};
-
-
 // } Driver Code Ends
-/*
-The structure of petrolPump is 
-struct petrolPump
+class Solution
 {
-    int petrol;
-    int distance;
-};*/
-
-/*You are required to complete this method*/
-class Solution{
-  public:
-  
-    //Function to find starting point where the truck can start to get through
-    //the complete circle without exhausting its petrol in between.
-    int tour(petrolPump p[],int n)
+public:
+    // Function to return the minimum cost of connecting the ropes.
+    long long minCost(long long arr[], long long n)
     {
-       //Your code here
-        int start = 0;
-        int storage = 0;
-        int ft = 0;
-        int dt = 0;
+        priority_queue<long long, vector<long long>, greater<long long>> minH;
 
+        // loading min heap
+        int sum = 0;
         for (int i = 0; i < n; i++)
         {
-            ft += p[i].petrol;
-            dt += p[i].distance;
-            
-            
-            // checking id travel is possible or not
-
-            // if possible
-            if (p[i].petrol - p[i].distance + storage >= 0)
-            {
-                storage += p[i].petrol - p[i].distance;
-            }
-            else
-            {
-                // +1 isilliye hua kyuki current wala possible nahi haii
-                start = i+1;
-
-                // reset the storage
-                storage = 0;
-            }
+            minH.push(arr[i]);
         }
-        
-        
-        // at any cost the total distance must be less than or equal to total fuel
-        if (start >= n || dt > ft)
+
+        while (minH.size() > 1)
         {
-            return -1;
+            long long a = minH.top();
+            minH.pop();
+
+            long long b = minH.top();
+            minH.pop();
+
+            // cout<<a<<" "<<b<<endl;
+            sum+= a+b;
+
+            minH.push(sum);
+
         }
 
-        return start;
-       
+        return sum;
     }
 };
-
-
 
 //{ Driver Code Starts.
 
 int main()
 {
-    int t;
-    cin>>t;
-    while(t--)
+    long long t;
+    cin >> t;
+    while (t--)
     {
-        int n;
-        cin>>n;
-        petrolPump p[n];
-        for(int i=0;i<n;i++)
-            cin>>p[i].petrol>>p[i].distance;
-        Solution obj;
-        cout<<obj.tour(p,n)<<endl;
+        long long n;
+        cin >> n;
+        long long i, a[n];
+        for (i = 0; i < n; i++)
+        {
+            cin >> a[i];
+        }
+        Solution ob;
+        cout << ob.minCost(a, n) << endl;
     }
+    return 0;
 }
 
 // } Driver Code Ends

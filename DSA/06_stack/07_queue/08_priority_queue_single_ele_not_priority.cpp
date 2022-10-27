@@ -69,7 +69,7 @@ void PriorityQueue ::enqueue(int x , int p)
         return;
     }
 
-    // if hight priority ka haii
+    // if highest priority ka haii
     if (p < first->priority)
     {
         newNode->next = first;
