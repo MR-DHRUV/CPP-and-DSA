@@ -45,6 +45,14 @@ public:
     void postorderIter();
 
     void levelorder();
+
+    int countNodes();
+    int count1Nodes();
+    int count2Nodes();
+    int countLeafNodes();
+
+    int sumTree();
+    int height();
 };
 
 void BinTree ::create()
@@ -224,6 +232,7 @@ void BinTree ::postorderIter()
     Node *t = head;
     stack<Node *> st;
     long long int temp;
+
     while (t != NULL || st.empty() == false)
     {
 
@@ -304,6 +313,155 @@ void BinTree ::levelorder()
     cout << endl;
 };
 
+// here things are happening in post order , left right count
+int count(Node *h)
+{
+    // base condition
+    if (h == NULL)
+    {
+        return 0;
+    }
+
+    // counting left and right nodes
+    int x = count(h->lchild);
+    int y = count(h->rchild);
+
+    // +1 for current node
+    return (x + y + 1);
+}
+
+int BinTree ::countNodes()
+{
+    // same 2n+1 calls isme bhi -> O(n)
+    return count(head);
+}
+
+int count1(Node *h)
+{
+    // base condition
+    if (h == NULL)
+    {
+        return 0;
+    }
+
+    // counting left and right nodes
+    int x = count1(h->lchild);
+    int y = count1(h->rchild);
+
+    // +1 for current node
+
+    if ((h->lchild == NULL && h->rchild != NULL) || (h->lchild != NULL && h->rchild == NULL))
+    {
+        return (x + y + 1);
+    }
+
+    return x + y;
+}
+
+int BinTree ::count1Nodes()
+{
+    // same 2n+1 calls isme bhi -> O(n)
+    return count1(head);
+}
+
+int count2(Node *h)
+{
+    // base condition
+    if (h == NULL)
+    {
+        return 0;
+    }
+
+    // counting left and right nodes
+    int x = count2(h->lchild);
+    int y = count2(h->rchild);
+
+    if (h->lchild != NULL && h->rchild != NULL)
+    {
+        return (x + y + 1);
+    }
+
+    return x + y;
+}
+
+int BinTree ::count2Nodes()
+{
+    // same 2n+1 calls isme bhi -> O(n)
+    return count2(head);
+}
+
+int countLeaf(Node *h)
+{
+    // base condition
+    if (h == NULL)
+    {
+        return 0;
+    }
+
+    // counting left and right nodes
+    int x = countLeaf(h->lchild);
+    int y = countLeaf(h->rchild);
+
+    if (h->lchild == NULL && h->rchild == NULL)
+    {
+        return (x + y + 1);
+    }
+
+    return x + y;
+}
+
+int BinTree ::countLeafNodes()
+{
+    // same 2n+1 calls isme bhi -> O(n)
+    return countLeaf(head);
+}
+
+int sum(Node *h)
+{
+    // base condition
+    if (h == NULL)
+    {
+        return 0;
+    }
+
+    // counting left and right nodes
+    int x = sum(h->lchild);
+    int y = sum(h->rchild);
+
+    // right ka sum + left ka sum + current node ka data
+    return (x + y + h->data);
+}
+
+int BinTree ::sumTree()
+{
+    // same 2n+1 calls isme bhi -> O(n)
+    return sum(head);
+}
+
+
+int heightCalc(Node *h)
+{
+    // base condition
+    if (h == NULL)
+    {
+        return 0;
+    }
+
+    // counting left and right nodes
+    int x = heightCalc(h->lchild);
+    int y = heightCalc(h->rchild);
+
+    // har point par us subtree ki max possible height return krega
+    return max(x,y)+1;
+}
+
+int BinTree ::height()
+{
+    // same 2n+1 calls isme bhi -> O(n)
+    return heightCalc(head);
+}
+
+
 int main()
 {
     BinTree t(1);
@@ -317,5 +475,16 @@ int main()
 
     t.levelorder();
 
+    cout << "Nodes : " << t.countNodes() << endl;
+    cout << "0 Nodes : " << t.countLeafNodes() << endl;
+    cout << "1 Nodes : " << t.count1Nodes() << endl;
+    cout << "2 Nodes : " << t.count2Nodes() << endl;
+    cout << "Sum : " << t.sumTree() << endl;
+    cout << "Height : " << t.height() << endl;
+
     return 0;
 }
+
+
+// height
+// sir's question
