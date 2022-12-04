@@ -43,7 +43,7 @@ void bubbleSort(vector<int> &arr)
             // optimazation
         }
 
-        if (isSwaped)
+        if (!isSwaped)
         {
             break;
         }

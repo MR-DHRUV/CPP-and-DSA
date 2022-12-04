@@ -5,10 +5,10 @@ class Node
 {
 public:
     int data;
-    Node *lchild;
-    Node *rchild;
+    Node *left;
+    Node *right;
 
-    Node(int x) : data(x), lchild(NULL), rchild(NULL){};
+    Node(int x) : data(x), left(NULL), right(NULL){};
 };
 
 class BinTree
@@ -20,6 +20,7 @@ class BinTree
     Node *head;
 
 public:
+    BinTree(){};
     BinTree(int x)
     {
         // creating and storing head node
@@ -53,6 +54,8 @@ public:
 
     int sumTree();
     int height();
+
+    void buildFromLevelOrder(vector<int> arr);
 };
 
 void BinTree ::create()
@@ -71,7 +74,7 @@ void BinTree ::create()
         if (temp != -1)
         {
             Node *next = new Node(temp);
-            p->lchild = next;
+            p->left = next;
             q.push(next);
         }
 
@@ -81,7 +84,7 @@ void BinTree ::create()
         if (temp != -1)
         {
             Node *next = new Node(temp);
-            p->rchild = next;
+            p->right = next;
             q.push(next);
         }
     }
@@ -98,10 +101,10 @@ void pre(Node *p)
     cout << p->data << " ";
 
     // left
-    pre(p->lchild);
+    pre(p->left);
 
     // right
-    pre(p->rchild);
+    pre(p->right);
 };
 
 void in(Node *p)
@@ -112,13 +115,13 @@ void in(Node *p)
     }
 
     // left
-    in(p->lchild);
+    in(p->left);
 
     // node
     cout << p->data << " ";
 
     // right
-    in(p->rchild);
+    in(p->right);
 };
 
 void post(Node *p)
@@ -129,10 +132,10 @@ void post(Node *p)
     }
 
     // left
-    post(p->lchild);
+    post(p->left);
 
     // right
-    post(p->rchild);
+    post(p->right);
 
     // node
     cout << p->data << " ";
@@ -173,7 +176,7 @@ void BinTree ::preorderIter()
             st.push(t);
 
             // pointing t to its left child
-            t = t->lchild;
+            t = t->left;
         }
         else
         {
@@ -182,7 +185,7 @@ void BinTree ::preorderIter()
             st.pop();
 
             // pointing it to its right child
-            t = t->rchild;
+            t = t->right;
         }
     }
 
@@ -205,7 +208,7 @@ void BinTree ::inorderIter()
             st.push(t);
 
             // pointing t to its left child
-            t = t->lchild;
+            t = t->left;
         }
         else
         {
@@ -219,7 +222,7 @@ void BinTree ::inorderIter()
             cout << t->data << " ";
 
             // pointing it to its right child
-            t = t->rchild;
+            t = t->right;
         }
     }
 
@@ -243,7 +246,7 @@ void BinTree ::postorderIter()
             st.push(t);
 
             // pointing t to its left child
-            t = t->lchild;
+            t = t->left;
         }
         else
         {
@@ -261,7 +264,7 @@ void BinTree ::postorderIter()
                 st.push(c);
 
                 // pointing it to its right child
-                t = ((Node *)temp)->rchild;
+                t = ((Node *)temp)->right;
             }
             else
             {
@@ -300,13 +303,13 @@ void BinTree ::levelorder()
 
         cout << i->data << " ";
 
-        if (i->lchild != NULL)
+        if (i->left != NULL)
         {
-            qt.push(i->lchild);
+            qt.push(i->left);
         }
-        if (i->rchild != NULL)
+        if (i->right != NULL)
         {
-            qt.push(i->rchild);
+            qt.push(i->right);
         }
     }
 
@@ -323,8 +326,8 @@ int count(Node *h)
     }
 
     // counting left and right nodes
-    int x = count(h->lchild);
-    int y = count(h->rchild);
+    int x = count(h->left);
+    int y = count(h->right);
 
     // +1 for current node
     return (x + y + 1);
@@ -345,12 +348,12 @@ int count1(Node *h)
     }
 
     // counting left and right nodes
-    int x = count1(h->lchild);
-    int y = count1(h->rchild);
+    int x = count1(h->left);
+    int y = count1(h->right);
 
     // +1 for current node
 
-    if ((h->lchild == NULL && h->rchild != NULL) || (h->lchild != NULL && h->rchild == NULL))
+    if ((h->left == NULL && h->right != NULL) || (h->left != NULL && h->right == NULL))
     {
         return (x + y + 1);
     }
@@ -373,10 +376,10 @@ int count2(Node *h)
     }
 
     // counting left and right nodes
-    int x = count2(h->lchild);
-    int y = count2(h->rchild);
+    int x = count2(h->left);
+    int y = count2(h->right);
 
-    if (h->lchild != NULL && h->rchild != NULL)
+    if (h->left != NULL && h->right != NULL)
     {
         return (x + y + 1);
     }
@@ -399,10 +402,10 @@ int countLeaf(Node *h)
     }
 
     // counting left and right nodes
-    int x = countLeaf(h->lchild);
-    int y = countLeaf(h->rchild);
+    int x = countLeaf(h->left);
+    int y = countLeaf(h->right);
 
-    if (h->lchild == NULL && h->rchild == NULL)
+    if (h->left == NULL && h->right == NULL)
     {
         return (x + y + 1);
     }
@@ -425,8 +428,8 @@ int sum(Node *h)
     }
 
     // counting left and right nodes
-    int x = sum(h->lchild);
-    int y = sum(h->rchild);
+    int x = sum(h->left);
+    int y = sum(h->right);
 
     // right ka sum + left ka sum + current node ka data
     return (x + y + h->data);
@@ -438,7 +441,6 @@ int BinTree ::sumTree()
     return sum(head);
 }
 
-
 int heightCalc(Node *h)
 {
     // base condition
@@ -448,11 +450,11 @@ int heightCalc(Node *h)
     }
 
     // counting left and right nodes
-    int x = heightCalc(h->lchild);
-    int y = heightCalc(h->rchild);
+    int x = heightCalc(h->left);
+    int y = heightCalc(h->right);
 
     // har point par us subtree ki max possible height return krega
-    return max(x,y)+1;
+    return max(x, y) + 1;
 }
 
 int BinTree ::height()
@@ -461,30 +463,72 @@ int BinTree ::height()
     return heightCalc(head);
 }
 
+void BinTree::buildFromLevelOrder(vector<int> arr)
+{
+    if (arr.size() < 1)
+    {
+        return;
+    }
+
+    // initialization
+    Node *a = new Node(arr[0]);
+    head = a;
+
+    queue<Node *> q;
+    q.push(head);
+
+    for (int i = 1; i < arr.size(); i++)
+    {
+        Node *t = q.front();
+        q.pop();
+
+        // making left node
+        if (arr[i] != -1)
+        {
+            Node *next = new Node(arr[i]);
+            t->left = next;
+            q.push(next);
+        }
+
+        // making right node
+        i++;
+        if (arr[i] != -1 && i < arr.size())
+        {
+            Node *next = new Node(arr[i]);
+            t->right = next;
+            q.push(next);
+        }
+    }
+}
 
 int main()
 {
-    BinTree t(1);
-    t.create();
-    t.preorder();
-    t.preorderIter();
-    t.inorder();
-    t.inorderIter();
-    t.postorder();
-    t.postorderIter();
+    // BinTree t(1);
+    // t.create();
+    // t.preorder();
+    // t.preorderIter();
+    // t.inorder();
+    // t.inorderIter();
+    // t.postorder();
+    // t.postorderIter();
 
-    t.levelorder();
+    // t.levelorder();
 
-    cout << "Nodes : " << t.countNodes() << endl;
-    cout << "0 Nodes : " << t.countLeafNodes() << endl;
-    cout << "1 Nodes : " << t.count1Nodes() << endl;
-    cout << "2 Nodes : " << t.count2Nodes() << endl;
-    cout << "Sum : " << t.sumTree() << endl;
-    cout << "Height : " << t.height() << endl;
+    // cout << "Nodes : " << t.countNodes() << endl;
+    // cout << "0 Nodes : " << t.countLeafNodes() << endl;
+    // cout << "1 Nodes : " << t.count1Nodes() << endl;
+    // cout << "2 Nodes : " << t.count2Nodes() << endl;
+    // cout << "Sum : " << t.sumTree() << endl;
+    // cout << "Height : " << t.height() << endl;
+
+    BinTree b;
+    vector<int> v = {1, 2, 3, 4, 5, 6, 7 , 8};
+
+    b.buildFromLevelOrder(v);
+    b.levelorder();
+    b.preorder();
+    b.inorder();
+    b.postorder();
 
     return 0;
 }
-
-
-// height
-// sir's question
