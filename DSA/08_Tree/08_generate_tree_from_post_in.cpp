@@ -90,7 +90,6 @@ Node *builder(int in[], int post[], int &index, int inorderStart, int inorderEnd
     temp->right = builder(in, post, index, position + 1, inorderEnd, elementToIndex);
     temp->left = builder(in, post, index, inorderStart, position - 1, elementToIndex);
 
-
     return temp;
 }
 

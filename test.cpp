@@ -1,137 +1,117 @@
-//{ Driver Code Starts
-#include<bits/stdc++.h>
-using namespace std;
+#include <bits/stdc++.h>
 
+// Following is the Binary Tree node structure:
 
-// } Driver Code Ends
+// class TreeNode
+// {
 
+// public:
+// 	int data;
+// 	TreeNode *left;
+// 	TreeNode *right;
 
-class Solution
+// 	TreeNode(int data)
+// 	{
+// 		this->data = data;
+// 		left = NULL;
+// 		right = NULL;
+// 	}
+
+// 	~TreeNode()
+// 	{
+// 		if (left)
+// 		{
+// 			delete left;
+// 		}
+
+// 		if (right)
+// 		{
+// 			delete right;
+// 		}
+// 	}
+// };
+
+void getInorder(TreeNode<int> *root, vector<int> &in)
 {
-public:
-    string rearrange(string S, int N)
-    {
-        int v[5] = {0};
-        int c[26] = {0};
-
-        int vCount = 0;
-        int cCount = 0;
-
-        unordered_map<char,int> mp;
-        mp['a'] = 0;
-        mp['e'] = 1;
-        mp['i'] = 2;
-        mp['o'] = 3;
-        mp['u'] = 4;
-
-        unordered_map<int,char> pm;
-        pm[0] = 'a';
-        pm[1] = 'e';
-        pm[2] = 'i';
-        pm[3] = 'o';
-        pm[4] = 'u';
-
-        char smallChar = 'u';
-        char smallVow = 'z';
-
-
-        for (int i = 0; i < S.length(); i++)
-        {
-            if (S[i] == 'a' || S[i] == 'e' || S[i] == 'i' || S[i] == 'o' || S[i] == 'u')
-            {
-                vCount++;
-                v[mp[S[i]]]++;
-
-                if(S[i] < smallVow)
-                {
-                    smallVow = S[i];
-                }
-            }
-            else
-            {
-                cCount++;
-                c[S[i]]++;
-
-                if(S[i] < smallChar)
-                {
-                    smallChar = S[i];
-                }
-            }
-        }
-
-        int diff = abs(cCount - vCount);
-
-        if (diff > 1)
-        {
-            return "-1";
-        }
-
-        int iter1;
-        int iter2;
-
-        if (vCount == cCount)
-        {
-            if (smallVow < smallChar)
-            {
-                iter1 = 0;
-                iter2 = 1;
-            }
-            else
-            {
-                iter1 = 1;
-                iter2 = 0;
-            }
-        }
-        else if (vCount > cCount)
-        {
-            iter1 = 0;
-            iter2 = 1;
-        }
-        else
-        {
-            iter1 = 1;
-            iter2 = 0;
-        }
-
-        for(int i = 0 ; i < 5 ; i++)
-        {
-            int l = v[i];
-            for (int k = 0; k < l; k++)
-            {
-                S[iter1] = (char)pm[i];
-                iter1 = iter1+2;
-            }
-            
-        }
-        for(int i = 1 ; i < 26 ; i++)
-        {
-            int l = c[i];
-            for (int k = 0; k < l; k++)
-            {
-                S[iter2] = char(i+'a');
-                iter2 = iter2+2;
-            }
-            
-        }
-
-        return S;
-    }
-};
-
-
-//{ Driver Code Starts.
-
-int main()
-{
-	int t; cin >> t;
-	while (t--)
+	if (root == NULL)
 	{
-		int n; cin >> n;
-		string s; cin >> s;
-		Solution ob;
-		cout << ob.rearrange (s, n) << endl;
+		return;
 	}
-}
-// Contributed By: Pranay Bansal
 
-// } Driver Code Ends
+	getInorder(root->left, in);
+	in.push_back(root->data);
+	getInorder(root->right, in);
+}
+
+TreeNode<int> *buildFromInorder(vector<int> in, int s, int e)
+{
+	if (s > e)
+	{
+		return;
+	}
+
+	int mid = s + (e - s) / 2;
+
+	TreeNode<int> *t = new TreeNode<int>(in[mid]);
+	t->left = buildFromInorder(in, s, mid - 1);
+	t->left = buildFromInorder(in, mid + 1, e);
+
+	return t;
+}
+
+vector<int> mergeArr(vector<int> in1, vector<int> in2)
+{
+	int i = 0;
+	int j = 0;
+
+	vector<int> ans;
+
+	while (i < in1.size() && j < in2.size())
+	{
+		if (in1[i] == in2[j])
+		{
+			ans.push_back(in2[j]);
+			i++;
+			j++;
+		}
+		else if (in1[i] > in2[j])
+		{
+			ans.push_back(in2[j++]);
+		}
+		else
+		{
+			ans.push_back(in1[i++]);
+		}
+	}
+
+	while (i < in1.size())
+	{
+		ans.push_back(in1[i++]);
+	}
+
+	while (j < in2.size())
+	{
+		ans.push_back(in2[j++]);
+	}
+
+	return ans;
+}
+
+TreeNode<int> *mergeBST(TreeNode<int> *root1, TreeNode<int> *root2)
+{
+	// approach 1
+	// find inorder of both
+	// merge inorder in sorted way
+	// build tree from inorder
+
+	vector<int> in1;
+	vector<int> in2;
+
+	getInorder(root1, in1);
+	getInorder(root2, in2);
+
+	vector<int> in = mergeArr(in1, in2);
+
+	TreeNode<int> *ans = buildFromInorder(in,0,in.size()-1);
+	return ans;
+}

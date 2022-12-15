@@ -298,18 +298,18 @@ void BinTree ::levelorder()
     // isse level by level print hoga aur order bni bana rahega
     while (qt.empty() == false)
     {
-        Node *i = qt.front();
+        Node *f = qt.front();
         qt.pop();
 
-        cout << i->data << " ";
+        cout << f->data << " ";
 
-        if (i->left != NULL)
+        if (f->left != NULL)
         {
-            qt.push(i->left);
+            qt.push(f->left);
         }
-        if (i->right != NULL)
+        if (f->right != NULL)
         {
-            qt.push(i->right);
+            qt.push(f->right);
         }
     }
 
