@@ -178,25 +178,25 @@ void BinTree::buildFromLevelOrder(vector<int> arr)
     }
 }
 
-Node *buildFromPre(vector<int> &arr , int mini, int maxi, int &index)
+Node *buildFromPre(vector<int> &arr, int mini, int maxi, int &index)
 {
-    if(index >= arr.size())
+    if (index >= arr.size())
     {
         return NULL;
     }
 
     // if no is out of range
-    if(arr[index] < mini || arr[index] > maxi)
+    if (arr[index] < mini || arr[index] > maxi)
     {
         return NULL;
     }
 
     // now we are in range
     Node *p = new Node(arr[index++]);
-    
+
     // left and right
-    p->left = buildFromPre(arr,mini,p->data,index);
-    p->right = buildFromPre(arr,p->data,maxi,index);
+    p->left = buildFromPre(arr, mini, p->data, index);
+    p->right = buildFromPre(arr, p->data, maxi, index);
 
     return p;
 }
@@ -212,62 +212,46 @@ void BinTree ::buildFromPreOrderRec(vector<int> arr)
     // starting index
     int i = 0;
 
-    head = buildFromPre(arr,mini,maxi,i);
+    head = buildFromPre(arr, mini, maxi, i);
 
     return;
 }
 
+void BinTree:: buildFromPreOrder(vector<int> pre)
+{
+    // init
+    head = new Node(pre[0]);
+    int i = 1;
 
+    stack<Node *> s;
+    Node *p = head;
 
-// void BinTree ::buildFromPreOrder(vector<int> arr)
-// {
-//     // first node will be 1st element of pre order, so directly create it
-//     head = new Node(arr[0]);
+    while (i < pre.size())
+    {
+        Node *t = new Node(pre[i++]);
 
-//     stack<Node *> st;
-//     Node *t = head;
+        // placing smaller nodes
+        if (t->data < p->data)
+        {
+            // iska right lagana pad skta haii isi lie stack me daal dia
+            s.push(p);
 
-//     for (int i = 1; i < arr.size(); i++)
-//     {
-//         // if data is smaller than curent nodes data
-//         if (arr[i] < t->data)
-//         {
-//             Node *p = new Node(arr[i]);
-//             t->left = p;
-
-//             st.push(t);
-//             t = t->left;
-//         }
-//         else
-//         {
-//             // current node se large haii aur uske parent se small
-//             if (arr[i] > t->data && arr[i] < st.top()->data)
-//             {
-//                 Node *p = new Node(arr[i]);
-//                 t->right = p;
-
-//                 // dont push in this case
-//             }
-//             else
-//             {
-//                 // data is large than current node and its parent , so uske parent ke right ko belong krege wo
-//                 Node *p = new Node(arr[i]);
-
-//                 if (!st.empty())
-//                 {
-//                     // taking out parent
-//                     t = st.top();
-//                     st.pop();
-//                 }
-
-//                 t->right = p;
-
-//                 // move to right
-//                 t = t->right;
-//             }
-//         }
-//     }
-// }
+            p->left = t;
+            p = t;
+        }
+        else
+        {
+            // pop from stack until we find a element whoose data is just smaller than of nxt so that we can place it in its right
+            while (!s.empty() && t->data > s.top()->data)
+            {
+                p = s.top();
+                s.pop();
+            }
+            p->right = t;
+            p = t;
+        }
+    }
+}
 
 int heightCalc(Node *h)
 {
@@ -483,46 +467,12 @@ void BinTree ::remove(int x)
 
 int main()
 {
-    // BinTree b(8);
+    vector<int> pre = {40,30,35,80,100};
+    BinTree t;
 
-    // // input in bst fashion
-    // vector<int> v = {30, 20, 40};
-
-    // // b.buildFromLevelOrder(v);
-    // b.levelorder();
-
-    // // sorted hoga for bst;
-    // b.inorder();
-
-    // Node *ans = b.searchBstIter(35);
-
-    // if (ans)
-    //     cout << "True" << endl;
-    // else
-    //     cout << "False" << endl;
-
-    // b.insert(5);
-    // b.insert(15);
-    // b.insert(50);
-    // b.insert(4);
-    // b.insert(89);
-    // b.insert(15);
-    // b.insert(10);
-    // b.inorder();
-
-    // b.remove(400);
-    // b.inorder();
-
-    BinTree b(50);
-
-    b.insert(10);
-    b.insert(40);
-    b.insert(20);
-    b.insert(30);
-    b.inorder();
-
-    b.remove(50);
-    b.inorder();
+    t.buildFromPreOrder(pre);
+    // t.buildFromPreOrderRec(pre);
+    t.inorder();
 
     return 0;
 }

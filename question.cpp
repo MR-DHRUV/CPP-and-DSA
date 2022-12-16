@@ -1,84 +1,161 @@
 //{ Driver Code Starts
-#include <bits/stdc++.h>
+//Initial Template for C++
 
+#include <bits/stdc++.h>
 using namespace std;
 
-// } Driver Code Ends
-
-class Solution
+struct Node
 {
-
-public:
-    vector<int> findRange(string str, int n)
-    {
-        // using kadane
-
-        vector<int> ans(2);
-        ans[0] = -1;
-
-        int start = 0;
-        int end;
-
-        int maxE = 0;
-        int sum = 0;
-
-        int prevMax = 0;
-
-        for (int i = 0; i < n; i++)
-        {
-            int e = str[i] == '0' ? 1 : -1;
-
-            sum += e;
-            maxE = max(sum, maxE);
-
-            if (maxE > prevMax)
-            {
-                // update ans whenever we find a greater sum
-                ans[0] = start;
-                ans[1] = end;
-            }
-
-            if (sum < 0)
-            {
-                sum = 0;
-                start = i;
-                end = i;
-            }
-        }
-
-        if (ans[0] == -1)
-        {
-            ans.pop_back();
-        }
-
-        return ans;
-    }
+	int data;
+	struct Node *left;
+	struct Node *right;
 };
+// Utility function to create a new Tree Node
+Node* newNode(int val)
+{
+	Node* temp = new Node;
+	temp->data = val;
+	temp->left = NULL;
+	temp->right = NULL;
 
-//{ Driver Code Starts.
+	return temp;
+}
+// Function to Build Tree
+Node* buildTree(string str)
+{
+	// Corner Case
+	if (str.length() == 0 || str[0] == 'N')
+		return NULL;
+
+	// Creating vector of strings from input
+	// string after spliting by space
+	vector<string> ip;
+
+	istringstream iss(str);
+	for (string str; iss >> str; )
+		ip.push_back(str);
+
+	// Create the root of the tree
+	Node* root = newNode(stoi(ip[0]));
+
+	// Push the root to the queue
+	queue<Node*> queue;
+	queue.push(root);
+
+	// Starting from the second element
+	int i = 1;
+	while (!queue.empty() && i < ip.size()) {
+
+		// Get and remove the front of the queue
+		Node* currNode = queue.front();
+		queue.pop();
+
+		// Get the current node's value from the string
+		string currVal = ip[i];
+
+		// If the left child is not null
+		if (currVal != "N") {
+
+			// Create the left child for the current node
+			currNode->left = newNode(stoi(currVal));
+
+			// Push it to the queue
+			queue.push(currNode->left);
+		}
+
+		// For the right child
+		i++;
+		if (i >= ip.size())
+			break;
+		currVal = ip[i];
+
+		// If the right child is not null
+		if (currVal != "N") {
+
+			// Create the right child for the current node
+			currNode->right = newNode(stoi(currVal));
+
+			// Push it to the queue
+			queue.push(currNode->right);
+		}
+		i++;
+	}
+
+	return root;
+}
+
+int sum(Node* root, int k);
+
+
 
 int main()
 {
-    int t;
-    cin >> t;
-    while (t--)
-    {
-        int n;
-        cin >> n;
-        string s;
-        cin >> s;
-        Solution ob;
-        auto ans = ob.findRange(s, n);
 
-        if (ans.size() == 1)
-        {
-            cout << ans[0] << "\n";
-        }
-        else
-        {
-            cout << ans[0] << " " << ans[1] << "\n";
-        }
-    }
-    return 0;
+	int t;
+	scanf("%d ", &t);
+	while (t--)
+	{
+		string s;
+		getline(cin >> ws, s);
+		int k;
+		cin >> k;
+		Node* root = buildTree(s);
+		cout << sum(root, k) << endl;
+	
+	}
+	return 1;
 }
+
+
+
+
+
+
 // } Driver Code Ends
+
+
+//User function Template for C++
+
+/*
+struct Node {
+    int data;
+    Node* right;
+    Node* left;
+    
+    Node(int x){
+        data = x;
+        right = NULL;
+        left = NULL;
+    }
+};
+*/
+
+// Function to find ceil of a given input in BST. If input is more 
+// than the max key in BST, return -1 
+
+void solve(Node *root, int &k, int &ans)
+{
+    if(root == NULL || k <= 1)
+    {
+        return;
+    }  
+    
+    solve(root->left,k,ans);
+    
+    cout<<root->data<<endl;
+    k--;
+    ans+=root->data;
+    
+    solve(root->right,k,ans);
+}
+
+int sum(Node* root, int k) 
+{ 
+   
+    int ans = 0;
+    int i = k;
+    solve(root,i,ans);
+    
+    return ans;
+    
+} 
