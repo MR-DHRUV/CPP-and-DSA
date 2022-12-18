@@ -1,161 +1,50 @@
 //{ Driver Code Starts
-//Initial Template for C++
+// Initial Template for C++
 
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
+// } Driver Code Ends
+// User function Template for C++
+
+class Solution
 {
-	int data;
-	struct Node *left;
-	struct Node *right;
+public:
+    long long maxGcd(int N)
+    {
+        // N and N-1 will be there in the answer as they have gcd = 1
+        long long int ans = (N)*(N-1);
+        
+        // finding a number that has gdc =1 with ans
+
+        // maintain a count as we need only 2 numbers
+        int count = 0;
+
+        for (long long int i = N-2; i >= 0 && count < 3; i--)
+        {
+            if(__gcd(ans,i) == 1)
+            {
+                ans = ans*i;
+                count++;
+            }
+        }
+
+        return ans;
+    }
 };
-// Utility function to create a new Tree Node
-Node* newNode(int val)
-{
-	Node* temp = new Node;
-	temp->data = val;
-	temp->left = NULL;
-	temp->right = NULL;
 
-	return temp;
-}
-// Function to Build Tree
-Node* buildTree(string str)
-{
-	// Corner Case
-	if (str.length() == 0 || str[0] == 'N')
-		return NULL;
-
-	// Creating vector of strings from input
-	// string after spliting by space
-	vector<string> ip;
-
-	istringstream iss(str);
-	for (string str; iss >> str; )
-		ip.push_back(str);
-
-	// Create the root of the tree
-	Node* root = newNode(stoi(ip[0]));
-
-	// Push the root to the queue
-	queue<Node*> queue;
-	queue.push(root);
-
-	// Starting from the second element
-	int i = 1;
-	while (!queue.empty() && i < ip.size()) {
-
-		// Get and remove the front of the queue
-		Node* currNode = queue.front();
-		queue.pop();
-
-		// Get the current node's value from the string
-		string currVal = ip[i];
-
-		// If the left child is not null
-		if (currVal != "N") {
-
-			// Create the left child for the current node
-			currNode->left = newNode(stoi(currVal));
-
-			// Push it to the queue
-			queue.push(currNode->left);
-		}
-
-		// For the right child
-		i++;
-		if (i >= ip.size())
-			break;
-		currVal = ip[i];
-
-		// If the right child is not null
-		if (currVal != "N") {
-
-			// Create the right child for the current node
-			currNode->right = newNode(stoi(currVal));
-
-			// Push it to the queue
-			queue.push(currNode->right);
-		}
-		i++;
-	}
-
-	return root;
-}
-
-int sum(Node* root, int k);
-
-
+//{ Driver Code Starts.
 
 int main()
 {
-
-	int t;
-	scanf("%d ", &t);
-	while (t--)
-	{
-		string s;
-		getline(cin >> ws, s);
-		int k;
-		cin >> k;
-		Node* root = buildTree(s);
-		cout << sum(root, k) << endl;
-	
-	}
-	return 1;
-}
-
-
-
-
-
-
-// } Driver Code Ends
-
-
-//User function Template for C++
-
-/*
-struct Node {
-    int data;
-    Node* right;
-    Node* left;
-    
-    Node(int x){
-        data = x;
-        right = NULL;
-        left = NULL;
-    }
-};
-*/
-
-// Function to find ceil of a given input in BST. If input is more 
-// than the max key in BST, return -1 
-
-void solve(Node *root, int &k, int &ans)
-{
-    if(root == NULL || k <= 1)
+    int t;
+    cin >> t;
+    while (t--)
     {
-        return;
-    }  
-    
-    solve(root->left,k,ans);
-    
-    cout<<root->data<<endl;
-    k--;
-    ans+=root->data;
-    
-    solve(root->right,k,ans);
+        int N;
+        cin >> N;
+        Solution ob;
+        cout << ob.maxGcd(N) << "\n";
+    }
 }
-
-int sum(Node* root, int k) 
-{ 
-   
-    int ans = 0;
-    int i = k;
-    solve(root,i,ans);
-    
-    return ans;
-    
-} 
+// } Driver Code Ends

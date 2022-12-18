@@ -6,7 +6,7 @@ int main()
 
     // sorted , so u cant push and pop , u can only insert, position will be decided by set itself
     set<int> s;
-
+    
     // complexity of insert is logN
     s.insert(3);
     s.insert(4);
@@ -47,8 +47,8 @@ int main()
 
 
     //given element present h ya ni, yeh batata haii
-    cout<<s.count(5)<<endl;
-    cout<<s.count(8)<<endl;
+    cout<<"count "<<s.count(5)<<endl;
+    cout<<"count "<<s.count(8)<<endl;
 
     //returns an iterator pointer to index of given element
     set<int>::iterator itr = s.find(8);

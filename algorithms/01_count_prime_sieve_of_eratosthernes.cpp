@@ -34,6 +34,15 @@ int count_prime(int n)
 
     }
 
+    for (int i = 0; i < prime.size(); i++)
+    {
+        if(prime[i])
+        {
+            cout<<i<<" ";
+        }
+    }
+    
+
     return count;
 }
 
@@ -41,6 +50,6 @@ int count_prime(int n)
 
 int main()
 {
-    
+    count_prime(100);
     return 0;
 }
