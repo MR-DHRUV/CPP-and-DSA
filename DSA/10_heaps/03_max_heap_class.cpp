@@ -9,7 +9,12 @@ class MaxHeap
     int maxLen;
 
 public:
-    MaxHeap(){};
+    MaxHeap()
+    {
+        size = 0;
+        len = -1;
+    };
+
     MaxHeap(int x) : size(x), len(-1)
     {
         maxLen = len;
@@ -22,6 +27,21 @@ public:
 
     void print();
     void printArr();
+
+    // O(NlogN)
+    void heapSort();
+
+    // heapify
+    // faster method to create heap from array
+
+    // works on the fact that whenver a element is inserted it is moved from bottom to top that is from leaf to root
+    // and whenever element is deleted, last element takes it place and it is brought towards bottom from top
+
+    // insert : bottom->top
+    // delete : top->bottom
+
+    // create heap in O(N), faster than traditional method
+    void heapify(vector<int> arr);
 };
 
 void MaxHeap ::print()
@@ -64,10 +84,12 @@ void MaxHeap::insert(int x)
 
     int i = len;
 
-    while (i / 2 >= 0)
+    // as index 0 will have no parent
+    while (i > 0)
     {
         int parentIndex = i / 2;
 
+        // comparing it with its parent
         if (h[i] > h[parentIndex])
         {
             swap(h[i], h[parentIndex]);
@@ -185,6 +207,8 @@ void MaxHeap ::del()
     // we have to repeat this swapping until a node has no child that is j is out of bound
     while (j <= len)
     {
+        // checking right child
+        // jo bada hoga left ya right me usse swap krenge
         if (h[j + 1] > h[j])
         {
             j++;
@@ -213,6 +237,74 @@ void MaxHeap ::del()
     h[len + 1] = removedElement;
 }
 
+void MaxHeap ::heapSort()
+{
+    for (int i = 0; i < size; i++)
+    {
+        del();
+    }
+}
+
+void MaxHeap ::heapify(vector<int> arr)
+{
+    if (arr.size() < 1)
+    {
+        return;
+    }
+
+    if (size == 0)
+    {
+        size = arr.size();
+        len = -1;
+        maxLen = size-1;
+        h = new int[size];
+    }
+
+    // index of least leaf node : n/2
+    // so we have to start processing from n/2-1 till 0
+
+    for (int i = (arr.size() / 2) - 1; i >= 0; i--)
+    {
+        int curr = i;
+        int left = (2 * curr) + 1;
+
+        while (left < arr.size())
+        {
+            int right = left + 1;
+
+            if (right < arr.size() && arr[right] > arr[left])
+            {
+                if (arr[curr] < arr[right])
+                {
+                    swap(arr[curr], arr[right]);
+                    curr = right;
+                    left = (2 * curr) + 1;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else if (arr[curr] < arr[left])
+            {
+                swap(arr[curr], arr[left]);
+                curr = left;
+                left = (2 * curr) + 1;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < arr.size(); i++)
+    {
+        h[++len] = arr[i];
+    }
+    
+}
+
 int main()
 {
     // MaxHeap mh(10);
@@ -227,21 +319,21 @@ int main()
 
     MaxHeap mh;
 
-    // order of elements in heap is independent of order of insertion if elements are same
     vector<int> elements = {1, 2, 3, 4, 4, 5, 6, 8};
-    mh.create(elements);
+    // mh.create(elements);
+    mh.heapify(elements);
     mh.print();
 
-    mh.del();
+    mh.heapSort();
     mh.printArr();
-    mh.print();
 
-    mh.del();
-    mh.printArr();
-    mh.print();
+    // mh.del();
+    // mh.printArr();
+    // mh.print();
 
-
-
+    // mh.del();
+    // mh.printArr();
+    // mh.print();
 
     return 0;
 }

@@ -25,7 +25,7 @@ public:
 
 #define ni Node<int> *
 
-// compare onn the basis of data of nodes
+// compare on the basis of data of nodes
 class compare
 {
 public:
