@@ -1,287 +1,86 @@
 //{ Driver Code Starts
+// Initial function template for C++
+
 #include <bits/stdc++.h>
-
 using namespace std;
-/* Link list Node */
-struct Node
-{
-    int data;
-    Node *next;
-    Node *arb;
-
-    Node(int x)
-    {
-        data = x;
-        next = NULL;
-        arb = NULL;
-    }
-};
 
 // } Driver Code Ends
+// User function template for C++
 
-// } Driver Code Ends
 class Solution
 {
-   private:
-    void insertAtTail(Node* &head, Node* &tail, int d) {
-        Node* newNode = new Node(d);
-        if(head == NULL) {
-            head = newNode;
-            tail = newNode;
-        }
-        else
-        {
-            tail -> next = newNode;
-            tail = newNode;
-        }
-    }
-    
-    void print(Node* head) {
-        while(head != NULL) {
-            cout << head -> data << " ";
-            head = head -> next;
-        }cout << endl;
-    }
-
-    void printRandom(Node* head) {
-        while(head != NULL) {
-            cout << " head data: " << head->data <<" ";
-            if(head ->arb != NULL) {
-                cout << " head random data" << head -> arb ->data;
-            }
-            else
-            {
-                cout << " head random data: NULL";
-            }
-            head = head -> next;
-            cout << endl;
-        }
-    }
-
-    public:
-    Node *copyList(Node *head)
+public:
+    // Function to count subarrays with sum equal to 0.
+    long long int findSubarray(vector<long long int> &arr, int n)
     {
-        //step 1: Create a Clone List
-        Node* cloneHead = NULL;
-        Node* cloneTail = NULL;
-        
-        Node* temp = head;
-        while(temp != NULL) {
-            insertAtTail(cloneHead, cloneTail, temp->data);
-            temp = temp -> next;
+
+        // Approach
+        // convert the array into prefix sum arr
+        // if a no appear more than once in prefix sum that means there are elements between their occruances that sum up to 0;
+
+        // 0 1 2 3 4 5 6  7 8 index
+        // 1 2 3 -5 6 9 -12 3
+        // 1 3 6 1 7 16  4  1
+
+        // 1->3
+        // 4->7
+        // 1->7
+        // these are 3 subarrays with 0 sum, that is we are no including the index of first occurance and we start out sum from occurance+1 till the next occurance
+        // but in case our prefix sum is 0 then we need to include 1st index also
+
+        // 1 is 3 times
+        // No we cant directly say that there will be 2 subarrays with 0 sum
+        // with N length we can have (N)*(N-1) /2 subarrays
+
+        // if we have prefix sum = 0;
+        // then we need to include
+
+        long long int ans;
+        long long int sum = 0;
+        unordered_map<int, int> mp;
+
+        for (int i = 0; i < n; i++)
+        {
+            sum += arr[i];
+            mp[sum]++;
         }
-        
-        // step 2: insert nodes of Clone List in between originalList
-        
-        Node* originalNode = head;
-        Node* cloneNode = cloneHead;
-        
-        while(originalNode != NULL && cloneNode != NULL) {
-            Node* next = originalNode -> next;
-            originalNode -> next = cloneNode;
-            originalNode = next;
-            
-            next = cloneNode -> next;
-            cloneNode -> next = originalNode;
-            cloneNode  = next;
-        }
-        
-        // step 3: Random pointer copy
-        originalNode = head;
-        cloneNode = cloneHead;
-        
-        while(originalNode != NULL && cloneNode != NULL) { 
-            
-            if(originalNode -> arb != NULL) {
-                cloneNode -> arb = originalNode -> arb -> next;
+
+        for (auto it : mp)
+        {
+            int x = it.second;
+
+            if (it.first == 0)
+            {
+                x = (x) * (x + 1) / 2;
+                ans += x;
             }
             else
             {
-                cloneNode -> arb  = NULL;
+                x = x * (x - 1) / 2;
+                ans += x;
             }
-            
-            cloneNode = cloneNode -> next;
-            originalNode = originalNode -> next;
         }
-        
-        //step 4: revert step 2 changes
-        Node* original = head;
-        Node* copy = cloneHead;
-        
-         while (original && copy)
-            {
-                original->next =
-                 original->next? original->next->next : original->next;
-         
-                copy->next = copy->next?copy->next->next:copy->next;
-                original = original->next;
-                copy = copy->next;
-            }
 
-        // step 5 answer return
-        return cloneHead;
+        return ans;
     }
 };
 
 //{ Driver Code Starts.
-
-void print(Node *root)
-{
-    Node *temp = root;
-    while (temp != NULL)
-    {
-        int k;
-        if (temp->arb == NULL)
-            k = -1;
-        else
-            k = temp->arb->data;
-        cout << temp->data << " " << k << " ";
-        temp = temp->next;
-    }
-}
-
-void append(Node **head_ref, Node **tail_ref, int new_data)
-{
-
-    Node *new_node = new Node(new_data);
-    if (*head_ref == NULL)
-    {
-        *head_ref = new_node;
-    }
-    else
-        (*tail_ref)->next = new_node;
-    *tail_ref = new_node;
-}
-
-bool validation(Node *head, Node *res)
-{
-
-    Node *temp1 = head;
-    Node *temp2 = res;
-
-    int len1 = 0, len2 = 0;
-    while (temp1 != NULL)
-    {
-        len1++;
-        temp1 = temp1->next;
-    }
-    while (temp2 != NULL)
-    {
-        len2++;
-        temp2 = temp2->next;
-    }
-
-    /*if lengths not equal */
-
-    if (len1 != len2)
-        return false;
-
-    temp1 = head;
-    temp2 = res;
-    map<Node *, Node *> a;
-    while (temp1 != NULL)
-    {
-
-        if (temp1 == temp2)
-            return false;
-
-        if (temp1->data != temp2->data)
-            return false;
-        if (temp1->arb != NULL and temp2->arb != NULL)
-        {
-            if (temp1->arb->data != temp2->arb->data)
-                return false;
-        }
-        else if (temp1->arb != NULL and temp2->arb == NULL)
-            return false;
-        else if (temp1->arb == NULL and temp2->arb != NULL)
-            return false;
-        a[temp1] = temp2;
-        temp1 = temp1->next;
-        temp2 = temp2->next;
-    }
-
-    temp1 = head;
-    temp2 = res;
-    while (temp1 != NULL)
-    {
-
-        if (temp1->arb != NULL and temp2->arb != NULL)
-        {
-            if (a[temp1->arb] != temp2->arb)
-                return false;
-        }
-        temp1 = temp1->next;
-        temp2 = temp2->next;
-    }
-    return true;
-}
-
 int main()
 {
-
-    int T, i, n, l, k;
-    Node *generated_addr = NULL;
-    /*reading input stuff*/
-    cin >> T;
-    while (T--)
+    int t;
+    cin >> t;
+    while (t--)
     {
-        generated_addr = NULL;
-        struct Node *head = NULL, *tail = NULL;
-        struct Node *head2 = NULL, *tail2 = NULL;
-        cin >> n >> k;
-        for (i = 1; i <= n; i++)
-        {
-            cin >> l;
-            append(&head, &tail, l);
-            append(&head2, &tail2, l);
-        }
-        for (int i = 0; i < k; i++)
-        {
-            int a, b;
-            cin >> a >> b;
+        int n;
+        cin >> n; // input size of array
 
-            Node *tempA = head;
-            Node *temp2A = head2;
-            int count = -1;
+        vector<long long int> arr(n, 0);
 
-            while (tempA != NULL)
-            {
-                count++;
-                if (count == a - 1)
-                    break;
-                tempA = tempA->next;
-                temp2A = temp2A->next;
-            }
-            Node *tempB = head;
-            Node *temp2B = head2;
-            count = -1;
-
-            while (tempB != NULL)
-            {
-                count++;
-                if (count == b - 1)
-                    break;
-                tempB = tempB->next;
-                temp2B = temp2B->next;
-            }
-
-            // when both a is greater than N
-            if (a <= n)
-            {
-                tempA->arb = tempB;
-                temp2A->arb = temp2B;
-            }
-        }
-        /*read finished*/
-
-        generated_addr = head;
+        for (int i = 0; i < n; i++)
+            cin >> arr[i]; // input array elements
         Solution ob;
-        struct Node *res = ob.copyList(head);
-        if (validation(head2, res) && validation(head, res))
-            cout << validation(head2, res) << endl;
-        else
-            cout << 0 << endl;
+        cout << ob.findSubarray(arr, n) << "\n";
     }
     return 0;
 }

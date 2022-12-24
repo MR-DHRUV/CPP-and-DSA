@@ -15,7 +15,7 @@ public:
         // no of ways = (n+1)(n+2)/2
         long long int mod = 10e9 + 7;
 
-        long long int ans = ((N + 1) * (N + 2)) % mod;
+        long long int ans = (((N + 1) * (N + 2)) / 2 )% mod;
 
         return ans;
     }

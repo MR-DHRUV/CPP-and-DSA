@@ -1,79 +1,122 @@
 //{ Driver Code Starts
-#include <bits/stdc++.h> 
-using namespace std; 
+//Initial Template for C++
 
-
+#include<bits/stdc++.h>
+using namespace std;
 
 // } Driver Code Ends
+//User function Template for C++
 
 
 class Solution
 {
 public:
-    int maxDistance(int arr[], int n)
+    long long int wineSelling(vector<int> &arr, int N)
     {
-        // approach
-        // we have to find maximum
-        // |arr[i]-arr[j]| + | i-j |
-        // since j >= i , we can say |i-j| = j-i
 
-        // so our expression is
-        // |arr[i]-arr[j]| + (j-i)
-        // on removing mod we have 2 possibities
+        // sell -> +ve
+        // buy-> -ve
+        vector<pair<int,int>> buy ,sell; 
 
-        // 1
-        // arr[i]-arr[j] + (j-i) = (arr[i]-i) -(arr[j] - j)  
-        // thus we need min and max values of arr[i]-i;
+        // adding elements into vectors so that we can have position of next +ve / -ve in O(1) time
 
-        // 
-        // -(arr[i]-arr[j]) + (j-i) = -(arr[i]+i) + (arr[j]+j)  
-        // thus we need min and max values of arr[i]+i;
-
-        // p1 has to be maximised and p2 has to be minimised
-
-        // base case
-        if (n <= 1)
+        for (int i = 0; i < N; i++)
         {
-            return 0;
+            // +ve
+            if (arr[i] > 0)
+            {
+                sell.push_back(make_pair(i,arr[i]));
+            }
+            // -ve
+            else if (arr[i] < 0)
+            {
+                buy.push_back(make_pair(i,arr[i]));
+            }
         }
 
-        // finding max  and min arr[i]+i
-        int max1 = INT_MIN;
-        int min1 = INT_MAX;
+        auto p = sell.begin();
+        auto n = buy.begin();
 
-        // finding max and min arr[i]-i
-        int max2 = INT_MIN;
-        int min2 = INT_MAX;
+        long long int ans = 0;
 
-        for (int i = 0; i < n; i++)
+        while (p != sell.end() && n != buy.end())
         {
-            max1 = max(max1, arr[i] + i);
-            min1 = min(min1, arr[i] + i);
+            // cout<<p->first<<" "<<n->first<<endl;
+            
+            // +ve == -ve
+            if (p->second == abs(n->second))
+            {
+                // calc work
+                long long int w = abs(p->first - n->first) * abs(n->second);
+                // cout<<w<<endl;
+                ans += w;
 
-            max2 = max(max2, arr[i] - i);
-            min2 = min(min2, arr[i] - i);
+                n->second = 0;
+                p->second = 0;
+
+                // moving -ve ans +ve to next position
+                n++;
+                p++;
+            }
+            else if (p->second > abs(n->second))
+            {
+                // calc work
+                long long int w = abs(p->first - n->first) * abs(n->second);
+                // cout<<w<<endl;
+                ans += w;
+                
+                p->second -= abs(n->second); 
+                n->second = 0;
+
+                // moving -ve to next position
+                n++;
+            }
+            else
+            {
+                // +ve < -ve
+
+                // calc work
+                long long int w = abs(p->first - n->first) * abs(p->second);
+                // cout<<w<<endl;
+                ans += w;
+                
+                // jitna mil gaya utna kam krdo
+                n->second += p->second;
+                p->second = 0;
+
+                // moving +ve to next position
+                p++;
+            }
         }
 
-
-        int ans = max(max1+min1,max2+min2);
         return ans;
     }
 };
 
-//{ Driver Code Starts.
-int main() 
-{ 
-	int T;
-	cin>>T;
-	while(T--){
-	    int n;
-	    cin>>n;
-	    int arr[n];
-	    for(int i = 0; i<n; i++)
-	        cin>>arr[i];
-	    Solution obj;
-	    cout<<obj.maxDistance(arr, n)<<endl;
-	}
-} 
 
+//{ Driver Code Starts.
+
+
+
+int main(){
+    int t;
+    cin>>t;
+    while(t--){
+        int n;
+        cin>>n;
+        
+        vector<int> arr(n);
+        for(int i=0;i<n;i++){
+            cin>>arr[i];
+        }
+        Solution ob;
+        long long int ans = ob.wineSelling(arr,n);
+        
+        cout<<ans<<endl;
+    }
+}
 // } Driver Code Ends
+
+
+// 9
+// 1000 1000 1000 -800 -400 -700 -600 -300 -200 

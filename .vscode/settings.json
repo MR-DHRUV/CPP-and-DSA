@@ -71,6 +71,7 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "binSearchREC.C": "cpp"
     }
 }

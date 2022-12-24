@@ -1,98 +1,43 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-template <typename T>
-class Node
+int maxEvents(int start[], int end[], int N)
 {
-public:
-    T data;
-    Node *next;
+    unordered_set<int> s;
+    priority_queue<pair<int, int>> pq;
 
-    Node(T data)
+    for (int i = 0; i < N; i++)
     {
-        next = NULL;
-        this->data = data;
+        pq.push({start[i], end[i]});
     }
-
-    ~Node()
+    
+    while (pq.size() > 0)
     {
-        if (next != NULL)
+        auto v = pq.top();
+        pq.pop();
+        if (s.find(v.second) == s.end())
         {
-            delete next;
-        }
-    }
-};
-
-#define ni Node<int> *
-
-// compare onn the basis of data of nodes
-class compare
-{
-public:
-    bool operator()(ni a, ni b)
-    {
-        return a->data > b->data;
-    }
-};
-
-ni mergeKLists(vector<ni> &listArray)
-{
-    // we will change all the links so that no extra space will be used
-    // approach
-
-    int n = listArray.size();
-    priority_queue<ni, vector<ni>, compare> minHeap;
-
-    ni head = NULL;
-    ni p = head;
-
-    // init
-    for (int i = 0; i < n; i++)
-    {
-        if (listArray[i] != NULL)
-        {
-            minHeap.push(listArray[i]);
-        }
-    }
-
-    // step 2
-    while (minHeap.size() > 0)
-    {
-        ni temp = minHeap.top();
-        ni nxt = temp->next;
-        minHeap.pop();
-
-        if (head == NULL)
-        {
-            head = temp;
-            p = head;
+            s.insert(v.second);
         }
         else
         {
-            p->next = temp;
-            p = p->next;
-        }
-
-        if (nxt != NULL)
-        {
-            minHeap.push(nxt);
+            int ele = v.second;
+            while (ele >= v.first)
+            {
+                if (s.find(ele) == s.end())
+                {
+                    s.insert(ele);
+                    break;
+                }
+                ele--;
+            }
         }
     }
-
-    return head;
+    return s.size();
 }
 
 int main()
 {
-    // disable default
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-// set our properties
-#ifndef IO_FROM_FILE
-    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
-    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
-#endif
 
     return 0;
 }
