@@ -1,0 +1,11 @@
+Priority SCHEDULER 
+Enter the no of processes : 
+Enter the id of process followed by its burst time and priority one by one 
+
+p_id priority burst waiting turnaround
+3      8      3      0      3
+
+Total waiting time : 0
+Total tunaround time : 3
+Average waiting time : 0
+Average tunaround time : 3
