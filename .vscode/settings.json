@@ -72,6 +72,7 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "stdbool.h": "c",
-        "binSearchREC.C": "cpp"
+        "binSearchREC.C": "cpp",
+        "ciso646": "c"
     }
 }
