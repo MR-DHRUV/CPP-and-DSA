@@ -34,6 +34,9 @@ int main()
     //    2 Quadratic Probing
     //    3 Doubble Hashing
 
+    // Loading factor(lamda) = no of keys in hash table (n)/ size of hash table
+    // analysis of hash function is done on the basis of loading factor
+    // we always ensure loading factor to be less than or equal to 0.7
 
 
     

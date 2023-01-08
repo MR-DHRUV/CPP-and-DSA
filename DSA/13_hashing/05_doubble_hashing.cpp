@@ -19,11 +19,14 @@ public:
         }
     };
 
+    // this is hash function
     int Hash1(int key)
     {
         return key % modVal;
     }
 
+    // this is compression function
+    // the value of r is kept high to provide a uniform distribution
     int Hash2(int key)
     {
         return R - (key % R);

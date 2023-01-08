@@ -135,6 +135,7 @@ int main()
     // Loading factor(lamda) = no of keys (n)/ mod_value
     // mod_value is size of hash table
     // analysis of hash function is done on the basis of loading factor
+    // we always ensure loading factor to be less than or equal to 0.7
 
     // time taken for successfull search
     // t = 1 for obtaining address of pointer where we can possibly found that element using hash functiom

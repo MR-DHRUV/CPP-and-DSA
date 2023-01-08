@@ -5,7 +5,13 @@ using namespace std;
 
 int main()
 {
-    //  types of hash functions
+    // hash function
+    // it is a combination of hash generator and compression function
+    // compression function ensures that the given value is never out of range
+    // % acts as a compression fucntion
+
+
+    // types of hash functions
     // mod
     // midsquare
     // folding
