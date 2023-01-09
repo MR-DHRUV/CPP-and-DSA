@@ -48,6 +48,7 @@ public:
     void insert(string word);
     bool search(string word);
     void del(string word);
+    void print();
 
     // suggesion dega yeh
     vector<string> suggest(string word);
@@ -231,6 +232,35 @@ vector<string> Trie::suggest(string word)
     return suggesions;
 }
 
+void printRec(TrieNode *root, string prefix)
+{
+    // traverse all the childrens
+    for (int i = 0; i < 26; i++)
+    {
+
+        if (root->children[i] != NULL)
+        {
+            string p = prefix;
+            p.push_back(root->children[i]->data);
+
+            // agar wop terminal node haii toh print krdo
+            if (root->children[i]->isTerminal)
+            {
+                cout << p << " ";
+            }
+
+            // find other strings
+            printRec(root->children[i], p);
+        }
+    }
+}
+
+void Trie ::print()
+{
+    printRec(root, "");
+    cout << endl;
+}
+
 void printArr(vector<string> arr)
 {
     for (int i = 0; i < arr.size(); i++)
@@ -251,6 +281,8 @@ int main()
     t.insert("ABCE");
     t.insert("ABCD");
     t.insert("ABCEFGH");
+
+    t.print();
 
     // cout << t.root->children[7]->data;
     cout << t.search("HELLO") << endl;
