@@ -1,29 +1,18 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-/*
-    Your Trie object will be instantiated and called as such:
-    Trie* obj = new Trie();
-    obj->insert(word);
-    bool check2 = obj->search(word);
-    bool check3 = obj->startsWith(prefix);
- */
-
 class TrieNode
 {
 public:
-    // data
     char data;
+    int childCount;
 
-    // children array to store all alphabets
     TrieNode *children[26];
-
-    // to check whether the node is terminal or not
     bool isTerminal;
 
     // constructors
     TrieNode(){};
-    TrieNode(char ch) : data(ch), isTerminal(false)
+    TrieNode(char ch) : data(ch), isTerminal(false), childCount(0)
     {
         // init children with NULL
         for (int i = 0; i < 26; i++)
@@ -31,7 +20,7 @@ public:
             children[i] = NULL;
         }
     };
-    TrieNode(char ch, bool terminal) : data(ch), isTerminal(terminal)
+    TrieNode(char ch, bool terminal) : data(ch), isTerminal(terminal), childCount(0)
     {
         // init children with NULL
         for (int i = 0; i < 26; i++)
@@ -39,156 +28,132 @@ public:
             children[i] = NULL;
         }
     };
+};
+
+class Trie
+{
+public:
+    TrieNode *root;
+    Trie()
+    {
+        root = new TrieNode('\0');
+    };
+
+    void insert(string word);
+    vector<string> suggest(string word);
 };
 
 void insertRec(TrieNode *root, string s)
 {
-    // base case
     if (s.length() == 0)
     {
-        // all the characters are set, just mark last node as terminal node
         root->isTerminal = true;
         return;
     }
 
-    // find index of alphabet
-    // it is assumed that we'll only have capital letters
     int index = s[0] - 'a';
 
     TrieNode *child;
 
-    // given alphabet of string is present in trie
     if (root->children[index] != NULL)
     {
-        // just move ahead
         child = root->children[index];
     }
     else
     {
-        // absent
         child = new TrieNode(s[0]);
         root->children[index] = child;
+        root->childCount++;
     }
 
-    // Reccursive step
-    // given string ko ek aage se bhej do
     insertRec(child, s.substr(1));
 }
 
-void delRec(TrieNode *root, string s)
+void Trie::insert(string word)
 {
-    // base case
+    insertRec(root, word);
+}
+
+// intensively reccursive function: mne bnaya haii not that optimised
+void getAllwords(TrieNode *root, vector<string> &suggesions, string prefix)
+{
+    // traverse all the childrens
+    for (int i = 0; i < 26; i++)
+    {
+
+        if (root->children[i] != NULL)
+        {
+            string p = prefix;
+            p.push_back(root->children[i]->data);
+
+            if (root->children[i]->isTerminal)
+            {
+                suggesions.push_back(p);
+            }
+
+            // find other strings
+            getAllwords(root->children[i], suggesions, p);
+        }
+    }
+}
+
+void swRec(TrieNode *root, string s, const string &pre, vector<string> &suggesions)
+{
     if (s.length() == 0)
     {
-        // all the characters are found, just mark last node as a non terminal node
-        root->isTerminal = false;
+        if (root->isTerminal)
+        {
+            suggesions.push_back(pre);
+        }
+        getAllwords(root, suggesions, pre);
         return;
     }
 
-    // find index of alphabet
-    // it is assumed that we'll only have capital letters
     int index = s[0] - 'a';
 
     TrieNode *child = root->children[index];
 
-    // given alphabet of string is absent in trie, thus the word is absent
     if (child == NULL)
     {
         return;
     }
 
-    // if present
-    // Reccursive step
-    // given string ko ek aage se bhej do
-    return delRec(child, s.substr(1));
+    return swRec(child, s.substr(1), pre, suggesions);
 }
 
-bool searchRec(TrieNode *root, string s)
+vector<string> Trie::suggest(string word)
 {
-    // base case
-    if (s.length() == 0)
-    {
-        // we can say a word is present only if its last letter is termical
-        // all the characters are set, just return true
-        return root->isTerminal;
-    }
-
-    // find index of alphabet
-    // it is assumed that we'll only have capital letters
-    int index = s[0] - 'a';
-
-    TrieNode *child = root->children[index];
-
-    // given alphabet of string is absent in trie
-    if (child == NULL)
-    {
-        return false;
-    }
-
-    // if present
-    // Reccursive step
-    // given string ko ek aage se bhej do
-    return searchRec(child, s.substr(1));
+    vector<string> suggesions;
+    swRec(root, word, word, suggesions);
+    return suggesions;
 }
 
-bool swRec(TrieNode *root, string s)
+vector<vector<string>> phoneDirectory(vector<string> &contactList, string &queryStr)
 {
-    // base case
-    if (s.length() == 0)
+    // inserting all the words into trie
+    Trie t;
+
+    for (int i = 0; i < contactList.size(); i++)
     {
-        // here we are just checking if we have words that can start with a given string
-        // so no need to check for terminal
-        return true;
+        t.insert(contactList[i]);
     }
 
-    // find index of alphabet
-    // it is assumed that we'll only have capital letters
-    int index = s[0] - 'a';
+    vector<vector<string>> ans;
 
-    TrieNode *child = root->children[index];
-
-    // given alphabet of string is absent in trie
-    if (child == NULL)
+    for (int i = 0; i < queryStr.length(); i++)
     {
-        return false;
+        vector<string> sugg = t.suggest(queryStr.substr(0, i + 1));
+
+        if (sugg.size() == 0)
+        {
+            sugg.push_back("0");
+        }
+        
+        ans.push_back(sugg);
     }
 
-    // if present
-    // Reccursive step
-    // given string ko ek aage se bhej do
-    return swRec(child, s.substr(1));
+    return ans;
 }
-
-class Trie
-{
-
-public:
-    /** Initialize your data structure here. */
-    TrieNode *root;
-    Trie()
-    {
-        // root is initailised with null character
-        root = new TrieNode('\0');
-    };
-
-    /** Inserts a word into the trie. */
-    void insert(string word)
-    {
-        insertRec(root, word);
-    }
-
-    /** Returns if the word is in the trie. */
-    bool search(string word)
-    {
-        return searchRec(root, word);
-    }
-
-    /** Returns if there is any word in the trie that starts with the given prefix. */
-    bool startsWith(string prefix)
-    {
-        return swRec(root, prefix);
-    }
-};
 
 int main()
 {

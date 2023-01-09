@@ -186,7 +186,7 @@ void getAllwords(TrieNode *root, vector<string> &suggesions, string prefix)
     }
 }
 
-void swRec(TrieNode *root, string s,const string &pre ,vector<string> &suggesions)
+void swRec(TrieNode *root, string s, const string &pre, vector<string> &suggesions)
 {
     // base case
     if (s.length() == 0)
@@ -196,7 +196,12 @@ void swRec(TrieNode *root, string s,const string &pre ,vector<string> &suggesion
         // now we need all possible words that are after it
         // by words i mean terminal
         // s is passed to functions as all the suggesions will contain s
-        getAllwords(root, suggesions,pre);
+
+        if (root->isTerminal)
+        {
+            suggesions.push_back(pre);
+        }
+        getAllwords(root, suggesions, pre);
 
         return;
     }
@@ -216,13 +221,13 @@ void swRec(TrieNode *root, string s,const string &pre ,vector<string> &suggesion
     // if present
     // Reccursive step
     // given string ko ek aage se bhej do
-    return swRec(child, s.substr(1), pre,suggesions);
+    return swRec(child, s.substr(1), pre, suggesions);
 }
 
 vector<string> Trie::suggest(string word)
 {
     vector<string> suggesions;
-    swRec(root, word, word,suggesions);
+    swRec(root, word, word, suggesions);
     return suggesions;
 }
 
@@ -230,13 +235,11 @@ void printArr(vector<string> arr)
 {
     for (int i = 0; i < arr.size(); i++)
     {
-        cout<<arr[i]<<" "; 
+        cout << arr[i] << " ";
     }
 
-    cout<<endl;
-    
+    cout << endl;
 }
-
 
 int main()
 {
@@ -256,8 +259,6 @@ int main()
 
     vector<string> suggesions = t.suggest("A");
     printArr(suggesions);
-
-    
 
     return 0;
 }
