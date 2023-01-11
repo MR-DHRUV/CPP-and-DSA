@@ -80,19 +80,24 @@ void Trie::insert(string word)
     insertRec(root, word);
 }
 
-bool canIbreak(TrieNode *node, TrieNode *root, string s, int i)
+bool canIbreak(TrieNode *node, TrieNode *root, string &s, int i)
 {
+    // base case
     if (s.size() == i && node == root)
         return true;
 
+    // if child not present
     if (!node->children[s[i] - 'a'])
         return false;
 
+    // set childe
     node = node->children[s[i] - 'a'];
 
+    // reccursive process
     if (node->isTerminal && canIbreak(root, root, s, i + 1))
         return true;
 
+    // backtrack to root to find other words
     return canIbreak(node, root, s, i + 1);
 };
 
@@ -112,7 +117,7 @@ public:
             t.insert(B[i]);
         }
 
-        return canIbreak(t.root,t.root, A,0);
+        return canIbreak(t.root, t.root, A, 0);
     };
 };
 
