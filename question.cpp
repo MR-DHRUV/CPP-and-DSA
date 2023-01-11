@@ -1,122 +1,47 @@
 //{ Driver Code Starts
-// Initial template for C++
+// Initial Template for C++
 
 #include <bits/stdc++.h>
+
 using namespace std;
 
 // } Driver Code Ends
-// User function template for C++
-
-class TrieNode
-{
-public:
-    char data;
-    int childCount;
-
-    TrieNode *children[26];
-    bool isTerminal;
-
-    // constructors
-    TrieNode(){};
-    TrieNode(char ch) : data(ch), isTerminal(false), childCount(0)
-    {
-        // init children with NULL
-        for (int i = 0; i < 26; i++)
-        {
-            children[i] = NULL;
-        }
-    };
-    TrieNode(char ch, bool terminal) : data(ch), isTerminal(terminal), childCount(0)
-    {
-        // init children with NULL
-        for (int i = 0; i < 26; i++)
-        {
-            children[i] = NULL;
-        }
-    };
-};
-
-class Trie
-{
-public:
-    TrieNode *root;
-    Trie()
-    {
-        root = new TrieNode('\0');
-    };
-
-    void insert(string word);
-    bool search(string word);
-};
-
-void insertRec(TrieNode *root, string s)
-{
-    if (s.length() == 0)
-    {
-        root->isTerminal = true;
-        return;
-    }
-
-    int index = s[0] - 'a';
-
-    TrieNode *child;
-
-    if (root->children[index] != NULL)
-    {
-        child = root->children[index];
-    }
-    else
-    {
-        child = new TrieNode(s[0]);
-        root->children[index] = child;
-        root->childCount++;
-    }
-
-    insertRec(child, s.substr(1));
-}
-
-void Trie::insert(string word)
-{
-    insertRec(root, word);
-}
-
-bool canIbreak(TrieNode *node, TrieNode *root, string s, int i)
-{
-    if (s.size() == i && node == root)
-        return true;
-
-    if (!node->children[s[i] - 'a'])
-        return false;
-
-    node = node->children[s[i] - 'a'];
-
-    if (node->isTerminal && canIbreak(root, root, s, i + 1))
-        return true;
-
-    return canIbreak(node, root, s, i + 1);
-};
+// User function Template for C++
 
 class Solution
 {
 public:
-    // A : given string to search
-    // B : vector of available strings
-
-    int wordBreak(string A, vector<string> &B)
+    int minimizeSum(int N, vector<int> arr)
     {
-        // loading trie
-        Trie t;
 
-        for (int i = 0; i < B.size(); i++)
+        // min heap bnalo
+        priority_queue<int, vector<int>, greater<int>> minHeap;
+
+        // load minHeap
+        for (int i = 0; i < N; i++)
         {
-            t.insert(B[i]);
+            minHeap.push(arr[i]);
         }
 
-        return canIbreak(t.root,t.root, A,0);
-    };
+        int ans = 0;
+
+        while (minHeap.size() > 1)
+        {
+            int t1 = minHeap.top();
+            minHeap.pop();
+            int t2 = minHeap.top();
+            minHeap.pop();
+
+            minHeap.push(t1 + t2);
+            ans += (t1 + t2);
+        }
+
+        return ans;
+    }
 };
 
 //{ Driver Code Starts.
+
 int main()
 {
     int t;
@@ -125,18 +50,11 @@ int main()
     {
         int n;
         cin >> n;
-        vector<string> dict;
+        vector<int> arr(n);
         for (int i = 0; i < n; i++)
-        {
-            string S;
-            cin >> S;
-            dict.push_back(S);
-        }
-        string line;
-        cin >> line;
-        Solution ob;
-        cout << ob.wordBreak(line, dict) << "\n";
+            cin >> arr[i];
+        Solution obj;
+        cout << obj.minimizeSum(n, arr) << "\n";
     }
 }
-
 // } Driver Code Ends

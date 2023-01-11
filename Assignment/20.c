@@ -239,6 +239,86 @@ void heapSort(int arr[], int n)
     }
 }
 
+void merge(int *arr, int start, int end)
+{
+    int mid = start + (end - start) / 2;
+
+    // length haii index nahi isiliye +1 hua
+    int len1 = mid - start + 1;
+
+    // end has already 1 added
+    int len2 = end - mid;
+
+    int first[len1];
+    int second[len2];
+
+    // copying half arrays (total complexity : O(N) )
+    int k = start;
+    for (int i = 0; i < len1; i++)
+    {
+        first[i] = arr[k];
+        k++;
+    }
+
+    for (int i = 0; i < len2; i++)
+    {
+        second[i] = arr[k];
+        k++;
+    }
+
+    // merge 2 sorted arrays
+    int index1 = 0;
+    int index2 = 0;
+
+    // index of main array
+    k = start;
+
+    // Total complexity : O(N)
+    while (index1 < len1 && index2 < len2)
+    {
+        if (first[index1] < second[index2])
+        {
+            arr[k++] = first[index1++];
+        }
+        else
+        {
+            arr[k++] = second[index2++];
+        }
+    }
+
+    // agar koi part lamba hua
+    while (index1 < len1)
+    {
+        arr[k++] = first[index1++];
+    }
+
+    while (index2 < len2)
+    {
+        arr[k++] = second[index2++];
+    }
+}
+
+void mergeSort(int *arr, int start, int end)
+{
+    // base case
+
+    if (start >= end)
+    {
+        return;
+    }
+
+    int mid = start + (end - start) / 2;
+
+    // sorting left part;
+    mergeSort(arr, start, mid);
+
+    // sorting right part;
+    mergeSort(arr, mid + 1, end);
+
+    merge(arr, start, end);
+    printArr(arr,end);
+}
+
 int main(int argc, char const *argv[])
 {
     bool menu = true;
@@ -256,41 +336,45 @@ int main(int argc, char const *argv[])
     while (j--)
     {
         scanf("%d", &arr[i++]);
-        temp[i-1] = arr[i-1];
+        temp[i - 1] = arr[i - 1];
     }
 
     // menu
     while (menu)
     {
-        printf("Press\n1 for bubble sort \n2 for selection sort\n3 for insertion sort\n4 for shell sort\n5 for quick sort\n6 for heap sort\n7 for exit\n");
+        printf("Press\n1 for bubble sort \n2 for selection sort\n3 for insertion sort\n4 for shell sort\n5 for quick sort\n6 for heap sort\n7 for merge sort\n8 for exit\n");
         int i;
         scanf("%d", &i);
-        
-        if(i == 1)
+
+        if (i == 1)
         {
-            bubbleSort(arr,n);
+            bubbleSort(arr, n);
         }
-        else if(i == 2)
+        else if (i == 2)
         {
-            selectionSort(arr,n);
+            selectionSort(arr, n);
         }
-        else if(i == 3)
+        else if (i == 3)
         {
-            insertionSort(arr,n);
+            insertionSort(arr, n);
         }
-        else if(i == 4)
+        else if (i == 4)
         {
-            shellSort(arr,n);
+            shellSort(arr, n);
         }
-        else if(i == 5)
+        else if (i == 5)
         {
-            quickSort(arr,0,n);
+            quickSort(arr, 0, n);
         }
-        else if(i == 6)
+        else if (i == 6)
         {
-            heapSort(arr,n);
+            heapSort(arr, n);
         }
         else if (i == 7)
+        {
+            mergeSort(arr,0,n);
+        }
+        else if (i == 8)
         {
             menu = false;
             break;
@@ -305,9 +389,7 @@ int main(int argc, char const *argv[])
         {
             arr[i] = temp[i];
         }
-        
     }
 
     return 0;
 }
-
