@@ -1,59 +1,81 @@
-// C++ implementation of Shell Sort
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-void printArray(int arr[], int n)
+class Solution
 {
-	for (int i=0; i<n; i++)
-		cout << arr[i] << " ";
-
-    cout<<endl;    
-}
-
-/* function to sort arr using shellSort */
-int shellSort(int arr[], int n)
-{
-	// Start with a big gap, then reduce the gap
-	for (int gap = n/2; gap > 0; gap /= 2)
+public:
+	int solve(vector<int> &q, vector<long long> &sum, vector<vector<int>> &arr, unordered_map<int, int> &new_ind)
 	{
-		// Do a gapped insertion sort for this gap size.
-		// The first gap elements a[0..gap-1] are already in gapped order
-		// keep adding one more element until the entire array is
-		// gap sorted
-		for (int i = gap; i < n; i += 1)
+		long long val = q[0];
+		int cnt = 0;
+		int s = 0;
+		int e = sum.size() - 1;
+		
+		while (s <= e)
 		{
-			// add a[i] to the elements that have been gap sorted
-			// save a[i] in temp and make a hole at position i
-			int temp = arr[i];
-
-			// shift earlier gap-sorted elements up until the correct
-			// location for a[i] is found
-			int j;			
-			for (j = i; j >= gap && arr[j - gap] > temp; j -= gap)
-				arr[j] = arr[j - gap];
-			
-			// put temp (the original a[i]) in its correct location
-			arr[j] = temp;
+			int mid = s + (e - s) / 2;
+			if (sum[mid] <= val)
+			{
+				cnt = mid + 1;
+				s = mid + 1;
+			}
+			else
+				e = mid - 1;
 		}
-
-        printArray(arr,n);
+		int ans = 0;
+		unordered_set<int> st;
+		long long cur_sum = val - sum[cnt - 1];
+		for (int i = 2; i < q.size(); i++)
+		{
+			if (new_ind[q[i]] <= cnt)
+			{
+				cur_sum += arr[new_ind[q[i]] - 1][0];
+				ans--;
+			}
+			st.insert(new_ind[q[i]]);
+		}
+		for (int i = cnt; i < arr.size(); i++)
+		{
+			if (arr[i][0] > cur_sum)
+				break;
+			if (st.count(i + 1))
+				continue;
+			ans++;
+			cur_sum -= arr[i][0];
+		}
+		return ans + cnt;
 	}
-	return 0;
-}
+	vector<int> maximumToys(int N, vector<int> A, int Q, vector<vector<int>> q)
+	{
+		// code here
+		vector<vector<int>> arr;
+		for (int i = 0; i < A.size(); i++)
+		{
+			arr.push_back({A[i], i});
+		}
+		sort(arr.begin(), arr.end());
+		unordered_map<int, int> new_ind;
+		vector<long long> pre_sum(N);
 
+		pre_sum[0] = arr[0][0];
+		new_ind[arr[0][1] + 1] = 1;
+		for (int i = 1; i < N; i++)
+		{
+			pre_sum[i] = pre_sum[i - 1] + arr[i][0];
+			new_ind[arr[i][1] + 1] = i + 1;
+		}
+		vector<int> ans(q.size());
+		for (int i = 0; i < q.size(); i++)
+		{
+			int cnt = solve(q[i], pre_sum, arr, new_ind);
+			ans[i] = cnt;
+		}
+		return ans;
+	}
+};
 
 int main()
 {
-	int arr[] = {12, 34, 54, 2, 3}, i;
-	int n = sizeof(arr)/sizeof(arr[0]);
-
-	cout << "Array before sorting: \n";
-	printArray(arr, n);
-
-	shellSort(arr, n);
-
-	cout << "\nArray after sorting: \n";
-	printArray(arr, n);
 
 	return 0;
 }
