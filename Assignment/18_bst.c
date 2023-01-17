@@ -327,7 +327,7 @@ int main()
     // menu
     while (menu)
     {
-        printf("Press\n1 for insert \n2 for delete\n3 to search a value\n4 for Preorder\n5 for Inorder\n6 for Postorder\n7 for exit\n");
+        printf("Press\n1 for insert\n2 for Preorder\n3 for Inorder\n4 for Postorder\n5 for exit\n");
         int i;
         scanf("%d", &i);
 
@@ -340,36 +340,17 @@ int main()
         }
         else if (i == 2)
         {
-            int in;
-            printf("enter the element you want to delete : ");
-            scanf("%d", &in);
-            root = del(root, in, root);
+            pre(root);
         }
         else if (i == 3)
         {
-            int in;
-            printf("enter the element you want to search : ");
-            scanf("%d", &in);
-            Node *isPresent = search(root, in);
-
-            if (isPresent != NULL)
-                printf("The given value is present in the bst\n");
-            else
-                printf("The given value is not present in the bst\n");
+            in(root);
         }
         else if (i == 4)
         {
-            pre(root);
-        }
-        else if (i == 5)
-        {
-            in(root);
-        }
-        else if (i == 6)
-        {
             post(root);
         }
-        else if (i == 7)
+        else if (i == 5)
         {
             menu = false;
             break;

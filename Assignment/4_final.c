@@ -39,50 +39,45 @@ void Display(struct Node *p)
     printf("\n");
 }
 
-void Insert(int position, int x)
+void Insert_at_loc(int target, int x)
 {
     struct Node *p = first;
-    struct Node *t;
-    int i;
 
-    if (position < 0 || position > count(p))
-    {
-        printf("INVALID position");
-        return;
-    }
-
-    t = (struct Node *)malloc(sizeof(struct Node));
-    t->data = x;
-
-    for (i = 0; i < position - 1; i++)
+    while (p != NULL && p->data != target)
     {
         p = p->next;
     }
 
+    if (p == NULL)
+    {
+        printf("Target element not found\n");
+        return;
+    }
+
+    struct Node *t = (struct Node *)malloc(sizeof(struct Node));
+    t->data = x;
     t->next = p->next;
-    t->prev = p;
     p->next = t;
 }
 
 void Insert_at_end(int x)
 {
-    struct Node *p = first;
     struct Node *t;
     int i;
 
     t = (struct Node *)malloc(sizeof(struct Node));
     t->data = x;
+    t->next = NULL;
 
-    int position = count(first);
-
-    for (i = 0; i < position - 1; i++)
+    struct Node *last = first;
+    while (last->next != NULL)
     {
-        p = p->next;
+        last = last->next;
     }
+    
 
-    t->next = p->next;
-    t->prev = p;
-    p->next = t;
+    t->prev = last;
+    last->next = t;
 }
 
 void Insert_at_front(int x)
@@ -103,6 +98,7 @@ void delete_at_begining(struct Node *p)
 
     q = first;
     first = first->next;
+    first->prev = NULL;
 
     free(q);
 }
@@ -129,11 +125,13 @@ void delete_at_loc(struct Node *p, int target)
     }
     if (temp == NULL)
     {
-        print("Element Not found\n");
+        printf("Element Not found\n");
     }
     else
     {
+        struct Node *back = temp->next;
         temp->next = temp->next->next;
+        free(back);
     }
 }
 
@@ -166,9 +164,9 @@ void inp_insert()
             Insert_at_end(nxt);
             break;
         case 3:
-            printf("Enter the position where you want to insert : ");
+            printf("Enter the element after which you want to insert : ");
             scanf("%d", &idx);
-            Insert(idx, nxt);
+            Insert_at_loc(idx, nxt);
         default:
             break;
         }

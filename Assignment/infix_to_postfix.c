@@ -24,6 +24,10 @@ char pop()
     if (isEmpty())
     {
         printf("Stack Underflow\n");
+        printf("Invalid Infix Expression \n");
+        exit(0);
+        abort();
+
         return -1;
     }
 
@@ -44,12 +48,10 @@ void push(char oper)
     }
 }
 
-
 int isOperand(char ch)
 {
     return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
-
 
 int getPriority(char ch)
 {
@@ -120,7 +122,22 @@ int toPostfix(char *str)
 
 int main()
 {
-    char str[] = "((a+(b^c))-d)";
+    int n;
+    printf("Enter the length of expression \n");
+    scanf("%d", &n);
+
+    char str[n];
+
+    printf("Enter a valid infix expression \n");
+    int i = 0;
+
+    int j = n;
+    while (j--)
+    {
+        scanf("%s", &str[i++]);
+    }
+
     toPostfix(str);
     return 0;
 }
+

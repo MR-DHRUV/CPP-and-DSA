@@ -48,47 +48,42 @@ void Display(struct Node *p)
     printf("\n");
 }
 
-void Insert(int position, int x)
+void Insert_at_loc(int target, int x)
 {
     struct Node *p = first;
-    struct Node *t;
-    int i;
 
-    if (position < 0 || position > count(p))
-    {
-        printf("INVALID position");
-        return;
-    }
-
-    t = (struct Node *)malloc(sizeof(struct Node));
-    t->data = x;
-
-    for (i = 0; i < position - 1; i++)
+    while (p->data != target)
     {
         p = p->next;
     }
 
+    if (p == NULL)
+    {
+        printf("Target element not found\n");
+        return;
+    }
+
+    struct Node *t = (struct Node *)malloc(sizeof(struct Node));
+    t->data = x;
     t->next = p->next;
     t->prev = p;
     p->next = t;
+    
 }
 
 void Insert_at_end(int x)
 {
-    struct Node *p = first;
     struct Node *t;
+    int i;
 
     t = (struct Node *)malloc(sizeof(struct Node));
     t->data = x;
-
-    while (p->next != first)
-    {
-        p = p->next;
-    }
-
-    p->next = t;
-    t->prev = p;
     t->next = first;
+
+    struct Node *last = first->prev;
+    last->next = t;
+    t->prev = last;
+    first->prev = t;
 }
 
 void Insert_at_front(int x)
@@ -98,27 +93,25 @@ void Insert_at_front(int x)
     t = (struct Node *)malloc(sizeof(struct Node));
     t->data = x;
     t->next = first;
-    t->prev = NULL;
-
+    
     if (first == NULL)
     {
         t->next = t;
+        t->prev = t;
     }
     else
     {
         // updating next of last node
-        struct Node *temp = first;
-        while (temp->next != first)
-        {
-            temp = temp->next;
-        }
-        temp->next = t;
+        struct Node *last = first->prev;
+        last->next = t;
+        first->prev = t;
+        t->prev = last;
     }
 
     first = t;
 }
 
-int Delete(struct Node *p, int position)
+int Delete_at_loc(struct Node *p, int position)
 {
     struct Node *q = NULL;
     int x = -1, i;
@@ -184,7 +177,7 @@ void delete_at_end(struct Node *p)
     free(back);
 }
 
-void delete_at_loc(struct Node *p , int target)
+void delete_at_loc(struct Node *p, int target)
 {
     struct Node *temp = p;
 
@@ -192,10 +185,14 @@ void delete_at_loc(struct Node *p , int target)
     {
         temp = temp->next;
     }
-
+    if (temp == NULL)
+    {
+        printf("Element Not found\n");
+    }
+    struct Node *back = temp->next;
     temp->next = temp->next->next;
+    free(back);
 }
-
 
 void inp_insert()
 {
@@ -228,7 +225,7 @@ void inp_insert()
         case 3:
             printf("Enter the position where you want to insert : ");
             scanf("%d", &idx);
-            Insert(idx, nxt);
+            Insert_at_loc(idx, nxt);
         default:
             break;
         }
@@ -244,7 +241,6 @@ void inp_del()
         printf("The list is empty\n");
         return;
     }
-
 
     int input;
     printf("Enter 1 for deletion at front\n");
@@ -265,7 +261,7 @@ void inp_del()
         printf("Enter the element after which you want to delete : ");
         int element;
         scanf("%d", &element);
-        delete_at_loc(first,element);
+        delete_at_loc(first, element);
     default:
         break;
     }

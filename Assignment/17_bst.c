@@ -39,14 +39,8 @@ void in(Node *p)
     {
         return;
     }
-
-    // left
     in(p->left);
-
-    // node
     printf("%d ", p->data);
-
-    // right
     in(p->right);
 };
 
@@ -56,14 +50,8 @@ void pre(Node *p)
     {
         return;
     }
-
-    // node
     printf("%d ", p->data);
-
-    // left
     in(p->left);
-
-    // right
     in(p->right);
 };
 
@@ -73,20 +61,13 @@ void post(Node *p)
     {
         return;
     }
-
-    // left
     in(p->left);
-
-    // right
     in(p->right);
-
-    // node
     printf("%d ", p->data);
 };
 
 int heightCalc(Node *h)
 {
-    // base condition
     if (h == NULL)
     {
         return 0;
@@ -108,19 +89,16 @@ Node *search(Node *t, int target)
         return NULL;
     }
 
-    // equal
     if (t->data == target)
     {
         return t;
     }
     else if (t->data > target)
     {
-        // left will have smaller elements
         return search(t->left, target);
     }
     else
     {
-        // right will have smaller elements
         return search(t->right, target);
     }
 }
@@ -229,14 +207,17 @@ int main()
         else if (i == 4)
         {
             pre(root);
+            printf("\n");
         }
         else if (i == 5)
         {
             in(root);
+            printf("\n");
         }
         else if (i == 6)
         {
             post(root);
+            printf("\n");
         }
         else if (i == 7)
         {

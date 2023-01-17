@@ -23,11 +23,6 @@ bool isEmpty(Queue *q)
 
 bool isFull(Queue *q)
 {
-    // in circular queue there can be 2 cases for full
-    // case1 : _ 2 2 4 6 7
-    // case1 : 2 2 _ 4 6 7
-
-    // both are same , if we see circulary, the next position of back is 0 only, so this condiation handles all of the cases
     if ((q->back + 1) % q->size == q->front)
     {
         return true;
@@ -40,9 +35,6 @@ void enqueue(Queue *q,int x)
 {
     if (isFull(q) == false)
     {
-        // aisa isilie kara taaki range se bahar na jaye
-        // if array size is 7 and back is at last index that is 6 and we have space at front
-        // new back will be (6+1)%7 = 0, which is what we want
         q->back = (q->back + 1) % q->size;
         q->q[q->back] = x;
     }

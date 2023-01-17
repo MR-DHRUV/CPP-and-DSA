@@ -21,7 +21,6 @@ int main()
         }
     }
 
-    // calc non zero elements
     int size = 0;
     for (int i = 0; i < row; i++)
     {
@@ -32,15 +31,18 @@ int main()
         }
     }
 
-    if(size >= (row*col/2))
+    if (size >= (row * col / 4))
     {
         printf("Given Matrix/Array is not sparse\n");
         return 0;
     }
 
-    int compactMatrix[size][3];
+    int compactMatrix[size + 1][3];
+    compactMatrix[0][0] = row;
+    compactMatrix[0][1] = col;
+    compactMatrix[0][2] = size;
 
-    int k = 0;
+    int k = 1;
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < col; j++)
@@ -57,7 +59,7 @@ int main()
 
     printf("\n\ni: row no\nj: col no\ne: element at index (i,j) in original matrix\n\ni j e\n");
 
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size + 1; i++)
     {
         for (int j = 0; j < 3; j++)
             printf("%d ", compactMatrix[i][j]);

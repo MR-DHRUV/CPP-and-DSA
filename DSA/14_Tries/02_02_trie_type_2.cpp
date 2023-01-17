@@ -144,75 +144,14 @@ public:
         // so while insertion whenever we'll traverse any node we'll incriment prefix count of that node as a new word that contains words till that node exists in the trie
         // and decriment while deletion
 
-        return countPrefix(root, word);
+        return countPrefix(root,word);
     }
 
     void erase(string &word)
     {
         delRec(root, word);
     }
-
-    bool isComplete(string &word)
-    {
-        TrieNode *temp = root;
-
-        // iterative bnate hain isse
-        for (int i = 0; i < word.length(); i++)
-        {
-            int idx = word[i] - 'a';
-
-            if (temp->children[idx] != NULL && temp->children[idx]->terminalCount > 0)
-            {
-                temp = temp->children[idx];
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
 };
-
-
-
-
-
-string completeString(int n, vector<string> &a)
-{
-    Trie t;
-
-    // loading the trie
-    for (int i = 0; i < a.size(); i++)
-    {
-        t.insert(a[i]);
-    }
-
-    string ans = "";
-
-    // finding ans
-    for (int i = 0; i < a.size(); i++)
-    {
-        // ek baar koi lambi string mil gayi uske baad small string check hi ni krni
-        if (ans.length() < a[i].length() && t.isComplete(a[i]))
-        {
-            ans = a[i];
-        }
-        // lexiographically smallest
-        else if(ans.length() == a[i].length() && a[i] < ans && t.isComplete(a[i]))
-        {
-            ans = a[i];
-        }
-    }
-
-    if (ans.length() == 0)
-    {
-        ans = "None";
-    }
-
-    return ans;
-}
 
 int main()
 {
@@ -223,13 +162,11 @@ int main()
 
     t.insert(s);
     t.insert(s);
-    t.insert(q);
     t.insert(e);
 
     cout << t.countWordsEqualTo(s) << endl;
     cout << t.countWordsEqualTo(e) << endl;
     cout << t.countWordsStartingWith(q) << endl;
-    cout << t.isComplete(s) << endl;
 
     return 0;
 }

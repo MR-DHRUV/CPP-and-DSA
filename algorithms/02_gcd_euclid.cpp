@@ -10,6 +10,14 @@ using namespace std;
 
 int gcd(int a, int b)
 {
+    a = abs(a);
+    b = abs(b);
+
+    if (a == 1 || b == 1)
+    {
+        return 1;
+    }
+
     if (a == 0)
     {
         return b;
@@ -23,15 +31,15 @@ int gcd(int a, int b)
     {
         if (a > b)
         {
-            a = a - b;
+            a -= b;
         }
         else
         {
-            b = b - a;
+            b -= a;
         }
     }
 
-    return a;
+    return b;
 }
 
 ll lcm(int a, int b)
@@ -47,11 +55,12 @@ int main()
     // cout<<gd<<endl;
     // cout<<"LCM : "<<(a*b/gd)<<endl;
 
-    ll a = lcm(20,19);
-    ll b = lcm(13,17);
-    ll c = lcm(a,b);
+    ll a = lcm(20, 19);
+    ll b = lcm(13, 17);
+    ll c = lcm(a, b);
 
-    cout<<a<<" "<<b<<" "<<c<<" "; 
+    cout << a << " " << b << " " << c << " ";
+    cout << gcd(-5, -15);
 
     return 0;
 }

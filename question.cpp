@@ -1,113 +1,159 @@
 //{ Driver Code Starts
-// Initial Template for C++
 #include <bits/stdc++.h>
 using namespace std;
+
+struct Node
+{
+    int data;
+    struct Node *left;
+    struct Node *right;
+
+    Node(int val)
+    {
+        data = val;
+        left = right = NULL;
+    }
+};
+
+// Function to Build Tree
+Node *buildTree(string str)
+{
+    // Corner Case
+    if (str.length() == 0 || str[0] == 'N')
+        return NULL;
+
+    // Creating vector of strings from input
+    // string after spliting by space
+    vector<string> ip;
+
+    istringstream iss(str);
+    for (string str; iss >> str;)
+        ip.push_back(str);
+
+    // Create the root of the tree
+    Node *root = new Node(stoi(ip[0]));
+
+    // Push the root to the queue
+    queue<Node *> queue;
+    queue.push(root);
+
+    // Starting from the second element
+    int i = 1;
+    while (!queue.empty() && i < ip.size())
+    {
+
+        // Get and remove the front of the queue
+        Node *currNode = queue.front();
+        queue.pop();
+
+        // Get the current node's value from the string
+        string currVal = ip[i];
+
+        // If the left child is not null
+        if (currVal != "N")
+        {
+
+            // Create the left child for the current Node
+            currNode->left = new Node(stoi(currVal));
+
+            // Push it to the queue
+            queue.push(currNode->left);
+        }
+
+        // For the right child
+        i++;
+        if (i >= ip.size())
+            break;
+        currVal = ip[i];
+
+        // If the right child is not null
+        if (currVal != "N")
+        {
+
+            // Create the right child for the current node
+            currNode->right = new Node(stoi(currVal));
+
+            // Push it to the queue
+            queue.push(currNode->right);
+        }
+        i++;
+    }
+
+    return root;
+}
 
 // } Driver Code Ends
 // User function Template for C++
 
+/*
+struct Node
+{
+    int data;
+    struct Node* left;
+    struct Node* right;
+
+    Node(int x){
+        data = x;
+        left = right = NULL;
+    }
+};
+ */
+
 class Solution
 {
-public:
-    vector<int> maximumToys(int N, vector<int> A, int Q, vector<vector<int>> Queries)
+    int ans = 0;
+    int g = 1;
+
+    int gcd(int a, int b)
     {
-        // for each query construct a min heap with only non defective elements
-        vector<int> ans;
-
-        vector<vector<int>> mp;
-        for (int i = 0; i < N; i++)
+        if (a == 1 || b == 1)
         {
-            mp.push_back({A[i], i});
+            return 1;
         }
 
-        // replace minHeap in O(1)
-        sort(mp.begin(), mp.end());
-
-        // value vs index map
-        // multimap as there can me more than 1 index corresponding to a value
-        multimap<int, int> mpp;
-
-        // calc prefix sum
-        vector<long long int> prefixSum(N);
-        long long int s = 0;
-        for (int i = 0; i < mp.size(); i++)
+        while (a != b)
         {
-            s += mp[i][0];
-            prefixSum[i] = (s);
-            mpp.insert({mp[i][0], i});
+            if (a > b)
+            {
+                a -= b;
+            }
+            else
+            {
+                b -= a;
+            }
         }
 
-        // serving Queries
-        for (int i = 0; i < Q; i++)
+        return b;
+    }
+
+    void solve(Node *root)
+    {
+        if (root == NULL)
         {
-            int cash = Queries[i][0];
-
-            if (cash < prefixSum[0])
-            {
-                ans.push_back(0);
-                continue;
-            }
-
-            // finding smallest sum that is greater or equal to cash
-            int idx = lower_bound(prefixSum.begin(), prefixSum.end(), cash) - prefixSum.begin();
-
-            // since lower bound can give a value that is greater than cash or if the cash is so large that there is no lower bound of it, so in these 2 cases we need to point our idx to a previous index
-            if (idx == prefixSum.size() || prefixSum[idx] != cash)
-            {
-                idx--;
-                cash = prefixSum[idx];
-            }
-
-            // no of elements included till any index in prefix sum is equal to index itself
-            int no_of_toys = idx + 1;
-
-            //
-            unordered_set<int> st;
-
-            // when there are defective elements in the query
-            if (Queries[i][1] != 0)
-            {
-                for (int k = 2; k < Queries.size(); k++)
-                {
-                    // 1 based index
-                    --Queries[i][k];
-
-                    // cost of defective
-                    int defective = A[Queries[i][k]];
-
-                    // find an index corresponding to defective value
-                    auto it = mpp.find(defective);
-
-                    // putting index of defective item into set which are not incuded in prefix sum till idx
-                    if (it->second > idx)
-                    {
-                        st.insert(Queries[i][k]);
-                    }
-                    else
-                    {
-                        // removing defective items that are included
-                        cash -= defective;
-                        no_of_toys--;
-                    }
-                }
-            }
-
-            idx++;
-
-            // checking if can add a few items after maximising
-            while (idx < mp.size() && cash + mp[idx][0] <= Queries[i][0])
-            {
-                if (st.find(mp[idx][1]) == st.end())
-                {
-                    no_of_toys++;
-                    cash += mp[idx][0];
-                }
-                idx++;
-            }
-
-            ans.push_back(no_of_toys);
+            return;
         }
 
+        // both child are present
+        if(root->left != NULL && root->right != NULL)
+        {
+            int t = gcd(root->left->data, root->right->data);
+
+            if(t > g)
+            {
+                g = t;
+                ans = root->data;
+            }
+        }
+
+        // reccursive calls
+        solve(root->left);
+        solve(root->right);
+    }
+
+public:
+    int maxGCD(Node *root)
+    {
+        solve(root);
         return ans;
     }
 };
@@ -115,37 +161,17 @@ public:
 //{ Driver Code Starts.
 int main()
 {
-    int t = 1;
-    cin >> t;
-    for (int i = 1; i <= t; i++)
+    int t;
+    scanf("%d ", &t);
+    while (t--)
     {
-        int N;
-        cin >> N;
-        vector<int> A(N);
-        for (auto &i : A)
-        {
-            cin >> i;
-        }
-        int Q;
-        cin >> Q;
-        vector<vector<int>> Queries(Q);
-        for (int i = 0; i < Q; i++)
-        {
-            int x, y;
-            cin >> x >> y;
-            Queries[i].push_back(x);
-            Queries[i].push_back(y);
-            for (int j = 0; j < Queries[i][1]; j++)
-            {
-                cin >> x;
-                Queries[i].push_back(x);
-            }
-        }
-        Solution obj;
-        auto ans = obj.maximumToys(N, A, Q, Queries);
-        for (auto i : ans)
-            cout << i << " ";
-        cout << endl;
+        string treeString;
+        getline(cin, treeString);
+        Node *root = buildTree(treeString);
+        Solution ob;
+        cout << ob.maxGCD(root) << endl;
     }
+    return 0;
 }
+
 // } Driver Code Ends

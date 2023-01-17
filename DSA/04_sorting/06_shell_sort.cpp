@@ -6,6 +6,7 @@ using namespace std;
 
 // we require very less shifing when no of elements to be sorted are very less in a list
 // adaptive
+// inplace
 
 /*
 	9 5 16 8 13 6 12 10 4 2 3
@@ -70,6 +71,13 @@ using namespace std;
 	// no of gap passes = 3 = log2N
 	// time complexity : O(NlogN)
 
+	// some times gaps are taken as prime numbers like this 
+	n = 11
+	gap => 7 5 3 1
+	// time complexity : O(N^3/2)
+
+	depends upon gap
+	// time complexity : O(N^5/3)
 */
 
 int main()

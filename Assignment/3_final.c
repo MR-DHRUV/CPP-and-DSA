@@ -47,7 +47,7 @@ void Display(struct Node *p)
     printf("\n");
 }
 
-void Insert(int position, int x)
+void Insert_at_loc(int position, int x)
 {
     struct Node *p = first;
     struct Node *t;
@@ -147,19 +147,21 @@ void delete_at_end(struct Node *p)
 
 void delete_at_loc(struct Node *p, int target)
 {
-    struct Node *temp = p;
+    struct Node *temp = p->next;
 
-    while (temp->data != target)
+    while (temp != first && temp->data != target)
     {
         temp = temp->next;
     }
-    if (temp == NULL)
+    if (temp == NULL || temp == first)
     {
-        print("Element Not found\n");
+        printf("Element Not found\n");
+        return;
     }
     else
     {
         temp->next = temp->next->next;
+        
     }
 }
 
@@ -194,7 +196,7 @@ void inp_insert()
         case 3:
             printf("Enter the position where you want to insert : ");
             scanf("%d", &idx);
-            Insert(idx, nxt);
+            Insert_at_loc(idx, nxt);
         default:
             break;
         }

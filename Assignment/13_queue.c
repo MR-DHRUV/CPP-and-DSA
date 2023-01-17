@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-// if we only use 1 pointer that is back pointer then deletion of first element takes O(N) time as we have to shift all the elements at the back in the array
-
 typedef struct Queue
 {
     int *q;

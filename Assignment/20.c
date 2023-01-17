@@ -17,25 +17,6 @@ void printArr(int arr[], int n)
     printf("\n");
 }
 
-void selectionSort(int *arr, int n)
-{
-    for (int i = 0; i < n - 1; i++)
-    {
-        int minIndex = i;
-
-        for (int j = i + 1; j < n; j++)
-        {
-            if (arr[j] < arr[minIndex])
-            {
-                minIndex = j;
-            }
-        }
-
-        swap(&arr[i], &arr[minIndex]);
-        printArr(arr, n);
-    }
-}
-
 void bubbleSort(int *arr, int n)
 {
     for (int i = 0; i < n - 1; i++)
@@ -342,17 +323,13 @@ int main(int argc, char const *argv[])
     // menu
     while (menu)
     {
-        printf("Press\n1 for bubble sort \n2 for selection sort\n3 for insertion sort\n4 for shell sort\n5 for quick sort\n6 for heap sort\n7 for merge sort\n8 for exit\n");
+        printf("Press\n1 for bubble sort\n3 for insertion sort\n4 for shell sort\n5 for quick sort\n6 for heap sort\n7 for merge sort\n8 for exit\n");
         int i;
         scanf("%d", &i);
 
         if (i == 1)
         {
             bubbleSort(arr, n);
-        }
-        else if (i == 2)
-        {
-            selectionSort(arr, n);
         }
         else if (i == 3)
         {

@@ -38,7 +38,7 @@ void Display(struct Node *p)
     printf("\n");
 }
 
-void Insert(int position, int x)
+void Insert_at_loc(int position, int x)
 {
     struct Node *p = first;
     struct Node *t;
@@ -111,7 +111,7 @@ void delete_at_end(struct Node *p)
     {
         temp = temp->next;
     }
-
+    free(temp->next->next);
     temp->next = NULL;
 }
 
@@ -126,11 +126,14 @@ void delete_at_loc(struct Node *p, int target)
 
     if (temp == NULL)
     {
-        print("Element Not found\n");
+        printf("Element Not found\n");
     }
     else
     {
+        struct Node *t = temp->next; 
         temp->next = temp->next->next;
+        free(t);
+
     }
 }
 
@@ -190,7 +193,7 @@ void inp_insert()
         case 3:
             printf("Enter the position where you want to insert : ");
             scanf("%d", &idx);
-            Insert(idx, nxt);
+            Insert_at_loc(idx, nxt);
         default:
             break;
         }
@@ -236,14 +239,14 @@ void inp_del()
 
 int main()
 {
-    bool infinite = true;
+    bool menu = true;
     printf("Welcome to single linked list program EXP 2 and 6\n");
 
-    while (infinite == true)
+    while (menu == true)
     {
         int in;
         int len;
-        printf("Enter your choice \n1 for insert\n2 for delete\n3 for display\n4 for length\n5 for reversing the list\n6 for exit\n");
+        printf("Enter your choice \n1 for insert\n2 for display\n3 for length\n4 for reversing the list\n6 for exit\n");
         scanf("%d", &in);
 
         switch (in)
@@ -252,21 +255,21 @@ int main()
             inp_insert();
             break;
 
+        // case 2:
+        //     inp_del();
+        //     break;
         case 2:
-            inp_del();
-            break;
-        case 3:
             Display(first);
             break;
-        case 4:
+        case 3:
             len = count(first);
             printf("Lenght is %d\n", len);
             break;
-        case 5:
+        case 4:
             reverse();
             break;
         case 6:
-            infinite = false;
+            menu = false;
             break;
         default:
             break;
