@@ -11,7 +11,7 @@ int main()
 
     marks["A"] = 98;
     marks["B"] = 80;
-    marks["C"] = 91;
+    marks["C"] = 91; 
 
     map<string, int>::iterator itr;
 

@@ -104,7 +104,7 @@ int main()
     // we'll have a primary hash function and whenever we'll have a collision then the other hash function will help us
 
     // h1(x) = x%mod_value
-    // h2(x) = R - (x%7);
+    // h2(x) = R - (x%R);
     // here R is the largest prime no smaller than the mod_value
 
     // h2 has 2 desired characterstics

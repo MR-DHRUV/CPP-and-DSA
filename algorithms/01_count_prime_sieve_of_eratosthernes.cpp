@@ -2,7 +2,7 @@
 using namespace std;
 
 
-// complexity O(log(log N))
+// complexity O(N *log(log N))
 int count_prime(int n)
 {
     int count = 0;
@@ -34,13 +34,13 @@ int count_prime(int n)
 
     }
 
-    for (int i = 0; i < prime.size(); i++)
-    {
-        if(prime[i])
-        {
-            cout<<i<<" ";
-        }
-    }
+    // for (int i = 0; i < prime.size(); i++)
+    // {
+    //     if(prime[i])
+    //     {
+    //         cout<<i<<" ";
+    //     }
+    // }
     
 
     return count;
@@ -50,6 +50,6 @@ int count_prime(int n)
 
 int main()
 {
-    count_prime(100);
+    cout<<count_prime(10000);
     return 0;
 }

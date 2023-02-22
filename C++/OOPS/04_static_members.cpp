@@ -6,10 +6,10 @@ class Employee
 {
 
     int id;
-    static int count; // default value is 0 (static h isliye)
     // yaha pr value nahi di ja skti , ya toh member bana ke do ya phir :: isse do
 
 public:
+    static int count; // default value is 0 (static h isliye)
     void setData()
     {
         cout << "Enter the employee id" << endl;
@@ -46,6 +46,7 @@ int main()
     Akshit.setData();
     Akshit.getData();
     Employee::getCount();
+    cout<<Employee::count;
 
 
     return 0;

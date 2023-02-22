@@ -64,18 +64,17 @@ void printCircularList(struct Node *p)
 };
 
 // true to index
-struct Node *deleteCircular(struct Node *a , int index)
+struct Node *deleteCircular(struct Node *a, int index)
 {
     struct Node *prev;
     struct Node *head = a;
     struct Node *start = a;
-    
 
-    if(index <= 1)
-    {   
-        
-        //updating last node to point on 2nd node
-        while(a->next != head)
+    if (index <= 1)
+    {
+
+        // updating last node to point on 2nd node
+        while (a->next != head)
         {
             a = a->next;
         }
@@ -85,17 +84,16 @@ struct Node *deleteCircular(struct Node *a , int index)
         a->next = head->next;
         start = head->next;
         delete head;
-
     }
 
     else
-    {   
-        for (int i = 0; i < index-1; i++)
+    {
+        for (int i = 0; i < index - 1; i++)
         {
-            prev =a;
+            prev = a;
             a = a->next;
         }
-        
+
         prev->next = a->next;
         delete a;
     }
@@ -103,7 +101,31 @@ struct Node *deleteCircular(struct Node *a , int index)
     return start;
 };
 
+Node *reverseCLL(Node *head)
+{
+    if(head == NULL)
+    {
+        return head;
+    }
 
+    Node *prev = NULL, *curr = head, *next = NULL;
+
+    while (curr->next != head)
+    {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+
+    // for last node
+    curr->next = prev;
+
+    // first node will point towards last node
+    head->next = curr;
+
+    return curr;
+}
 
 int main()
 {
@@ -112,10 +134,12 @@ int main()
     int n = 7;
     struct Node *A = createCircularList(arr1, n);
     printCircularList(A);
+    A = reverseCLL(A);
+    printCircularList(A);
 
-    struct Node* C = deleteCircular(A,1);
+    // struct Node *C = deleteCircular(A, 1);
 
-    printCircularList(C);
+    // printCircularList(C);
 
     return 0;
 }

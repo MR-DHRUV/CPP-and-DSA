@@ -3,7 +3,7 @@ using namespace std;
 
 
 // containers
-// Sequence containers -> Linear Fashin me store krta haii eg : list , vector, Dequeue etc slow searching
+// Sequence containers -> Linear Fashion me store krta haii eg : list , vector, Dequeue etc slow searching
 // vector -> random access fast, add/delete in middle is slow, insertion/deletion at the end is fast   
 // list -> random access slow, add/delete in middle is fast, insertion/deletion at the end is fast   
 

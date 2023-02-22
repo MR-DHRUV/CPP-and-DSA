@@ -50,14 +50,14 @@ Node *sortedInsert(Node *head, int element)
             {
                 n->next = prev->next;
                 prev->next = n;
-                return p;
+                return head;
             }
 
             prev = p;
             p = p->next;
         }
 
-        // element is greatest, and to be inserte
+        // element is greatest, and to be inserted at the end
         n->next = prev->next;
         prev->next = n;
     }
@@ -154,10 +154,12 @@ int main()
 
     HT.insert(5);
     HT.insert(25);
+    HT.insert(15);
     HT.insert(6);
 
     cout<<HT.search(5)<<endl;
     cout<<HT.search(25)<<endl;
+    cout<<HT.search(15)<<endl;
     cout<<HT.search(254)<<endl;
 
     return 0;

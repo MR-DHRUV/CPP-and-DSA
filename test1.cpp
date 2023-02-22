@@ -1,71 +1,132 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-class TrieNode
+struct Node
 {
-public:
-	TrieNode *children[26];
+	int data;
+	struct Node *next;
 
-	TrieNode()
-	{
-		for (int i = 0; i < 26; i++)
-		{
-			children[i] = NULL;
-		}
-	};
+} *first = NULL;
+// initialised first as null
 
-	TrieNode *get(char ch)
-	{
-		return children[ch - 'a'];
-	}
+void createList(int arr[], int n)
+{
+	struct Node *t;
+	struct Node *last;
 
-	void set(char ch, TrieNode *t)
-	{
-		children[ch - 'a'] = t;
-	}
+	// setup a new node
+	first = new struct Node;
+	first->data = arr[0];
+	first->next = NULL;
 
-	bool containsKey(char ch)
+	// last is first as 1 element only
+	last = first;
+
+	for (int i = 1; i < n; i++)
 	{
-		return (children[ch - 'a'] != NULL);
+		// setup a new node
+		t = new struct Node;
+		t->data = arr[i];
+		t->next = NULL;
+
+		// make current last point to new node
+		last->next = t;
+
+		// update last
+		last = t;
 	}
 };
 
-int countDistinctSubstrings(string &s)
+void printList(struct Node *p)
 {
-	// n2 complexity
-	// why trie then, we could use hash map
-	// trie optimises space complexity
-
-	// trie approach
-	// wee insert all substrings into trie and whenever we insert any letter that is not present in the trie we incriment our ans by 1
-
-	TrieNode *root = new TrieNode();
-
-	int ans = 0;
-	int n = s.length();
-
-	for (int i = 0; i < n; i++)
+	// while address of next block is not null
+	while (p != NULL)
 	{
-		TrieNode *t = root;
-
-		for (int j = i; j < n; j++)
-		{
-			// check if current character is present
-			if (!t->containsKey(s[j]))
-			{
-				ans++;
-				t->set(s[j], new TrieNode());
-			}
-			t = t->get(s[j]);
-		}
+		cout << (p->data) << " ";
+		p = p->next;
 	}
 
-	// +1 for null string 
-	return ans+1;
+	cout << endl;
+}
+
+int countNodes(struct Node *p)
+{
+	// while address of next block is not null
+	int count = 0;
+
+	while (p != NULL)
+	{
+		count++;
+		p = p->next;
+	}
+
+	return count;
+}
+
+// reversing can be done using 2 methods
+// 1 reversing elements
+// 2 reversing data
+
+// time  : O(n)
+// space : O(n)
+void reverse_by_elements(struct Node *p)
+{
+	// to traverse 2nd time
+	struct Node *start = p;
+
+	int n = countNodes(p);
+	int arr[n];
+
+	int i = 0;
+	while (p != 0)
+	{
+		arr[i] = p->data;
+		p = p->next;
+		i++;
+	}
+
+	while (start != 0)
+	{
+		// i-- is done first as in last iteration of above loop i is incrimented and has gone out of index
+		i--;
+		start->data = arr[i];
+		start = start->next;
+	}
+}
+
+// best method
+// time  : O(N)
+// space : O(1)
+void reverse_by_links(struct Node *p)
+{
+	if (p == NULL)
+	{
+		return;
+	}
+
+	struct Node *prev = NULL, *curr = p, *next = NULL;
+
+	while (curr != NULL)
+	{
+		next = curr->next;
+		curr->next = prev;
+		prev = curr;
+		curr = next;
+	}
+
+	first = prev;
 }
 
 int main()
 {
+	int arr[] = {6, 7, 9, 13, 18, 89, 100};
+	int n = 7;
+	createList(arr, n);
+
+	printList(first);
+
+	reverse_by_links(first);
+	printList(first);
 
 	return 0;
 }

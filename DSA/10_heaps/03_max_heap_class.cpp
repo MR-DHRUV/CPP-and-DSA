@@ -229,7 +229,7 @@ void MaxHeap ::del()
         }
     }
 
-    // concides the fact
+    // concider the fact
     // it we start storing deleted elements at last indices , then we will have sorted array and this is called heap sort
     // they will be in decending order
 
@@ -319,7 +319,7 @@ int main()
 
     MaxHeap mh;
 
-    vector<int> elements = {1, 2, 3, 4, 4, 5, 6, 8};
+    vector<int> elements = {11,92,51,59,68,32,78,44};
     // mh.create(elements);
     mh.heapify(elements);
     mh.print();

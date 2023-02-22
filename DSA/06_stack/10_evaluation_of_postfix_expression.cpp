@@ -49,6 +49,11 @@ int evalPostfix(string exp)
 
         else
         {
+            if(st.size() < 2)
+            {
+                return -1;
+            }
+
             int x = st.top();
             st.pop();
             int y = st.top();

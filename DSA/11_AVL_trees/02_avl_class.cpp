@@ -27,6 +27,7 @@ public:
     };
     void insert(int e);
     void inorder();
+    void levelorder();
     void bulid(vector<int> arr);
     void del(int e);
 };
@@ -352,25 +353,61 @@ void AVL ::del(int e)
     root = delR(root, e);
 };
 
+void AVL ::levelorder()
+{
+    // base case
+    if (root == NULL)
+    {
+        cout << "Tree is empty" << endl;
+        return;
+    }
+
+    queue<Node *> qt;
+
+    // initialization
+    qt.push(root);
+
+    // node ka data print karo aur uske not null nodes daaldo queue me printhone ke lie
+    // isse level by level print hoga aur order bni bana rahega
+    while (qt.empty() == false)
+    {
+        Node *f = qt.front();
+        qt.pop();
+
+        cout << f->data << " ";
+
+        if (f->left != NULL)
+        {
+            qt.push(f->left);
+        }
+        if (f->right != NULL)
+        {
+            qt.push(f->right);
+        }
+    }
+
+    cout << endl;
+};
+
 int main()
 {
     AVL a;
-    a.insert(30);
-    a.insert(40);
-    a.insert(10);
-    a.insert(20);
-    a.inorder();
-    cout << a.root->data << endl;
-
-
-    // AVL a;
-    // a.bulid({1, 4, 3, 2, 5, 6, 9, 8, 7});
+    // a.insert(30);
+    // a.insert(40);
+    // a.insert(10);
+    // a.insert(20);
     // a.inorder();
+    // cout << a.root->data << endl;
 
 
-    a.del(40);
-    a.inorder();
-    cout << a.root->data << endl;
+    // // AVL a;
+    // // a.bulid({1, 4, 3, 2, 5, 6, 9, 8, 7});
+    // // a.inorder();
+
+
+    // a.del(40);
+    // a.inorder();
+    // cout << a.root->data << endl;
     
 
     // a.del(2);
@@ -384,6 +421,18 @@ int main()
 
     // a.del(1);
     // a.inorder();
+
+    a.insert(3);
+    a.insert(126);
+    a.insert(7);
+    a.insert(2095);
+    a.insert(28);
+    a.insert(73);
+    a.insert(35);
+    a.insert(79);
+    a.levelorder();
+    a.del(2095);
+    a.levelorder();
 
     return 0;
 }

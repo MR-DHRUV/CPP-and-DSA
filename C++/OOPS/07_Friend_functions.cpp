@@ -18,6 +18,8 @@ public:
         cout << "Your complex no is " << a << " + i " << b << endl;
     }
     friend complex sum(complex a1, complex b1);
+
+    
 };
 
 // friend function

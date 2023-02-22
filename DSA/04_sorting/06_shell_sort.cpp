@@ -39,39 +39,39 @@ using namespace std;
 	gap = gap/2
 		   = 2
 
-	3 5 10 4 2 6 12 16 8 13 9	   
+	3 5 10 4 2 6 12 16 8 13 9
 	3 4 10 5 2 6 12 16 8 13 9
 
-	3 4 2 5 10 6 12 16 8 13 9	   
+	3 4 2 5 10 6 12 16 8 13 9
 	// 2 will be compared with 3 as it is also at a gap of 2
 
 	2 4 3 5 10 6 12 16 8 13 9
 
-	2 4 3 5 10 6 8 16 12 13 9 // 8 < 10  second swap	   
+	2 4 3 5 10 6 8 16 12 13 9 // 8 < 10  second swap
 	2 4 3 5 8 6 10 16 12 13 9
-	
+
 	2 4 3 5 8 6 10 13 12 16 9 // 6 < 13 no second swap
 
 	2 4 3 5 8 6 10 13 9 16 12
-	2 4 3 5 8 6 9 13 10 16 12 // second swap	  
+	2 4 3 5 8 6 9 13 10 16 12 // second swap
 
-	// all the elements at gap of 2 are sorted 
+	// all the elements at gap of 2 are sorted
 
 	2 gap iteration completed
 	gap = gap/2
 		= 1
 
-	2 4 3 5 8 6 9 13 10 16 12	
-	2 3 4 5 8 6 9 13 10 16 12	
-	2 3 4 5 8 6 9 10 13 16 12	
-	2 3 4 5 8 6 9 10 13 12 16	
-	2 3 4 5 8 6 9 10 12 13 16 // second swap for 12	
+	2 4 3 5 8 6 9 13 10 16 12
+	2 3 4 5 8 6 9 13 10 16 12
+	2 3 4 5 8 6 9 10 13 16 12
+	2 3 4 5 8 6 9 10 13 12 16
+	2 3 4 5 8 6 9 10 12 13 16 // second swap for 12
 
 	// work done in each pass is almost O(N) as we are swapping only
 	// no of gap passes = 3 = log2N
 	// time complexity : O(NlogN)
 
-	// some times gaps are taken as prime numbers like this 
+	// some times gaps are taken as prime numbers like this
 	n = 11
 	gap => 7 5 3 1
 	// time complexity : O(N^3/2)
@@ -80,8 +80,39 @@ using namespace std;
 	// time complexity : O(N^5/3)
 */
 
+int shellSort(int arr[], int n)
+{
+	for (int gap = n / 2; gap > 0; gap /= 2)
+	{
+		for (int i = gap; i < n; i++)
+		{
+			int temp = arr[i];
+
+			int j;
+			for (j = i; j >= gap && arr[j - gap] > temp; j -= gap)
+			{
+				arr[j] = arr[j - gap];
+			}
+
+			arr[j] = temp;
+		}
+	}
+
+	return 0;
+}
+
 int main()
 {
+
+	int arr[] = {1, 8, 9, 6, 4, 8, 65, 4, 1, 7, 8};
+
+	// mergeSort(arr,0,11);
+	shellSort(arr, 11);
+
+	for (int i = 0; i < 11; i++)
+	{
+		printf("%d ", arr[i]);
+	}
 
 	return 0;
 }

@@ -522,9 +522,10 @@ int main()
     // cout << "Height : " << t.height() << endl;
 
     BinTree b;
-    vector<int> v = {1, 2, 3, 4, 5, 6, 7 , 8};
+    vector<int> v = {1, 2, 3, 4, 5};
 
     b.buildFromLevelOrder(v);
+    cout<<b.height()<<endl;
     b.levelorder();
     b.preorder();
     b.inorder();

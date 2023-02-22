@@ -28,7 +28,7 @@ int main()
 
   // process of insertion
   // 1 add it to first available space, so that there will be no black spaces in the array
-  // 2 compare with 40 with its parent and swap while parent is small
+  // 2 compare 40 with its parent and swap while parent is small
 
   // 1
   max_heap.push_back(element);

@@ -17,8 +17,6 @@ struct Node
     struct Node *next;
 };
 
-
-
 void printList(struct Node *p)
 {
     // while address of next block is not null
@@ -30,7 +28,6 @@ void printList(struct Node *p)
 
     cout << endl;
 }
-
 
 struct Node *createDoubleList(int arr[], int n)
 {
@@ -58,13 +55,12 @@ struct Node *createDoubleList(int arr[], int n)
     return first;
 };
 
-
 int countNodes(struct Node *p)
-{   
-    // while address of next block is not null 
+{
+    // while address of next block is not null
     int count = 0;
 
-    while(p != NULL)
+    while (p != NULL)
     {
         count++;
         p = p->next;
@@ -73,6 +69,24 @@ int countNodes(struct Node *p)
     return count;
 }
 
+Node *reverseDLL(Node *head)
+{
+    if (head == NULL)
+    {
+        return head;
+    }
+
+    Node *curr = head, *prev;
+
+    while (curr != NULL)
+    {
+        swap(curr->next, curr->prev);
+        prev = curr;
+        curr = curr->prev;
+    }
+
+    return prev;
+}
 
 int main()
 {
@@ -82,7 +96,9 @@ int main()
 
     struct Node *A = createDoubleList(arr1, n);
     printList(A);
-    cout<<countNodes(A)<<endl;
+    A = reverseDLL(A);
+    printList(A);
+    cout << countNodes(A) << endl;
 
     return 0;
 }

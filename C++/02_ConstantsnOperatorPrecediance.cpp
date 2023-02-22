@@ -12,7 +12,7 @@ int main()
     cout<<b<<endl;
     
     // Manipulators
-    // wo operators jo data display fo format krte hain
+    // wo operators jo data display ko format krte hain
     // endl is a manipulator
 
     int c = 9;

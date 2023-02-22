@@ -1,10 +1,10 @@
 #include <iostream>
 using namespace std;
 
-template <class T1, class T2>
-double funcAvg(T1 a, T2 b)
+template <typename T1, typename T2>
+T1 funcAvg(T1 a, T2 b)
 {
-    double avg = (a + b) / 2;
+    T1 avg = (a + b) / 2;
     return avg;
 }
 

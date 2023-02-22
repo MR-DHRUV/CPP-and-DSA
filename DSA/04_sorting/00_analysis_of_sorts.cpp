@@ -21,7 +21,7 @@ int main()
 
         // above set is sorted on the basis of names
 
-        // while sorting i want tha the 6 comming before(paired with c ) comes before after sorting then the algorithm is said to be stable
+        // while sorting i want that the 6 comming before(paired with c ) comes before after sorting then the algorithm is said to be stable
 
         // when an algorithm preserves the order then it is called as a stable algorithm
 

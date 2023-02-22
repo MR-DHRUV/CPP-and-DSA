@@ -42,9 +42,25 @@ int gcd(int a, int b)
     return b;
 }
 
+// subtraction jhyada baar hogi mod kam baar me ans aajayga 
+int trueEuclidGCD(int a, int b)
+{
+    a = abs(a);
+    b = abs(b);
+
+    while (b > 0)
+    {
+        int r = a % b;
+        a = b;
+        b = r;
+    }
+
+    return a;
+}
+
 ll lcm(int a, int b)
 {
-    ll ans = a * b / gcd(a, b);
+    ll ans = a * b / trueEuclidGCD(a, b);
     return ans;
 }
 
@@ -60,7 +76,7 @@ int main()
     ll c = lcm(a, b);
 
     cout << a << " " << b << " " << c << " ";
-    cout << gcd(-5, -15);
+    cout << trueEuclidGCD(12, 33);
 
     return 0;
 }

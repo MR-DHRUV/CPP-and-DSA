@@ -45,7 +45,7 @@ public:
         }
 
         // ghum kr index pr aagaya aur index occuppied haii
-        if (i >= modVal && H[i] != -1)
+        if (i >= modVal && H[Hash(index+(i*i))] != -1)
         {
             return -1;
         }

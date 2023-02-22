@@ -27,7 +27,7 @@ int main()
 
     string dataFromFile;
 
-    // this will copy only first line of file data to this string
+    // this will copy only first word of file data to this string
     // justFile >> dataFromFile;
     // cout << dataFromFile << endl;
 
