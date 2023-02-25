@@ -1,132 +1,89 @@
-#include <iostream>
+#include<bits/stdc++.h>
 using namespace std;
 
-struct Node
-{
-	int data;
-	struct Node *next;
 
-} *first = NULL;
-// initialised first as null
+const int LEVEL = 16; // 1 <= nums[i] <= 20000
 
-void createList(int arr[], int n)
-{
-	struct Node *t;
-	struct Node *last;
+struct TrieNode { 
+    TrieNode *child[2];  // Stores binary represention of numbers  
+    int cnt; // Stores count of elements present in a node
+    TrieNode() { 
+        child[0] = child[1] = NULL; 
+        cnt = 0; 
+    } 
+}; 
+ 
+ 
+// Function to insert a number into Trie 
+void insertTrie(TrieNode *root, int n) { 
+    // Traverse binary representation of X 
+    for (int i = LEVEL; i >= 0; i--) { 
+        // Stores ith bit of N 
+        bool x = (n) & (1 << i); 
+        // Check if an element already present in Trie having ith bit x
+        if(!root->child[x]) { 
+            // Create a new node of Trie. 
+            root->child[x] = new TrieNode(); 
+        } 
+        // Update count of elements whose ith bit is x 
+        root->child[x]->cnt += 1; 
+        
+        //Go to next level
+        root = root->child[x]; 
+    } 
+} 
 
-	// setup a new node
-	first = new struct Node;
-	first->data = arr[0];
-	first->next = NULL;
 
-	// last is first as 1 element only
-	last = first;
+class Solution {
+private:
+    // Count elements in Trie whose XOR with N less than K 
+    int countSmallerPairs(TrieNode * root,  int N, int limit) { 
+        // Stores count of elements whose XOR with N less than K 
+        int cntPairs = 0; 
+        // Traverse binary representation of N and K in Trie 
+        for (int i = LEVEL; i >= 0 && root; i--)
+		{                     
+			bool x = N & (1 << i); // Stores ith bit of N 
+            bool y = limit & (1 << i); // Stores ith bit of K 
 
-	for (int i = 1; i < n; i++)
-	{
-		// setup a new node
-		t = new struct Node;
-		t->data = arr[i];
-		t->next = NULL;
-
-		// make current last point to new node
-		last->next = t;
-
-		// update last
-		last = t;
-	}
+            // If the ith bit of K is 0 , then we need to check ahead
+            if (y == 0 ) { 
+                // find the number which bit is same as N
+                // so that they can be xored to ZERO
+                root = root->child[x]; 
+                continue;
+            } 
+            // If the ith bit of K is 1 
+            // If an element already present in Trie having ith bit (x)
+            if(root->child[x]) {
+                // find the number which bit is same as N
+                // so that they can be xored to ZERO. so it would be smaller than K
+                cntPairs  += root->child[x]->cnt; 
+            }
+            //go to another way for next bit count
+            root = root->child[1 - x]; 
+        } 
+        return cntPairs; 
+    } 
+public:
+    int countPairs(vector<int>& nums, int low, int high) {
+        
+        TrieNode* root = new TrieNode();
+        
+        int cnt = 0;
+        for (auto& num : nums) {
+            cnt += countSmallerPairs(root, num, high + 1) - countSmallerPairs(root, num, low);
+            insertTrie(root, num);
+        }
+        
+        
+        return cnt;
+    }
 };
 
-void printList(struct Node *p)
-{
-	// while address of next block is not null
-	while (p != NULL)
-	{
-		cout << (p->data) << " ";
-		p = p->next;
-	}
-
-	cout << endl;
-}
-
-int countNodes(struct Node *p)
-{
-	// while address of next block is not null
-	int count = 0;
-
-	while (p != NULL)
-	{
-		count++;
-		p = p->next;
-	}
-
-	return count;
-}
-
-// reversing can be done using 2 methods
-// 1 reversing elements
-// 2 reversing data
-
-// time  : O(n)
-// space : O(n)
-void reverse_by_elements(struct Node *p)
-{
-	// to traverse 2nd time
-	struct Node *start = p;
-
-	int n = countNodes(p);
-	int arr[n];
-
-	int i = 0;
-	while (p != 0)
-	{
-		arr[i] = p->data;
-		p = p->next;
-		i++;
-	}
-
-	while (start != 0)
-	{
-		// i-- is done first as in last iteration of above loop i is incrimented and has gone out of index
-		i--;
-		start->data = arr[i];
-		start = start->next;
-	}
-}
-
-// best method
-// time  : O(N)
-// space : O(1)
-void reverse_by_links(struct Node *p)
-{
-	if (p == NULL)
-	{
-		return;
-	}
-
-	struct Node *prev = NULL, *curr = p, *next = NULL;
-
-	while (curr != NULL)
-	{
-		next = curr->next;
-		curr->next = prev;
-		prev = curr;
-		curr = next;
-	}
-
-	first = prev;
-}
 
 int main()
 {
-	int arr[] = {6, 7, 9, 13, 18, 89, 100};
-	int n = 7;
-	createList(arr, n);
-
-	printList(first);
-
-	reverse_by_links(first);
-	printList(first);
-
+	
 	return 0;
 }

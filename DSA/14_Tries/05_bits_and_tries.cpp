@@ -33,7 +33,7 @@ public:
         root = new TrieNode();
     };
 
-    // inserting a numbver bitwise into trie
+    // inserting a number bitwise into trie
     void insert(int x)
     {
         // starting from most significant bit (MSB)

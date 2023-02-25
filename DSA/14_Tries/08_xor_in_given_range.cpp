@@ -112,28 +112,6 @@ public:
     }
 };
 
-int countBeautifulPairs(vector<int> &nums, int low, int high)
-{
-    //  Write your code here.
-
-    // count pairs in range but this time with a constraint i.e i < j
-    // wohi algo chalegi since we insert after calculating xor for any element this i < j is ensured
-
-    Trie *t = new Trie();
-    // initially insert isilie nahi kara as duplicates ho jayenge
-    // if (a,b) E ans then (b,a) will also thus it will be counted twice
-
-    int ans = 0;
-    for (int i = 0; i < nums.size(); i++)
-    {
-        ans += t->countNumsWithXORlessThan(nums[i], high + 1) - t->countNumsWithXORlessThan(nums[i], low);
-        t->insert(nums[i]);
-    }
-
-    return ans;
-}
-
-
 class Solution
 {
 public:

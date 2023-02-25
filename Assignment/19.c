@@ -132,8 +132,11 @@ void dfsR(int adj[max][max], bool *visited, int start)
 void dfsOfGraph(int V, int adj[max][max])
 {
     bool visited[max] = {false};
-    int start = 0;
-    dfsR(adj, visited, start);
+
+    for (int i = 0; i < V; i++)
+    {
+        dfsR(adj, visited, i);
+    }
 }
 
 int main(int argc, char const *argv[])

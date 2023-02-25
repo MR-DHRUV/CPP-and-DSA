@@ -1,14 +1,15 @@
 //{ Driver Code Starts
-// Initial template for C++
+//Initial template for C++
 
-#include <bits/stdc++.h>
-using namespace std;
+#include<bits/stdc++.h> 
+using namespace std; 
 
 // } Driver Code Ends
-// User function Template for C++
+//User function Template for C++
+
+
 
 // updating the trie as per question to provide the ability to delete a number from it
-// updating the trie as per question
 class TrieNode
 {
 public:
@@ -79,7 +80,7 @@ public:
         for (int i = 31; i >= 0; i--)
         {
             int bit = (n >> i) & 1;
-        
+            
             if(temp->children[bit] == NULL)
             {
                 return;
@@ -156,24 +157,23 @@ public:
 };
 
 //{ Driver Code Starts.
-int main()
-{
+int main() 
+{ 
     int t;
-    cin >> t;
-    while (t--)
+    cin>>t;
+    while(t--)
     {
         int N, X;
         cin >> N;
         int arr[N];
-        for (int i = 0; i < N; i++)
-        {
+        for(int i = 0; i < N; i++){
             cin >> arr[i];
         }
 
         Solution ob;
         cout << ob.minxorpair(N, arr) << endl;
     }
-    return 0;
-}
+    return 0; 
+} 
 
 // } Driver Code Ends
