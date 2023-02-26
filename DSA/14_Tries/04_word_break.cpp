@@ -1,147 +1,139 @@
-//{ Driver Code Starts
-// Initial template for C++
-
 #include <bits/stdc++.h>
 using namespace std;
-
-// } Driver Code Ends
-// User function template for C++
 
 class TrieNode
 {
 public:
-    char data;
-    int childCount;
-
     TrieNode *children[26];
     bool isTerminal;
 
-    // constructors
-    TrieNode(){};
-    TrieNode(char ch) : data(ch), isTerminal(false), childCount(0)
+    bool containsKey(char ch)
     {
-        // init children with NULL
-        for (int i = 0; i < 26; i++)
-        {
-            children[i] = NULL;
-        }
-    };
-    TrieNode(char ch, bool terminal) : data(ch), isTerminal(terminal), childCount(0)
+        return children[ch - 'a'] != NULL;
+    }
+
+    TrieNode *get(char ch)
     {
-        // init children with NULL
-        for (int i = 0; i < 26; i++)
-        {
-            children[i] = NULL;
-        }
-    };
+        return children[ch - 'a'];
+    }
+
+    void set(char ch, TrieNode *x)
+    {
+        children[ch - 'a'] = x;
+    }
 };
 
 class Trie
 {
-public:
     TrieNode *root;
+    vector<int> dp;
+
+public:
     Trie()
     {
-        root = new TrieNode('\0');
-    };
-
-    void insert(string word);
-    bool search(string word);
-};
-
-void insertRec(TrieNode *root, string s)
-{
-    if (s.length() == 0)
-    {
-        root->isTerminal = true;
-        return;
+        root = new TrieNode();
+        root->isTerminal = false;
     }
 
-    int index = s[0] - 'a';
-
-    TrieNode *child;
-
-    if (root->children[index] != NULL)
+    void insert(string s)
     {
-        child = root->children[index];
+        TrieNode *temp = root;
+
+        for (int i = 0; i < s.length(); i++)
+        {
+            if (!temp->containsKey(s[i]))
+            {
+                TrieNode *n = new TrieNode();
+                n->isTerminal = false;
+                temp->set(s[i], n);
+            }
+
+            temp = temp->get(s[i]);
+        }
+
+        temp->isTerminal = true;
     }
-    else
+
+    bool search(string s)
     {
-        child = new TrieNode(s[0]);
-        root->children[index] = child;
-        root->childCount++;
+        TrieNode *temp = root;
+
+        for (int i = 0; i < s.length(); i++)
+        {
+            if (!temp->containsKey(s[i]))
+            {
+                return false;
+            }
+
+            temp = temp->get(s[i]);
+        }
+
+        return temp->isTerminal;
     }
 
-    insertRec(child, s.substr(1));
-}
+    bool canIbreak(string s, int n, int start)
+    {
+        // base case
+        if (start == n)
+        {
+            return true;
+        }
 
-void Trie::insert(string word)
-{
-    insertRec(root, word);
-}
+        // already determined
+        if (dp[start] != -1)
+        {
+            return dp[start];
+        }
 
-bool canIbreak(TrieNode *node, TrieNode *root, string &s, int i)
-{
-    // base case
-    if (s.size() == i && node == root)
-        return true;
+        string str = "";
 
-    // if child not present
-    if (!node->children[s[i] - 'a'])
-        return false;
+        for (int j = start; j < n; ++j)
+        {
+            str += s[j];
 
-    // set childe
-    node = node->children[s[i] - 'a'];
+            // cout << str << " " << search(str) << endl;
 
-    // reccursive process
-    if (node->isTerminal && canIbreak(root, root, s, i + 1))
-        return true;
+            // agar mujhe koi word mil gaya haii toh m yaha pr break krunga aur aage dhundunga
+            if (search(str))
+            {
+                if (canIbreak(s, n, j + 1))
+                {
+                    return dp[start] = true;
+                }
+            }
 
-    // backtrack to root to find other words
-    return canIbreak(node, root, s, i + 1);
+            // aaga ka pura break ni hua toh current word me next alphabet add krke search krunga, same stratagy just optimised by using dp 
+        }
+
+        return dp[start] = false;
+    }
+
+    bool breakWord(string s)
+    {
+        dp = vector<int>(s.length() + 1, -1);
+        return canIbreak(s, s.length(), 0);
+    }
 };
 
 class Solution
 {
 public:
-    // A : given string to search
-    // B : vector of available strings
-
-    int wordBreak(string A, vector<string> &B)
+    bool wordBreak(string s, vector<string> &wordDict)
     {
-        // loading trie
-        Trie t;
+        Trie *t = new Trie();
 
-        for (int i = 0; i < B.size(); i++)
+        // loading the trie
+        for (int i = 0; i < wordDict.size(); i++)
         {
-            t.insert(B[i]);
+            t->insert(wordDict[i]);
         }
 
-        return canIbreak(t.root, t.root, A, 0);
-    };
+        return t->breakWord(s);
+    }
 };
 
-//{ Driver Code Starts.
 int main()
 {
-    int t;
-    cin >> t;
-    while (t--)
-    {
-        int n;
-        cin >> n;
-        vector<string> dict;
-        for (int i = 0; i < n; i++)
-        {
-            string S;
-            cin >> S;
-            dict.push_back(S);
-        }
-        string line;
-        cin >> line;
-        Solution ob;
-        cout << ob.wordBreak(line, dict) << "\n";
-    }
-}
 
-// } Driver Code Ends
+    return 0;
+}

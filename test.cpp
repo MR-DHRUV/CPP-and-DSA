@@ -1,171 +1,135 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// updating the trie as per question
 class TrieNode
 {
 public:
-    TrieNode *children[2];
-    int prefixCount; // numbers that start with same binary representation
+    TrieNode *children[26];
+    bool isTerminal;
 
-    TrieNode()
+    bool containsKey(char ch)
     {
-        prefixCount = 0;
-        children[0] = NULL;
-        children[1] = NULL;
-    };
-
-    bool containsKey(int i)
-    {
-        return children[i] != NULL;
+        return children[ch - 'a'] != NULL;
     }
 
-    TrieNode *get(int i)
+    TrieNode *get(char ch)
     {
-        return children[i];
+        return children[ch - 'a'];
     }
 
-    void set(int i, TrieNode *s)
+    void set(char ch, TrieNode *x)
     {
-        children[i] = s;
+        children[ch - 'a'] = x;
     }
 };
 
 class Trie
 {
     TrieNode *root;
+    vector<int>dp;
 
 public:
     Trie()
     {
-        // since we have no number initially
         root = new TrieNode();
+        root->isTerminal = false;
     }
 
-    void insert(int n)
+    void insert(string s)
     {
         TrieNode *temp = root;
 
-        for (int i = 16; i >= 0; i--)
+        for (int i = 0; i < s.length(); i++)
         {
-            int bit = (n >> i) & 1;
-
-            if (!temp->containsKey(bit))
+            if (!temp->containsKey(s[i]))
             {
-                // n will be the smallest number
-                temp->set(bit, new TrieNode());
+                TrieNode *n = new TrieNode();
+                n->isTerminal = false;
+                temp->set(s[i], n);
             }
 
-            // updating the smallest number
-            temp = temp->get(bit);
-            temp->prefixCount++;
+            temp = temp->get(s[i]);
         }
+
+        temp->isTerminal = true;
     }
 
-    int countNumsWithXORlessThan(int x, int limit)
+    bool search(string s)
     {
         TrieNode *temp = root;
-        int count = 0;
 
-        for (int i = 16; i >= 0; i--)
+        for (int i = 0; i < s.length(); i++)
         {
-            int bitX = (x >> i) & 1;
-            int bitLim = (limit >> i) & 1;
-
-            // agar limit ki bit 0 haii toh i cannot guarentee that i will find numbers smaller than limit in that 0's path so process further
-            if (bitLim == 0)
+            if (!temp->containsKey(s[i]))
             {
-                // now i need to follow the path of bitX so that same bits are xored to yeild 0
-
-                if (temp->containsKey(bitX))
-                {
-                    temp = temp->get(bitX);
-                    continue;
-                }
-                else
-                {
-                    return count; // XOR large aara haii
-                }
+                return false;
             }
 
-            // now its 1, now we can include all the numbers that yeild 0 at ith place
-            if (temp->containsKey(bitX))
-            {
-                TrieNode *t = temp->get(bitX);
-                count += t->prefixCount;
-            }
-
-            // point it to 1 to keep counting 1's
-            // for current bit to be 1 check ahead that XOR must not exceed limit
-
-            if (temp->containsKey(1 - bitX))
-            {
-                temp = temp->get(1 - bitX);
-            }
-            else
-            {
-                return count;
-            }
+            temp = temp->get(s[i]);
         }
 
-        return count;
+        return temp->isTerminal;
+    }
+
+    bool canIbreak(string s,int n, int start)
+    {
+        // base case
+        if(start == n)
+        {
+            return true;
+        }
+
+        // already determined
+        if(dp[start] != -1)
+        {
+            return dp[start];
+        }
+
+        string str = "";
+
+        for (int j = start; j < n; ++j)
+        {
+            str += s[j];
+
+            // temp mil gaya haii ab uske aage ka part khoj lao 
+            if(search(str))
+            {
+                if(canIbreak(s,n,j+1))
+                {
+                    return dp[start] = true;
+                }
+            }
+        }
+        
+        return dp[start] = false;
+    }
+
+    bool breakWord(string s)
+    {
+        dp = vector<int>(s.length()+1,-1);
+        return canIbreak(s, s.length(),0);
     }
 };
-
-int countBeautifulPairs(vector<int> &nums, int low, int high)
-{
-    //  Write your code here.
-
-    // count pairs in range but this time with a constraint i.e i < j
-    // wohi algo chalegi since we insert after calculating xor for any element this i < j is ensured
-
-    Trie *t = new Trie();
-    // initially insert isilie nahi kara as duplicates ho jayenge
-    // if (a,b) E ans then (b,a) will also thus it will be counted twice
-
-    int ans = 0;
-    for (int i = 0; i < nums.size(); i++)
-    {
-        ans += t->countNumsWithXORlessThan(nums[i], high + 1) - t->countNumsWithXORlessThan(nums[i], low);
-        t->insert(nums[i]);
-    }
-
-    return ans;
-}
-
 
 class Solution
 {
 public:
-    int countPairs(vector<int> &nums, int low, int high)
+    bool wordBreak(string s, vector<string> &wordDict)
     {
         Trie *t = new Trie();
-        // initially insert isilie nahi kara as duplicates ho jayenge
-        // if (a,b) E ans then (b,a) will also thus it will be counted twice
 
-        int ans = 0;
-        for (int i = 0; i < nums.size(); i++)
+        // loading the trie
+        for (int i = 0; i < wordDict.size(); i++)
         {
-            ans += t->countNumsWithXORlessThan(nums[i], high + 1) - t->countNumsWithXORlessThan(nums[i], low);
-            t->insert(nums[i]);
+            t->insert(wordDict[i]);
         }
 
-        return ans;
+        return t->breakWord(s);
     }
 };
 
 int main()
 {
 
-    Solution obj;
-    vector<int> v = {3, 10, 5, 25, 2, 8};
-
-    // cout << obj.findMaximumXOR(v);
     return 0;
 }
-
-/*
-[536870912,0,534710168,330218644,142254206]
-[[558240772,1000000000],[307628050,1000000000],[3319300,1000000000],[2751604,683297522],[214004,404207941]]
-
-*/

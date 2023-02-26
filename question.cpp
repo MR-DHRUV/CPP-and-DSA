@@ -1,5 +1,5 @@
 //{ Driver Code Starts
-// Initial template for C++
+// Initial Template for C++
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -7,148 +7,51 @@ using namespace std;
 // } Driver Code Ends
 // User function Template for C++
 
-// updating the trie as per question to provide the ability to delete a number from it
-// updating the trie as per question
-class TrieNode
-{
-public:
-    TrieNode *children[2];
-    int prefixCount; // numbers that start with same binary representation
-
-    TrieNode()
-    {
-        prefixCount = 0;
-        children[0] = NULL;
-        children[1] = NULL;
-    };
-
-    bool containsKey(int i)
-    {
-        return children[i] != NULL;
-    }
-
-    TrieNode *get(int i)
-    {
-        return children[i];
-    }
-
-    void set(int i, TrieNode *s)
-    {
-        children[i] = s;
-    }
-};
-
-class Trie
-{
-
-public:
-    TrieNode *root;
-    Trie()
-    {
-        // since we have no number initially
-        root = new TrieNode();
-    }
-
-    void insert(int n)
-    {
-        TrieNode *temp = root;
-
-        for (int i = 31; i >= 0; i--)
-        {
-            int bit = (n >> i) & 1;
-
-            if (!temp->containsKey(bit))
-            {
-                // n will be the smallest number
-                temp->set(bit, new TrieNode());
-            }
-
-            // updating the smallest number
-            temp = temp->get(bit);
-            temp->prefixCount++;
-        }
-    }
-
-    // no need to verify whether the no is present or not, it will be for sure
-    void erase(int n)
-    {
-        // starting from MSB as usual
-
-        TrieNode *temp = root;
-
-        for (int i = 31; i >= 0; i--)
-        {
-            int bit = (n >> i) & 1;
-        
-            if(temp->children[bit] == NULL)
-            {
-                return;
-            }
-
-            // eraseing step
-            if (temp->children[bit]->prefixCount == 1)
-            {
-               temp->children[bit] = NULL;
-               return;
-            }
-
-            temp->prefixCount--; // for rest nodes
-
-            // updating the pointer
-            temp = temp->get(bit);
-        }
-    }
-
-    int minXor(int x)
-    {
-        TrieNode *temp = root;
-        int ans = 0;
-
-        for (int i = 31; i >= 0; i--)
-        {
-            int bit = (x >> i) & 1;
-
-            // min xor ke lie same bit honi chahiye
-
-            if (temp->containsKey(bit))
-            {
-                temp = temp->get(bit);
-            }
-            else
-            {
-                // we have to make this bit as opposite
-                ans = ans | (1 << i);
-                temp = temp->get(1 - bit); // converse bit is only present
-            }
-        }
-
-        return ans;
-    }
-};
-
 class Solution
 {
-public:
-    int minxorpair(int N, int arr[])
+
+    void DFS(vector<vector<int>> &adj, int i, vector<int> &visited, vector<int> &temp)
     {
+        temp.push_back(i);
+        visited[i]++;
 
-        Trie *t = new Trie();
-
-        for (int i = 0; i < N; i++)
+        for (auto it : adj[i])
         {
-            t->insert(arr[i]);
+            if (!visited[it])
+            {
+                DFS(adj, it, visited, temp);
+            }
         }
+    }
 
-        // cout<<t->root->prefixCount<<endl;
-
-        int ans = INT_MAX;
-
-        for (int i = 0; i < arr[i]; i++)
+public:
+    int findNumberOfGoodComponent(int v, vector<vector<int>> &adj)
+    {
+        vector<int> visited(v + 1, 0);
+        int ans = 0;
+        for (int i = 1; i <= v; i++)
         {
-            t->erase(arr[i]);
-            ans = min(ans, t->minXor(arr[i]));
-            // cout<<ans<<endl;
-            t->insert(arr[i]);
+            if (!visited[i])
+            {
+                vector<int> t;
+                DFS(adj, i, visited, t);
+
+                bool flag = false;
+
+                for (int i = 0; i < t.size(); i++)
+                {
+                    if (adj[t[i]].size() < t.size() - 1)
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (flag == false)
+                {
+                    ans++;
+                }
+            }
         }
 
         return ans;
@@ -156,24 +59,30 @@ public:
 };
 
 //{ Driver Code Starts.
+
 int main()
 {
     int t;
     cin >> t;
     while (t--)
     {
-        int N, X;
-        cin >> N;
-        int arr[N];
-        for (int i = 0; i < N; i++)
+        int E, V;
+        cin >> E >> V;
+        vector<vector<int>> adj(V + 1, vector<int>());
+        for (int i = 0; i < E; i++)
         {
-            cin >> arr[i];
-        }
+            int u, v;
 
-        Solution ob;
-        cout << ob.minxorpair(N, arr) << endl;
+            cin >> u >> v;
+
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        Solution obj;
+
+        int res = obj.findNumberOfGoodComponent(V, adj);
+        cout << res << "\n";
     }
     return 0;
 }
-
 // } Driver Code Ends

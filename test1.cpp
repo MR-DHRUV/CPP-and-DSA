@@ -1,89 +1,79 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-
-const int LEVEL = 16; // 1 <= nums[i] <= 20000
-
-struct TrieNode { 
-    TrieNode *child[2];  // Stores binary represention of numbers  
-    int cnt; // Stores count of elements present in a node
-    TrieNode() { 
-        child[0] = child[1] = NULL; 
-        cnt = 0; 
-    } 
-}; 
- 
- 
-// Function to insert a number into Trie 
-void insertTrie(TrieNode *root, int n) { 
-    // Traverse binary representation of X 
-    for (int i = LEVEL; i >= 0; i--) { 
-        // Stores ith bit of N 
-        bool x = (n) & (1 << i); 
-        // Check if an element already present in Trie having ith bit x
-        if(!root->child[x]) { 
-            // Create a new node of Trie. 
-            root->child[x] = new TrieNode(); 
-        } 
-        // Update count of elements whose ith bit is x 
-        root->child[x]->cnt += 1; 
-        
-        //Go to next level
-        root = root->child[x]; 
-    } 
-} 
-
-
-class Solution {
-private:
-    // Count elements in Trie whose XOR with N less than K 
-    int countSmallerPairs(TrieNode * root,  int N, int limit) { 
-        // Stores count of elements whose XOR with N less than K 
-        int cntPairs = 0; 
-        // Traverse binary representation of N and K in Trie 
-        for (int i = LEVEL; i >= 0 && root; i--)
-		{                     
-			bool x = N & (1 << i); // Stores ith bit of N 
-            bool y = limit & (1 << i); // Stores ith bit of K 
-
-            // If the ith bit of K is 0 , then we need to check ahead
-            if (y == 0 ) { 
-                // find the number which bit is same as N
-                // so that they can be xored to ZERO
-                root = root->child[x]; 
-                continue;
-            } 
-            // If the ith bit of K is 1 
-            // If an element already present in Trie having ith bit (x)
-            if(root->child[x]) {
-                // find the number which bit is same as N
-                // so that they can be xored to ZERO. so it would be smaller than K
-                cntPairs  += root->child[x]->cnt; 
-            }
-            //go to another way for next bit count
-            root = root->child[1 - x]; 
-        } 
-        return cntPairs; 
-    } 
+class Solution
+{
 public:
-    int countPairs(vector<int>& nums, int low, int high) {
-        
-        TrieNode* root = new TrieNode();
-        
-        int cnt = 0;
-        for (auto& num : nums) {
-            cnt += countSmallerPairs(root, num, high + 1) - countSmallerPairs(root, num, low);
-            insertTrie(root, num);
+    class Trie
+    {
+    public:
+        Trie *child[26];
+        bool isEnd = false;
+    };
+
+    void insert(string &word, Trie *root)
+    {
+        Trie *cur = root;
+        for (auto &ch : word)
+        {
+            if (!cur->child[ch - 'a'])
+                cur->child[ch - 'a'] = new Trie();
+            cur = cur->child[ch - 'a'];
         }
-        
-        
-        return cnt;
+        cur->isEnd = true;
+    }
+
+    bool search(string &word, Trie *root)
+    {
+        Trie *cur = root;
+        for (auto &ch : word)
+        {
+            if (!cur->child[ch - 'a'])
+                return false;
+            cur = cur->child[ch - 'a'];
+        }
+        return cur->isEnd;
+    }
+
+    int dp[305];
+    bool solve(string &s, Trie *root, int n, int start)
+    {
+        if (start == n)
+            return true;
+
+        if (dp[start] != -1)
+            return dp[start];
+            
+        string str = "";
+
+        for (int i = start; i < n; ++i)
+        {
+            str += s[i];
+            if (search(str, root))
+            {
+                if (solve(s, root, n, i + 1))
+                {
+                    return dp[start] = true;
+                }
+            }
+        }
+        return dp[start] = false;
+    }
+
+    bool wordBreak(string &s, vector<string> &wordDict)
+    {
+        Trie *root = new Trie();
+        for (auto &word : wordDict)
+            insert(word, root);
+        int n = s.size();
+        memset(dp, -1, sizeof(dp));
+        return solve(s, root, n, 0);
     }
 };
 
 
 int main()
 {
-	
-	return 0;
+
+    return 0;
 }
