@@ -27,6 +27,7 @@ class Trie
 {
     TrieNode *root;
     vector<int> dp;
+    vector<string> combinations;
 
 public:
     Trie()
@@ -71,7 +72,8 @@ public:
         return temp->isTerminal;
     }
 
-    bool canIbreak(string s, int n, int start)
+private:
+    bool breakHelper(string s, int n, int start)
     {
         // base case
         if (start == n)
@@ -96,26 +98,75 @@ public:
             // agar mujhe koi word mil gaya haii toh m yaha pr break krunga aur aage dhundunga
             if (search(str))
             {
-                if (canIbreak(s, n, j + 1))
+                if (breakHelper(s, n, j + 1))
                 {
                     return dp[start] = true;
                 }
             }
 
-            // aaga ka pura break ni hua toh current word me next alphabet add krke search krunga, same stratagy just optimised by using dp 
+            // aaga ka pura break ni hua toh current word me next alphabet add krke search krunga, same stratagy just optimised by using dp
         }
 
         return dp[start] = false;
     }
 
+    bool combinationHelper(string s, int start, string builder)
+    {
+        // base case
+        if (start == s.length())
+        {
+            return true;
+        }
+
+        bool retAns = false;
+        string str = "";
+
+        for (int j = start; j < s.length(); ++j)
+        {
+            str += s[j];
+
+            // agar mujhe koi word mil gaya haii toh m yaha pr break krunga aur aage dhundunga
+            if (search(str))
+            {
+                // building part
+                string temp = builder;
+                temp += str; // breaked part
+                temp += " "; // space
+
+                if (combinationHelper(s, j + 1, temp))
+                {
+                    // adding step
+                    if (j + 1 == s.length())
+                    {
+                        temp.erase(temp.end() - 1); // extra space hata dia last ka
+                        combinations.push_back(temp);
+                    }
+                    retAns = true;
+                }
+            }
+            // aaga ka pura break ni hua toh current word me next alphabet add krke search krunga, same stratagy just optimised by using dp
+        }
+
+        return retAns;
+    }
+
+public:
+    vector<string> breakWordCombinations(string s)
+    {
+        string str;
+        combinations.clear();
+        combinationHelper(s, 0, str);
+        return combinations;
+    }
+
     bool breakWord(string s)
     {
         dp = vector<int>(s.length() + 1, -1);
-        return canIbreak(s, s.length(), 0);
+        return breakHelper(s, s.length(), 0);
     }
 };
 
-class Solution
+class Solution1
 {
 public:
     bool wordBreak(string s, vector<string> &wordDict)
@@ -129,6 +180,24 @@ public:
         }
 
         return t->breakWord(s);
+    }
+};
+
+class Solution
+{
+public:
+    // generates all posssible combinations in which we can break the word
+    vector<string> wordBreak(string s, vector<string> &wordDict)
+    {
+        Trie *t = new Trie();
+
+        // loading the trie
+        for (int i = 0; i < wordDict.size(); i++)
+        {
+            t->insert(wordDict[i]);
+        }
+
+        return t->breakWordCombinations(s);
     }
 };
 

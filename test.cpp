@@ -26,7 +26,8 @@ public:
 class Trie
 {
     TrieNode *root;
-    vector<int>dp;
+    vector<int> dp;
+    vector<string> combinations;
 
 public:
     Trie()
@@ -71,50 +72,60 @@ public:
         return temp->isTerminal;
     }
 
-    bool canIbreak(string s,int n, int start)
+    bool combinationHelper(string s, int start, string builder)
     {
         // base case
-        if(start == n)
+        if (start == s.length())
         {
             return true;
         }
 
-        // already determined
-        if(dp[start] != -1)
-        {
-            return dp[start];
-        }
-
+        bool retAns = false;
         string str = "";
 
-        for (int j = start; j < n; ++j)
+        for (int j = start; j < s.length(); ++j)
         {
             str += s[j];
 
-            // temp mil gaya haii ab uske aage ka part khoj lao 
-            if(search(str))
+            // agar mujhe koi word mil gaya haii toh m yaha pr break krunga aur aage dhundunga
+            if (search(str))
             {
-                if(canIbreak(s,n,j+1))
+                // building part
+                string temp = builder;
+                temp += str; // breaked part
+                temp += " "; // space
+
+                if (combinationHelper(s, j + 1, temp))
                 {
-                    return dp[start] = true;
+                    // adding step
+                    if (j + 1 == s.length())
+                    {
+                        temp.erase(temp.end()-1); // extra space hata dia last ka
+                        combinations.push_back(temp);
+                    }
+                    retAns = true;
                 }
             }
+            // aaga ka pura break ni hua toh current word me next alphabet add krke search krunga, same stratagy just optimised by using dp
         }
-        
-        return dp[start] = false;
+
+        return retAns;
     }
 
-    bool breakWord(string s)
+    vector<string> breakWordCombinations(string s)
     {
-        dp = vector<int>(s.length()+1,-1);
-        return canIbreak(s, s.length(),0);
+        string str;
+        combinations.clear();
+        combinationHelper(s, 0, str);
+        return combinations;
     }
 };
 
 class Solution
 {
 public:
-    bool wordBreak(string s, vector<string> &wordDict)
+    // generates all posssible combinations in which we can break the word
+    vector<string> wordBreak(string s, vector<string> &wordDict)
     {
         Trie *t = new Trie();
 
@@ -124,12 +135,22 @@ public:
             t->insert(wordDict[i]);
         }
 
-        return t->breakWord(s);
+        return t->breakWordCombinations(s);
     }
 };
 
 int main()
 {
+    Solution obj;
+    vector<string> dict = {"cat","cats","and","sand","dog"};
+    vector<string> ans = obj.wordBreak("catsanddog",dict);
+
+    for (int i = 0; i < ans.size(); i++)
+    {
+        cout<<ans[i]<<endl;
+    }
+    
+
 
     return 0;
 }
