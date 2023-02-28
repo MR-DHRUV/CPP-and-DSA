@@ -11,13 +11,10 @@ public:
     TrieNode *children[26];
 
     // count of no of words that end on this letter
-    int terminalCount;
+    int terminalCount = 0;
 
     // count of no of words which have this prefix
-    int prefixCount;
-
-    // default constructor
-    TrieNode() : terminalCount(0), prefixCount(0){};
+    int prefixCount = 0;
 
     // check whether it contains the following key or not
     bool containsKey(char ch)
@@ -32,7 +29,7 @@ public:
     }
 
     // set a children
-    TrieNode *set(TrieNode *n, char ch)
+    void set(TrieNode *n, char ch)
     {
         children[ch - baseLetter] = n;
     }

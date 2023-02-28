@@ -7,50 +7,81 @@ using namespace std;
 // } Driver Code Ends
 // User function Template for C++
 
-class Solution
+class TrieNode
 {
+public:
+    TrieNode *children[26];
+    int prefixCount = 0;
 
-    void DFS(vector<vector<int>> &adj, int i, vector<int> &visited, vector<int> &temp)
+    // check whether it contains the following key or not
+    inline bool containsKey(char ch)
     {
-        temp.push_back(i);
-        visited[i]++;
-
-        for (auto it : adj[i])
-        {
-            if (!visited[it])
-            {
-                DFS(adj, it, visited, temp);
-            }
-        }
+        return children[ch - 'a'] != NULL;
     }
 
-public:
-    int findNumberOfGoodComponent(int v, vector<vector<int>> &adj)
+    // get specific children
+    inline TrieNode *get(char ch)
     {
-        vector<int> visited(v + 1, 0);
-        int ans = 0;
-        for (int i = 1; i <= v; i++)
+        return children[ch - 'a'];
+    }
+
+    // set a children
+    inline void set(TrieNode *n, char ch)
+    {
+        children[ch - 'a'] = n;
+    }
+};
+
+class Solution
+{
+public:
+    vector<int> prefixCount(int N, int Q, string li[], string query[])
+    {
+        TrieNode *root = new TrieNode();
+
+        for (int j = 0; j < N; j++)
         {
-            if (!visited[i])
+            TrieNode *temp = root;
+            string s = li[j];
+
+            for (int i = 0; i < s.length(); i++)
             {
-                vector<int> t;
-                DFS(adj, i, visited, t);
-
-                bool flag = false;
-
-                for (int i = 0; i < t.size(); i++)
+                // if not present just put node
+                if (!temp->containsKey(s[i]))
                 {
-                    if (adj[t[i]].size() < t.size() - 1)
-                    {
-                        flag = true;
-                        break;
-                    }
+                    temp->set(new TrieNode(), s[i]);
                 }
 
-                if (flag == false)
+                // point temp to next child
+                temp = temp->get(s[i]);
+                temp->prefixCount++;
+            }
+        }
+
+        vector<int> ans(Q, 0);
+
+        for (int j = 0; j < Q; j++)
+        {
+            TrieNode *temp = root;
+            bool isAns = true;
+
+            for (int i = 0; i < query[j].length(); i++)
+            {
+                // if not present just return 0
+                if (!temp->containsKey(query[j][i]))
                 {
-                    ans++;
+                    isAns = false;
+                    ans[j] = 0;
+                    break;
                 }
+
+                // point temp to next child
+                temp = temp->get(query[j][i]);
+            }
+
+            if (isAns)
+            {
+                ans[j] = temp->prefixCount;
             }
         }
 
@@ -62,26 +93,39 @@ public:
 
 int main()
 {
+    // disable default 
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    // set our properties
+    #ifndef IO_FROM_FILE
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt","r",stdin);
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt","w",stdout);
+    #endif
+
     int t;
     cin >> t;
     while (t--)
     {
-        int E, V;
-        cin >> E >> V;
-        vector<vector<int>> adj(V + 1, vector<int>());
-        for (int i = 0; i < E; i++)
+        int Q, N, i = 0, x;
+        cin >> N;
+        string s;
+        string li[N];
+        for (int i = 0; i < N; i++)
+            cin >> li[i];
+        cin >> Q;
+        x = Q;
+        string query[Q];
+        while (Q--)
         {
-            int u, v;
-
-            cin >> u >> v;
-
-            adj[u].push_back(v);
-            adj[v].push_back(u);
+            cin >> s;
+            query[i++] = s;
         }
-        Solution obj;
 
-        int res = obj.findNumberOfGoodComponent(V, adj);
-        cout << res << "\n";
+        Solution ob;
+        vector<int> ans = ob.prefixCount(N, x, li, query);
+        for (auto i : ans)
+            cout << i << "\n";
     }
     return 0;
 }

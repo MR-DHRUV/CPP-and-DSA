@@ -1,62 +1,154 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void BFS(int V, vector<int> adj[])
+class TrieNode
 {
-    queue<int> qt;
-    bool visited[V] = {false};
+public:
+    TrieNode *children[26];
+    bool isTerminal;
 
-    // starting from 0
-    qt.push(0);
-    cout << "0 ";
-    visited[0] = true;
-
-    while (!qt.empty())
+    bool containsKey(char ch)
     {
-        int t = qt.front();
-        qt.pop();
+        return children[ch - 'a'] != NULL;
+    }
 
-        for (int i = 0; i < V; i++)
+    TrieNode *get(char ch)
+    {
+        return children[ch - 'a'];
+    }
+
+    void set(char ch, TrieNode *x)
+    {
+        children[ch - 'a'] = x;
+    }
+};
+
+class Trie
+{
+    TrieNode *root;
+    vector<int> dp;
+
+public:
+    Trie()
+    {
+        root = new TrieNode();
+        root->isTerminal = false;
+    }
+
+    void insert(const string &s)
+    {
+        TrieNode *temp = root;
+
+        for (int i = 0; i < s.length(); i++)
         {
-            if (adj[t][i] == 1 && visited[i] == false)
+            if (!temp->containsKey(s[i]))
             {
-                visited[i] == true;
-                cout << i << " ";
-                qt.push(i);
+                TrieNode *n = new TrieNode();
+                n->isTerminal = false;
+                temp->set(s[i], n);
+            }
+
+            temp = temp->get(s[i]);
+        }
+
+        temp->isTerminal = true;
+    }
+
+private:
+    bool search(const string &s)
+    {
+        TrieNode *temp = root;
+
+        for (int i = 0; i < s.length(); i++)
+        {
+            if (!temp->containsKey(s[i]))
+            {
+                return false;
+            }
+
+            temp = temp->get(s[i]);
+        }
+
+        return temp->isTerminal;
+    }
+
+    void erase(const string &s)
+    {
+        TrieNode *temp = root;
+
+        for (int i = 0; i < s.size(); i++)
+        {
+            if (!temp->containsKey(s[i]))
+            {
+                return;
+            }
+
+            temp = temp->get(s[i]);
+        }
+
+        temp->isTerminal = false;
+    }
+
+public:
+    string replaceWithSmallest(const string &s)
+    {
+        TrieNode *temp = root;
+
+        for (int i = 0; i < s.length(); i++)
+        {
+            if (!temp->containsKey(s[i]))
+            {
+                return s; // cant be shortened
+            }
+
+            temp = temp->get(s[i]);
+
+            if (temp->isTerminal)
+            {
+                string shortened;
+                shortened.append(s.begin(), s.begin() + i);
+                return shortened;
             }
         }
+
+        return s;
     }
-}
 
-void DFSRec(bool *visited, vector<int> adj[], int src, int V)
+public:
+};
+
+class Solution
 {
-    if (visited[src] == false)
+public:
+    string replaceWords(vector<string> &dictionary, string sentence)
     {
-        cout << src << " ";
-        visited[src] = true;
 
-        for (int i = 0; i < V; i++)
+        Trie *t = new Trie();
+
+        for (int i = 0; i < dictionary.size(); i++)
         {
-            if (adj[src][i] == 1 && visited[i] == false)
+            t->insert(dictionary[i]);
+        }
+
+        string ans;
+
+        for (int i = 0; i < sentence.size(); i++)
+        {
+            string temp;
+
+            while (i < sentence.size() && sentence[i] != ' ')
             {
-                DFSRec(visited, adj, i, V);
+                temp.push_back(sentence[i++]);
             }
-        }
-    }
-}
 
-void DFS(vector<int> adj[], int V)
-{
-    bool visited[V] = {false};
-
-    for (int i = 0; i < V; i++)
-    {
-        if (visited[i] == false)
-        {
-            DFSRec(visited, adj, i, V);
+            temp = t->replaceWithSmallest(temp);
+            ans.append(temp);
+            ans.push_back(' ');
         }
+
+        return ans;
     }
-}
+};
 
 int main()
 {

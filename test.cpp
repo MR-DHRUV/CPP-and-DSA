@@ -26,8 +26,7 @@ public:
 class Trie
 {
     TrieNode *root;
-    vector<int> dp;
-    vector<string> combinations;
+    int ans = INT_MAX;
 
 public:
     Trie()
@@ -72,54 +71,77 @@ public:
         return temp->isTerminal;
     }
 
-    bool combinationHelper(string s, int start, string builder)
+    bool convert(string from, string to, int start, int isAns)
     {
         // base case
-        if (start == s.length())
+        if (from == to)
         {
             return true;
         }
 
-        bool retAns = false;
-        string str = "";
-
-        for (int j = start; j < s.length(); ++j)
+        for (int i = start; i < from.length(); i++)
         {
-            str += s[j];
-
-            // agar mujhe koi word mil gaya haii toh m yaha pr break krunga aur aage dhundunga
-            if (search(str))
+            // skip matching characters
+            while (from[i] == to[i] && i < from.length())
             {
-                // building part
-                string temp = builder;
-                temp += str; // breaked part
-                temp += " "; // space
+                i++;
+            }
 
-                if (combinationHelper(s, j + 1, temp))
+            if (i >= from.length())
+            {
+                ans = min(ans, isAns);
+                continue;
+            }
+
+            // now try to convert a word
+            char temp = from[i]; // storing to backtrack
+            from[i] = to[i];
+
+            if (search(from))
+            {
+                // conversion was possible: try to convert ahead
+                if (convert(from, to, i + 1, isAns + 1))
                 {
-                    // adding step
-                    if (j + 1 == s.length())
+                    if (from == to)
                     {
-                        temp.erase(temp.end()-1); // extra space hata dia last ka
-                        combinations.push_back(temp);
+                        ans = min(ans, isAns);
                     }
-                    retAns = true;
                 }
             }
-            // aaga ka pura break ni hua toh current word me next alphabet add krke search krunga, same stratagy just optimised by using dp
+
+            // try to find a smaller ans
+            from[i] = temp;
         }
 
-        return retAns;
+        return false;
     }
 
-    vector<string> breakWordCombinations(string s)
+    int getMinSteps(string from, string to)
     {
-        string str;
-        combinations.clear();
-        combinationHelper(s, 0, str);
-        return combinations;
+        ans = INT_MAX;
+        convert(from, to, 0, 0);
+
+        if (ans == INT_MAX)
+        {
+            return -1;
+        }
+
+        return ans;
     }
 };
+
+int wordLadder(string begin, string end, vector<string> &dict)
+{
+    Trie *t = new Trie();
+
+    // loading the trie
+    for (int i = 0; i < dict.size(); i++)
+    {
+        t->insert(dict[i]);
+    }
+
+    return t->getMinSteps(begin, end);
+}
 
 class Solution
 {
@@ -142,15 +164,13 @@ public:
 int main()
 {
     Solution obj;
-    vector<string> dict = {"cat","cats","and","sand","dog"};
-    vector<string> ans = obj.wordBreak("catsanddog",dict);
+    vector<string> dict = {"cat", "cats", "and", "sand", "dog"};
+    vector<string> ans = obj.wordBreak("catsanddog", dict);
 
     for (int i = 0; i < ans.size(); i++)
     {
-        cout<<ans[i]<<endl;
+        cout << ans[i] << endl;
     }
-    
-
 
     return 0;
 }
