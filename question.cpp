@@ -10,123 +10,148 @@ using namespace std;
 class TrieNode
 {
 public:
+// to change from lowercase to uppercase in just one change
+#define baseLetter 'a'
+
+    // children
     TrieNode *children[26];
-    int prefixCount = 0;
+    bool isTerminal = false;
 
     // check whether it contains the following key or not
-    inline bool containsKey(char ch)
+    bool containsKey(char ch)
     {
-        return children[ch - 'a'] != NULL;
+        return children[ch - baseLetter] != NULL;
     }
 
     // get specific children
-    inline TrieNode *get(char ch)
+    TrieNode *get(char ch)
     {
-        return children[ch - 'a'];
+        return children[ch - baseLetter];
     }
 
     // set a children
-    inline void set(TrieNode *n, char ch)
+    void set(TrieNode *n, char ch)
     {
-        children[ch - 'a'] = n;
+        children[ch - baseLetter] = n;
     }
 };
 
-class Solution
+class Trie
 {
+    TrieNode *root;
+
 public:
-    vector<int> prefixCount(int N, int Q, string li[], string query[])
+    Trie() { root = new TrieNode(); }
+
+    void insert(const string &s, const int &start)
     {
-        TrieNode *root = new TrieNode();
+        TrieNode *temp = root;
 
-        for (int j = 0; j < N; j++)
+        for (int i = start; i < s.length(); i++)
         {
-            TrieNode *temp = root;
-            string s = li[j];
-
-            for (int i = 0; i < s.length(); i++)
+            // if not present just put node
+            if (!temp->containsKey(s[i]))
             {
-                // if not present just put node
-                if (!temp->containsKey(s[i]))
-                {
-                    temp->set(new TrieNode(), s[i]);
-                }
-
-                // point temp to next child
-                temp = temp->get(s[i]);
-                temp->prefixCount++;
+                temp->set(new TrieNode(), s[i]);
             }
+
+            // point temp to next child
+            temp = temp->get(s[i]);
         }
 
-        vector<int> ans(Q, 0);
+        temp->isTerminal = true;
+    }
 
-        for (int j = 0; j < Q; j++)
+    void solve(TrieNode *node, int &ans, const string &s, int start)
+    {
+        if (node == NULL)
         {
-            TrieNode *temp = root;
-            bool isAns = true;
-
-            for (int i = 0; i < query[j].length(); i++)
-            {
-                // if not present just return 0
-                if (!temp->containsKey(query[j][i]))
-                {
-                    isAns = false;
-                    ans[j] = 0;
-                    break;
-                }
-
-                // point temp to next child
-                temp = temp->get(query[j][i]);
-            }
-
-            if (isAns)
-            {
-                ans[j] = temp->prefixCount;
-            }
+            return;
         }
 
+        if (start == s.size())
+        {
+            ans++;
+            return;
+        }
+
+        if (s[start] == '?')
+        {
+            // try to match and make a word
+            for (char ch = 'a'; ch <= 'z'; ch++)
+            {
+                if (node->containsKey(ch))
+                {
+                    solve(node->get(ch), ans,s,start+1);
+                }
+            }
+        }
+        else
+        {
+            if (node->containsKey(s[start]))
+            {
+                solve(node->get(s[start]), ans, s, start + 1);
+            }
+            else
+            {
+                ans = 0;
+                return;
+            }
+        }
+    }
+
+    int match(const string &s)
+    {
+        int ans = 0;
+        solve(root, ans, s, 0);
         return ans;
     }
 };
+
+vector<int> wildcardQueries(int n, int l, vector<string> &dictionary, int q, vector<string> &query)
+{
+    Trie *t = new Trie();
+
+    for (int i = 0; i < n; i++)
+    {
+        t->insert(dictionary[i]);
+    }
+
+    vector<int> ans;
+
+    for (int i = 0; i < q; i++)
+    {
+        ans.push_back(t->match(query[i]));
+    }
+
+    return ans;
+}
 
 //{ Driver Code Starts.
 
 int main()
 {
-    // disable default 
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    
-    // set our properties
-    #ifndef IO_FROM_FILE
-    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt","r",stdin);
-    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt","w",stdout);
-    #endif
-
     int t;
     cin >> t;
     while (t--)
     {
-        int Q, N, i = 0, x;
-        cin >> N;
-        string s;
-        string li[N];
-        for (int i = 0; i < N; i++)
-            cin >> li[i];
-        cin >> Q;
-        x = Q;
-        string query[Q];
-        while (Q--)
-        {
-            cin >> s;
-            query[i++] = s;
-        }
+        int n;
+        cin >> n;
+
+        string arr[n];
+        for (int i = 0; i < n; i++)
+            cin >> arr[i];
 
         Solution ob;
-        vector<int> ans = ob.prefixCount(N, x, li, query);
-        for (auto i : ans)
-            cout << i << "\n";
+        vector<string> ans = ob.findPrefixes(arr, n);
+
+        for (int i = 0; i < ans.size(); i++)
+            cout << ans[i] << " ";
+
+        cout << "\n";
     }
+
     return 0;
 }
+
 // } Driver Code Ends

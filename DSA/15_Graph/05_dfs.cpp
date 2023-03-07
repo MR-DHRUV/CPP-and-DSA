@@ -39,8 +39,6 @@ public:
 
     vector<int> dfsOfGraphIter(int V, vector<int> adj[])
     {
-        // keep following a path until we have reach a vertex at which there are no unvisited connected nodes, when we are at such a vertex we backtrack to last visited vertex using a stack.
-
         stack<int> st;
         unordered_map<int, bool> visited;
         vector<int> ans;

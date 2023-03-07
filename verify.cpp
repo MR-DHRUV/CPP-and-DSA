@@ -1,157 +1,63 @@
+//{ Driver Code Starts
+// Initial Template for C++
+
 #include <bits/stdc++.h>
 using namespace std;
 
-class TrieNode
-{
-public:
-    TrieNode *children[26];
-    bool isTerminal;
-
-    bool containsKey(char ch)
-    {
-        return children[ch - 'a'] != NULL;
-    }
-
-    TrieNode *get(char ch)
-    {
-        return children[ch - 'a'];
-    }
-
-    void set(char ch, TrieNode *x)
-    {
-        children[ch - 'a'] = x;
-    }
-};
-
-class Trie
-{
-    TrieNode *root;
-    vector<int> dp;
-
-public:
-    Trie()
-    {
-        root = new TrieNode();
-        root->isTerminal = false;
-    }
-
-    void insert(const string &s)
-    {
-        TrieNode *temp = root;
-
-        for (int i = 0; i < s.length(); i++)
-        {
-            if (!temp->containsKey(s[i]))
-            {
-                TrieNode *n = new TrieNode();
-                n->isTerminal = false;
-                temp->set(s[i], n);
-            }
-
-            temp = temp->get(s[i]);
-        }
-
-        temp->isTerminal = true;
-    }
-
-private:
-    bool search(const string &s)
-    {
-        TrieNode *temp = root;
-
-        for (int i = 0; i < s.length(); i++)
-        {
-            if (!temp->containsKey(s[i]))
-            {
-                return false;
-            }
-
-            temp = temp->get(s[i]);
-        }
-
-        return temp->isTerminal;
-    }
-
-    void erase(const string &s)
-    {
-        TrieNode *temp = root;
-
-        for (int i = 0; i < s.size(); i++)
-        {
-            if (!temp->containsKey(s[i]))
-            {
-                return;
-            }
-
-            temp = temp->get(s[i]);
-        }
-
-        temp->isTerminal = false;
-    }
-
-public:
-    string replaceWithSmallest(const string &s)
-    {
-        TrieNode *temp = root;
-
-        for (int i = 0; i < s.length(); i++)
-        {
-            if (!temp->containsKey(s[i]))
-            {
-                return s; // cant be shortened
-            }
-
-            temp = temp->get(s[i]);
-
-            if (temp->isTerminal)
-            {
-                string shortened;
-                shortened.append(s.begin(), s.begin() + i);
-                return shortened;
-            }
-        }
-
-        return s;
-    }
-
-public:
-};
+// } Driver Code Ends
+// User function Template for C++
 
 class Solution
 {
+
 public:
-    string replaceWords(vector<string> &dictionary, string sentence)
+    int noConseBits(int n)
     {
+        // for max value starting from msb as we dont want msb to be 0
 
-        Trie *t = new Trie();
+        int count = 0;
 
-        for (int i = 0; i < dictionary.size(); i++)
+        for (int i = 31; i >= 0; i--)
         {
-            t->insert(dictionary[i]);
-        }
+            int bit = (n >> i) & 1;
 
-        string ans;
-
-        for (int i = 0; i < sentence.size(); i++)
-        {
-            string temp;
-
-            while (i < sentence.size() && sentence[i] != ' ')
+            if (bit == 1)
             {
-                temp.push_back(sentence[i++]);
+                count++;
+            }
+            else
+            {
+                count = 0;
             }
 
-            temp = t->replaceWithSmallest(temp);
-            ans.append(temp);
-            ans.push_back(' ');
+            if (count == 3)
+            {
+                n = n ^ (1 << i); // make this bit 0
+            }
         }
 
-        return ans;
+        return n;
     }
 };
+
+//{ Driver Code Starts.
 
 int main()
 {
 
+    int tt;
+    cin >> tt;
+    Solution sol;
+    while (tt--)
+    {
+
+        int n;
+        cin >> n;
+        int ans = sol.noConseBits(n);
+        cout << ans << '\n';
+    }
+
     return 0;
 }
+
+// } Driver Code Ends
