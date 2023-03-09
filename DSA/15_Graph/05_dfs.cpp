@@ -32,7 +32,10 @@ public:
 
         int start = 0;
 
-        dfsR(adj, ans, visited, start);
+        for (int i = 0; i < V; i++)
+        {
+            dfsR(adj, ans, visited, i);
+        }
 
         return ans;
     }
@@ -48,7 +51,7 @@ public:
         while (start != -1 || !st.empty())
         {
             if (start != -1)
-            {   
+            {
                 if (visited[start] == false)
                 {
                     ans.push_back(start);
