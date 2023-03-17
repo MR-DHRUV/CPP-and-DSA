@@ -1,44 +1,94 @@
+//{ Driver Code Starts
+// Initial Template for C++
 #include <bits/stdc++.h>
 using namespace std;
 
-void dfsR(vector<vector<int>> &edges,unordered_map<int, bool> &visited,vector<int> &ans, int v)
+// } Driver Code Ends
+// User function Template for C++
+class Solution
 {
-    if(!visited[v])
-    {
-        visited[v] = true;
-        ans.push_back(v);
 
-        for(auto i : edges[v])
+public:
+    set<string> t1;
+
+    int vis[100][100];
+
+    string bfs(int i, int j, vector<vector<int>> &grid, string s)
+
+    {
+
+        if (i < 0 || j < 0 || i >= grid.size() || j >= grid[0].size())
+
+            return s;
+
+        if (grid[i][j] == 0)
+
+            return s;
+
+        grid[i][j] = 0;
+
+        return bfs(i - 1, j, grid, s + "u") + bfs(i, j - 1, grid, s + "l") + bfs(i + 1, j, grid, s + "d") + bfs(i, j + 1, grid, s + "r");
+    }
+
+    int countDistinctIslands(vector<vector<int>> &grid)
+    {
+
+        memset(vis, 0, sizeof(vis));
+
+        for (int i = 0; i < grid.size(); i++)
+
         {
-            if(!visited[i])
+
+            for (int j = 0; j < grid[i].size(); j++)
+
             {
-                dfsR(edges,visited,ans,i);
+
+                if (grid[i][j] == 1 && vis[i][j] == 0)
+                {
+
+                    string str = bfs(i, j, grid, "");
+                    cout<<str<<endl;
+                    t1.insert(str);
+
+                    vis[i][j] = 1;
+                }
             }
         }
+
+        return t1.size();
     }
-}
-
-vector<vector<int>> depthFirstSearch(int V, int E, vector<vector<int>> &edges)
-{
-
-    vector<vector<int>> ans;
-    unordered_map<int, bool> visited;
-
-    for (int i = 0; i < V; i++)
-    {
-        if (!visited[i])
-        {
-            vector<int> temp;
-            dfsR(edges, visited, temp, i);
-            ans.push_back(temp);
-        }
-    }
-
-    return ans;
-}
+};
+//{ Driver Code Starts.
 
 int main()
 {
 
-    return 0;
+    // disable default
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+// set our properties
+#ifndef IO_FROM_FILE
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+#endif
+
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        int n, m;
+        cin >> n >> m;
+        vector<vector<int>> grid(n, vector<int>(m));
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                cin >> grid[i][j];
+            }
+        }
+        Solution obj;
+        cout << obj.countDistinctIslands(grid) << endl;
+    }
 }
+// } Driver Code Ends

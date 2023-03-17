@@ -1,78 +1,85 @@
+//{ Driver Code Starts
+// Initial Template for C++
+
 #include <bits/stdc++.h>
 using namespace std;
 
-class TrieNode
-{
-public:
-    bool isEnd;
-    TrieNode *child[26];
-    int k;
-    TrieNode()
-    {
-        isEnd = false;
-        k = 0;
-        for (int i = 0; i < 26; i++)
-        {
-            child[i] = NULL;
-        }
-    }
-};
-
+// } Driver Code Ends
+// User function Template for C++
 class Solution
 {
-public:
-    vector<int> prefixCount(int N, int Q, string li[], string query[])
+
+    bool isPalindrome(string s)
     {
-        // code here
-        TrieNode *root;
-        root = new TrieNode();
+        int i = 0;
+        int j = s.length() - 1;
 
-        for (int i = 0; i < N; i++)
+        while (i <= j)
         {
-            string s = li[i];
-            TrieNode *node = root;
-            for (int j = 0; j < s.size(); j++)
+            if (s[i++] == s[j--])
             {
-                int ind = s[j] - 'a';
-                if (!node->child[ind])
-                {
-                    node->child[ind] = new TrieNode();
-                }
-                // node -> child[ind] -> k++;
-                node->k++;
-                node = node->child[ind];
-            }
-            node->k++;
-            node->isEnd = true;
-        }
-        vector<int> ans(Q, 0);
-        for (int i = 0; i < Q; i++)
-        {
-            string s = query[i];
-            // int curr;
-            TrieNode *node = root;
-            // curr = node -> child[s[0] - 'a'] -> k;
-            int j;
-            for (j = 0; j < s.size(); j++)
-            {
-                int ind = s[j] - 'a';
-                if (node->child[ind] == NULL)
-                {
-                    ans[i] = 0;
-                    break;
-                }
-                node = node->child[ind];
+                continue;
             }
 
-            if (j == s.size())
-                ans[i] = node->k;
+            return false;
         }
-        return ans;
+
+        return true;
+    }
+
+    // Complete the function and return minimum number of operations
+public:
+    int specialPalindrome(string s1, string s2)
+    {
+        // base cases
+        if (s2.length() > s1.length())
+        {
+            return -1;
+        }
+
+        if (s1.length() == s2.length())
+        {
+            if (s1 == s2 && isPalindrome(s1))
+            {
+                return 0;
+            }
+
+            return -1;
+        }
+
+        for (int i = 0; i < s2.length(); i++)
+        {
+            // hum s2 banana chah rahe haii s1 me starting from index i
+            // locate the strting index if 0-> i-1 tak ka part present haii 
+
+            // finding all the indeces that contains the s2 from 0 to i 
+
+            for (int j = 0; j < s1.length(); j++)
+            {
+                
+            }
+            
+        }
+        
+
+
     }
 };
+
+//{ Driver Code Starts.
 
 int main()
 {
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        string s1, s2;
+        cin >> s1 >> s2;
+        Solution obj;
+        int ans = obj.specialPalindrome(s1, s2);
 
-    return 0;
+        cout << ans << endl;
+    }
 }
+// } Driver Code Ends

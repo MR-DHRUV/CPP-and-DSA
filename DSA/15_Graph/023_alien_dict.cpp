@@ -9,27 +9,23 @@ using namespace std;
 
 class Solution{
     public:
-    string findOrder(string dict[], int N, int K) {
+    string findOrder(string dict[], int N, int K)
+    {
+        // intution to use topoSort
+        // we want alien alphabetical order
+        // thus we have to compare strings in the alien dict and find out by which character they are distinguished
+        // abd abc 
+        // ab == ab 
+        // d comes before c
+        // thus we will have pairs that what comes before what => topoSort
         
-        //code here
-        
-        string ans;
-        unordered_map<char,bool> used;
 
-        // brute force approach 
-        for(int i = 0; i < N-1; i++)
-        {
-            int j = 0;
-            while (dict[i][j] == dict[i+1][j])
-            {
-                j++;
-            }
 
-            char decision = 
-            
-        }
     }
 };
+
+
+
 
 //{ Driver Code Starts.
 string order;
