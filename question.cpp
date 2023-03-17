@@ -1,80 +1,136 @@
 //{ Driver Code Starts
-// Initial Template for C++
-
 #include <bits/stdc++.h>
 using namespace std;
 
 // } Driver Code Ends
-// User function Template for C++
-
-class Solution{
-    public:
-    string findOrder(string dict[], int N, int K) {
-        
-        //code here
-        
-        string ans;
-        unordered_map<char,bool> used;
-
-        // brute force approach 
-        for(int i = 0; i < N-1; i++)
+class Solution
+{
+    void printMat(vector<vector<int>> arr)
+    {
+        for (int i = 0; i < arr.size(); i++)
         {
-            int j = 0;
-            while (dict[i][j] == dict[i+1][j])
+            for (int j = 0; j < arr[i].size(); j++)
             {
-                j++;
+                cout << arr[i][j] << " ";
             }
-
-            char decision = 
-            
+            cout << endl;
         }
+    }
+
+    void printArr(vector<int> arr)
+    {
+        for (int i = 0; i < arr.size(); i++)
+        {
+            cout<<arr[i]<<" "; 
+        }
+    
+        cout<<endl;
+        
+    }
+    
+
+    vector<int> checkCycleKahn(int V, vector<vector<int>> &adj, vector<int> &inDeg)
+    {
+        queue<int> qt;
+        vector<int> topo;
+
+        for (int i = 0; i < V; i++)
+        {
+            if (inDeg[i] == 0)
+            {
+                qt.push(i);
+            }
+        }
+
+        if (qt.size() == 0)
+        {
+            return topo;
+        }
+
+        while (!qt.empty())
+        {
+            int f = qt.front();
+            qt.pop();
+
+            topo.push_back(f);
+
+            for (auto nbr : adj[f])
+            {
+                inDeg[nbr]--;
+
+                if (inDeg[nbr] == 0)
+                {
+                    qt.push(nbr);
+                }
+            }
+        }
+
+        if(topo.size() == V)
+        {
+            reverse(topo.begin(),topo.end());
+        }
+        else
+        {
+            topo.clear();
+        }
+
+        return topo;
+    }
+
+public:
+    vector<int> findOrder(int n, int m, vector<vector<int>> prerequisites)
+    {
+        // Code here
+
+        // problem reduced to detecting cycle in a directed graph as if there are three tasks
+        // 1->2->3 and 3->1
+        // such tasks can never be finished
+
+        // finding topo sort using kahn's algo to determine presence of a cycle in a directed graph
+
+        vector<vector<int>> adj(n);
+        vector<int> inDeg(N, 0);
+
+        for (auto edge : prerequisites)
+        {
+            adj[edge[0]].push_back(edge[1]);
+            inDeg[edge[1]]++;
+        }
+
+        printMat(adj);
+        printArr(inDeg);
+        
+
+        return checkCycleKahn(N, adj, inDeg);
     }
 };
 
 //{ Driver Code Starts.
-string order;
-bool f(string a, string b) {
-    int p1 = 0;
-    int p2 = 0;
-    for (int i = 0; i < min(a.size(), b.size()) and p1 == p2; i++) {
-        p1 = order.find(a[i]);
-        p2 = order.find(b[i]);
-        //	cout<<p1<<" "<<p2<<endl;
-    }
-
-    if (p1 == p2 and a.size() != b.size()) return a.size() < b.size();
-
-    return p1 < p2;
-}
-
-// Driver program to test above functions
-int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        int N, K;
-        cin >> N >> K;
-        string dict[N];
-        for (int i = 0; i < N; i++) cin >> dict[i];
-        
-        Solution obj;
-        string ans = obj.findOrder(dict, N, K);
-        order = "";
-        for (int i = 0; i < ans.size(); i++) order += ans[i];
-
-        string temp[N];
-        std::copy(dict, dict + N, temp);
-        sort(temp, temp + N, f);
-
-        bool f = true;
-        for (int i = 0; i < N; i++)
-            if (dict[i] != temp[i]) f = false;
-
-        if(f)cout << 1;
-        else cout << 0;
+int main()
+{
+    int tc;
+    cin >> tc;
+    while (tc--)
+    {
+        int N, P;
+        vector<pair<int, int>> prerequisites;
+        cin >> N;
+        cin >> P;
+        for (int i = 0; i < P; ++i)
+        {
+            int x, y;
+            cin >> x >> y;
+            prerequisites.push_back(make_pair(x, y));
+        }
+        // string s;
+        // cin>>s;
+        Solution ob;
+        if (ob.isPossible(N, prerequisites))
+            cout << "Yes";
+        else
+            cout << "No";
         cout << endl;
     }
     return 0;
 }
-
 // } Driver Code Ends
