@@ -28,6 +28,9 @@ public:
         bat pat pot poz coz
     */
 
+    // here the size of queue will vary from ans to ans thus we cannot predict the time complexity of this queue
+
+
     vector<vector<string>> findSequences(string beginWord, string endWord, vector<string> &wordList)
     {
         // we will store word,noOfTransformsDone in queue
@@ -60,6 +63,7 @@ public:
         // vector to store words that are used in any level
         vector<string> lvlStore;
 
+        // here the size of queue will vary from ans to ans thus we cannot predict the time complexity of this queue
         while (!qt.empty())
         {
             // traversing level by level
@@ -142,6 +146,8 @@ public:
                     s.erase(word);
                 }
             }
+
+            lvlStore.clear();
         }
 
         // not possible
