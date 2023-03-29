@@ -1,85 +1,56 @@
-//{ Driver Code Starts
-// Initial Template for C++
-
 #include <bits/stdc++.h>
 using namespace std;
 
-// } Driver Code Ends
-// User function Template for C++
-class Solution
+int minColour(int N, int M, vector<int> mat[])
 {
+    vector<int> in(N + 1, 0);
+    vector<vector<int>> ad(N + 1);
 
-    bool isPalindrome(string s)
+    for (int i = 0; i < M; i++)
     {
-        int i = 0;
-        int j = s.length() - 1;
-
-        while (i <= j)
-        {
-            if (s[i++] == s[j--])
-            {
-                continue;
-            }
-
-            return false;
-        }
-
-        return true;
+        in[mat[i][0]]++;
+        ad[mat[i][1]].push_back(mat[i][0]);
     }
 
-    // Complete the function and return minimum number of operations
-public:
-    int specialPalindrome(string s1, string s2)
+    queue<int> qt;
+
+    for (int i = 1; i <= N; i++)
     {
-        // base cases
-        if (s2.length() > s1.length())
+        if (in[i] == 0)
         {
-            return -1;
+            qt.push(i);
         }
-
-        if (s1.length() == s2.length())
-        {
-            if (s1 == s2 && isPalindrome(s1))
-            {
-                return 0;
-            }
-
-            return -1;
-        }
-
-        for (int i = 0; i < s2.length(); i++)
-        {
-            // hum s2 banana chah rahe haii s1 me starting from index i
-            // locate the strting index if 0-> i-1 tak ka part present haii 
-
-            // finding all the indeces that contains the s2 from 0 to i 
-
-            for (int j = 0; j < s1.length(); j++)
-            {
-                
-            }
-            
-        }
-        
-
-
     }
-};
 
-//{ Driver Code Starts.
+    int ans = 0;
+
+    while (qt.size() != 0)
+    {
+        int k = qt.size();
+        for (int i = 0; i < k; i++)
+        {
+            int node = qt.front();
+            qt.pop();
+            for (int j = 0; j < ad[node].size(); j++)
+            {
+                if (in[ad[node][j]] >= 1)
+                {
+                    in[ad[node][j]]--;
+                    if (in[ad[node][j]] == 0)
+                    {
+                        qt.push(ad[node][j]);
+                    }
+                }
+            }
+        }
+        ans++;
+    }
+
+    return ans;
+}
 
 int main()
 {
-    int t;
-    cin >> t;
-    while (t--)
-    {
-        string s1, s2;
-        cin >> s1 >> s2;
-        Solution obj;
-        int ans = obj.specialPalindrome(s1, s2);
 
-        cout << ans << endl;
-    }
+    return 0;
 }
-// } Driver Code Ends

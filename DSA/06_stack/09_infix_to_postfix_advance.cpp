@@ -9,7 +9,7 @@ using namespace std;
 
 class Solution
 {
-    bool isOperand(char x)
+    bool isOperator(char x)
     {
         if (x == '*' || x == '/' || x == '+' || x == '-' || x == '(' || x == ')' || x == '^')
         {
@@ -51,7 +51,7 @@ public:
 
         for (int i = 0; i < s.length(); i++)
         {
-            if (isOperand(s[i]))
+            if (isOperator(s[i]))
             {
                 ans.push_back(s[i]);
             }
