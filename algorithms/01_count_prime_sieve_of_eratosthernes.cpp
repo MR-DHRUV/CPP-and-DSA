@@ -8,7 +8,6 @@ int count_prime(int n)
     int count = 0;
     vector<bool> prime(n+1,true);
 
-
     // 0 and 1 are non prime
     prime[0] = false;
 
@@ -41,8 +40,6 @@ int count_prime(int n)
     //         cout<<i<<" ";
     //     }
     // }
-    
-
     return count;
 }
 

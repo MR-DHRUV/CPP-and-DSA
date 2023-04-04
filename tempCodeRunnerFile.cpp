@@ -1,56 +1,53 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int minColour(int N, int M, vector<int> mat[])
+// at each point we can cut into 3 types of pieces
+int solve(int n, vector<int> &arr, vector<int> &dp)
 {
-    vector<int> in(N + 1, 0);
-    vector<vector<int>> ad(N + 1);
+    if (n == 0)
+        return 0;
 
-    for (int i = 0; i < M; i++)
+    if (n < 0)
+        return 1e9;
+
+    if (dp[n] != -1)
+        return dp[n];
+
+    // cutting
+    int ans = -1;
+
+    for (int len : arr)
     {
-        in[mat[i][0]]++;
-        ad[mat[i][1]].push_back(mat[i][0]);
-    }
+        int t = solve(n - len, arr, dp);
 
-    queue<int> qt;
-
-    for (int i = 1; i <= N; i++)
-    {
-        if (in[i] == 0)
+        if (t < 1e9)
         {
-            qt.push(i);
+            ans = max(ans, 1 + t); // 1 for current piece
         }
     }
 
-    int ans = 0;
+    if (ans == -1)
+        return dp[n] = 1e9;
 
-    while (qt.size() != 0)
-    {
-        int k = qt.size();
-        for (int i = 0; i < k; i++)
-        {
-            int node = qt.front();
-            qt.pop();
-            for (int j = 0; j < ad[node].size(); j++)
-            {
-                if (in[ad[node][j]] >= 1)
-                {
-                    in[ad[node][j]]--;
-                    if (in[ad[node][j]] == 0)
-                    {
-                        qt.push(ad[node][j]);
-                    }
-                }
-            }
-        }
-        ans++;
-    }
+    return dp[n] = ans;
+}
 
-    return ans;
+int cutSegments(int n, int x, int y, int z)
+{
+    vector<int> arr = {x, y, z};
+    vector<int> dp(n + 1, -1);
+
+    int ans = solve(n, arr, dp);
+
+    return ans >= 1e9 ? 0 : ans;
 }
 
 int main()
 {
+    // Solution obj;
 
+    vector<int> a = {4, 0, 8, 10, 5, 6};
+
+    // cout << houseRobber(a);
     return 0;
 }

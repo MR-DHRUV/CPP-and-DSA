@@ -1,87 +1,70 @@
-//{ Driver Code Starts
-// Initial Template for C++
-
 #include <bits/stdc++.h>
+#include <fstream>
+
 using namespace std;
 
-// } Driver Code Ends
-// User function Template for C++
-class Solution
+template <class T>
+class LCG
 {
-    // Complete the function and return minimum number of operations
+    T _min;
+    T _max;
+    T _a;
+    T _c;
+    T _mod;
 public:
-    int specialPalindrome(string s1, string s2)
+    T _seed;
+
+    LCG(T min, T max, T seed, T a, T c, T mod) : _min(min), _max(max), _seed(seed), _a(a), _c(c), _mod(mod){};
+
+    T operator()()
     {
+        // lgc function
+        _seed = (_a * _seed + _c) % _mod;
 
-        int ans = INT_MAX;
-        int n = s1.size() - 1;
-        int m = s1.size();
-
-        // brute force solution
-        for (int i = 0; i < s1.length(); i++)
-        {
-            // copy s2 at index i
-            string temp = s1;
-            int cnt = 0;
-            bool isPossible = true;
-
-            for (int j = 0; j < s2.length(); j++)
-            {
-                if (temp[i + j] == s2[j])
-                {
-                    continue;
-                }
-                else
-                {
-                    cnt++;
-                    temp[i + j] = s2[j];
-                }
-            }
-
-            // checking if we can make it palindrome
-
-            for (int j = 0; j < temp.length() / 2; j++)
-            {
-                if (temp[j] == temp[n - j])
-                {
-                    continue;
-                }
-
-                // if j and n-j both are parts of s2 we cant make our string so it will be -1 as paer current situation
-                if (j >= i && j <= (i + s2.length()) && (n - j) >= i && (n - j) <= (i + s2.length()))
-                {
-                    isPossible = false;
-                    break;
-                }
-
-                // convert possible one
-                cnt++;
-            }
-
-            if (isPossible)
-            {
-                ans = min(ans, cnt);
-            }
-        }
-
-        return ans == INT_MAX ? -1 : ans;
+        // bound to limit
+        return (_seed % (_max - _min + 1)) + _min;
     }
 };
 
-//{ Driver Code Starts.
+template <class T>
+class RandGen
+{
+public:
+    void operator()(const string &filename, int len, LCG<T> &generator)
+    {
+        // Create a new file
+        ofstream file(filename);
+
+        // write first num as no of numbers in the file
+        file<<len<<endl;
+
+        // Generate the random numbers and write them to the file
+        for (int i = 0; i < len; i++)
+        {
+            file << generator() << endl;
+        }
+
+        file.close();
+
+        cout << "Generated " << len << " random numbers in " << filename << endl;
+    }
+};
 
 int main()
 {
-    int t;
-    cin >> t;
-    while (t--)
-    {
-        string s1, s2;
-        cin >> s1 >> s2;
-        Solution obj;
-        int ans = obj.specialPalindrome(s1, s2);
+    // init
+    int arr[] = {50};
+    int n = sizeof(arr) / sizeof(arr[0]);
 
-        cout << ans << endl;
+    // init lcg function
+    LCG<long long int> func(0,8000,5784,39,71,75957137);
+
+    // Generate files
+    for (int i = 0; i < n; i++)
+    {
+        RandGen<long long int> generator;
+        generator("random_" + to_string(arr[i]) + ".txt",arr[i],func);
     }
+
+    return 0;
 }
-// } Driver Code Ends

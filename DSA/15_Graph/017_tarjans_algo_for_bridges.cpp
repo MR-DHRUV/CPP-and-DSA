@@ -24,7 +24,7 @@ using namespace std;
 // back edges are edges to a node that help in reching current node faster
 // condition to check back edges : let current edge be u,visited [v] = true
 // update the low[u]
-// while returning from a dfs call , if neibghour is updated then there may exist a shorter path to reach current node, so we'll update low of current node also
+// while returning from a dfs call , if neighbour is updated then there may exist a shorter path to reach current node, so we'll update low of current node also
 
 // if for any edge u,v , low[v] > disc[u] that means u is the only edge through which we can reach v , thus its a bridge
 
