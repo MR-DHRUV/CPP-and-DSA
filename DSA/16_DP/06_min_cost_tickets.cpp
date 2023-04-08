@@ -61,10 +61,55 @@ int solveTab(int &n, vector<int> &days, vector<int> &cost)
     return dp[0];
 }
 
+int solveTabSpaceOpt(int &n, vector<int> &days, vector<int> &cost)
+{
+    // day , cost till that day
+    queue<pair<int, int>> month, week;
+
+    // This solution has a space complexity of O(1) as at any instatnt in the monthly queue there will not be more than 30 elements and 7 in weekly.
+
+    // Worst case
+    // dayw were like 1,2,3.....
+    // if we are at say 60th day, last day processed was 59
+    // and max no of elements that can have day > 60 will be as 
+    // 59+30, 58+30 ........... 31+30
+    // ans all the expired days will be removed
+
+    int ans = 0;
+
+    for (int day : days)
+    {
+        // step 1 : remove expired days from both queue's
+        while (!month.empty() && month.front().first + 30 <= day)
+            month.pop();
+
+        while (!week.empty() && week.front().first + 7 <= day)
+            week.pop();
+
+        // add current days cost
+        week.push({day, ans + cost[1]});
+        month.push({day, ans + cost[2]});
+
+        // update ans
+        //  why this
+        //  since queue will have cost to travel on days > current day, so in given cost we can travel ahead
+
+        ans += cost[0]; // 1 day ticket
+
+        if (!week.empty())
+            ans = min(ans, week.front().second);
+
+        if (!month.empty())
+            ans = min(ans, month.front().second);
+    }
+
+    return ans;
+}
+
 int minimumCoins(int n, vector<int> days, vector<int> cost)
 {
     // vector<int> dp(367, -1);
-    return solveTab(n, days, cost);
+    return solveTabSpaceOpt(n, days, cost);
 }
 
 int main()
