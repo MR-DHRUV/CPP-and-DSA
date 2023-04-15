@@ -9,66 +9,97 @@ using namespace std;
 
 class Solution
 {
-    int solve(int tar, vector<int> &dp)
+    int solve(int i, int sumA, int arr[], int &n, vector<vector<int>> &dp)
     {
-        if (tar == 0)
+        // base case
+        if (sumA == 0)
+            return 1;
+
+        if (i >= n || sumA < 0)
             return 0;
 
-        if (dp[tar] != -1)
-            return dp[tar];
+        if (dp[i][sumA] != -1)
+            return dp[i][sumA];
 
-        int ans = tar; // 1 se bana dia tar baar 1 add krke
+        // we can either take current element in part 1 or part 2
+        // our target is to make sum of any part totalSum/2
 
-        for (int i = 1; i * i <= tar; i++)
-        {
-            if (tar - (i * i) >= 0)
-                ans = min(ans, 1 + solve(tar - (i * i), dp));
-        }
+        if (solve(i + 1, sumA - arr[i], arr, n, dp)) // part 1
+            return dp[i][sumA] = 1;
 
-        return dp[tar] = ans;
+        if (solve(i + 1, sumA, arr, n, dp)) // part 2
+            return dp[i][sumA] = 1;
+
+        return dp[i][sumA] = 0;
     }
 
-    int solveTab(int &n)
+    int solveTab(int arr[], int &n, int sum)
     {
-        vector<int> dp(n + 1, 1e9);
+        vector<vector<int>> dp(2, vector<int>(sum + 2, 0));
 
         // base case
-        dp[0] = 0;
+        dp[0][0] = 1;
+        dp[1][0] = 1;
 
-        for (int tar = 1; tar <= n; tar++)
+        // dp[i][j] represents that we want to make sum j using i no of elements
+
+        for (int i = n - 1; i >= 0; i--)
         {
-            dp[tar] = tar; // 1 se bana dia tar baar 1 add krke
-
-            for (int i = 1; i * i <= tar; i++)
+            for (int sumA = 1; sumA <= sum; sumA++)
             {
-                if (tar - (i * i) >= 0)
-                    dp[tar] = min(dp[tar], 1 + dp[tar - (i * i)]);
+                if ((sumA - arr[i] >= 0 && dp[1][sumA - arr[i]]) || dp[1][sumA])
+                    dp[0][sumA] = 1;
             }
+
+            // optimization
+            if (dp[0][sum] == 1)
+                return 1;
+
+            dp[1] = dp[0];
         }
 
-        return dp[n];
+        return dp[0][sum];
     }
 
 public:
-    int MinSquares(int n)
+    int equalPartition(int N, int arr[])
     {
-        // vector<int> dp(n + 2, -1);
-        return solveTab(n);
+        long long sum = 0;
+        for (int i = 0; i < N; i++)
+        {
+            sum += arr[i];
+        }
+
+        // if sum is odd we cant divide it into 2 parts
+        if (sum % 2 != 0)
+            return 0;
+
+        vector<vector<int>> dp(N + 1, vector<int>((sum / 2) + 1, -1));
+        return solve(0, sum / 2, arr, N, dp);
+
+        return solveTab(arr, N, sum / 2);
     }
 };
 
 //{ Driver Code Starts.
+
 int main()
 {
-    int tc;
-    cin >> tc;
-    while (tc--)
+    int t;
+    cin >> t;
+    while (t--)
     {
-        int n;
-        cin >> n;
+        int N;
+        cin >> N;
+        int arr[N];
+        for (int i = 0; i < N; i++)
+            cin >> arr[i];
+
         Solution ob;
-        int ans = ob.MinSquares(n);
-        cout << ans << "\n";
+        if (ob.equalPartition(N, arr))
+            cout << "YES\n";
+        else
+            cout << "NO\n";
     }
     return 0;
 }

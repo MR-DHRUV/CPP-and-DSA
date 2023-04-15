@@ -1,78 +1,86 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int solve(int i, vector<int> &days, vector<int> &cost, vector<int> &dp)
+class Solution
 {
-    if (i >= days.size())
-        return 0;
-
-    if (dp[i] != -1)
-        return dp[i];
-
-    // 1 day pass
-    int ans = cost[0] + solve(i + 1, days, cost, dp);
-
-    // 7 day pass
-    int maxTravel = i;
-
-    for (; maxTravel < days.size() && days[maxTravel] < days[i] + 7; maxTravel++)
-        ;
-    ans = min(ans, cost[1] + solve(maxTravel, days, cost, dp));
-
-    // 30 day pass
-    maxTravel = i;
-
-    for (; maxTravel < days.size() && days[maxTravel] < days[i] + 30; maxTravel++)
-        ;
-    ans = min(ans, cost[2] + solve(maxTravel, days, cost, dp));
-
-    return dp[i] = ans;
-}
-
-int solveTab(int &n, vector<int> &days, vector<int> &cost)
-{
-    vector<int> dp(n + 1, INT_MAX);
-
-    // base case
-    dp[n] = 0;
-
-    for (int k = n - 1; k >= 0; k--)
+    int solve(int i, int n, vector<int> &slices, vector<vector<int>> &dp)
     {
-        // 1 day pass
-        int ans = cost[0] + dp[k + 1];
+        if (i >= slices.size() || n <= 0)
+            return 0;
 
-        // 7 day pass
-        int maxTravel = k;
+        if (dp[i][n] != -1)
+            return dp[i][n];
 
-        for (; maxTravel < days.size() && days[maxTravel] < days[k] + 7; maxTravel++)
-            ;
-        ans = min(ans, cost[1] + dp[maxTravel]);
+        // we can either eat this slice or not
+        int ans = solve(i + 1, n, slices, dp);
 
-        // 30 day pass
-        maxTravel = k;
+        // eat
+        ans = max(ans, slices[i] + solve(i + 2, n - 1, slices, dp));
 
-        for (; maxTravel < days.size() && days[maxTravel] < days[k] + 30; maxTravel++)
-            ;
-        ans = min(ans, cost[2] + dp[maxTravel]);
-
-        dp[k] = ans;
+        return dp[i][n] = ans;
     }
 
-    return dp[0];
-}
+    int solveTab(vector<int> &slices)
+    {
+        int totalSlices = slices.size();
+        int count = (slices.size()+1)/3;
 
-int minimumCoins(int n, vector<int> days, vector<int> cost)
-{
-    // vector<int> dp(367, -1);
-    return solveTab(n, days, cost);
-}
+        vector<vector<int>> dp(3, vector<int>((count) + 1, 0));
+
+        for (int i = totalSlices - 1; i >= 0; i--)
+        {
+            for (int n = 1; n <= count; n++)
+            {
+                // we can either eat this slice or not
+                int ans = dp[1][n];
+
+                // eat
+                ans = max(ans, slices[i] + dp[2][n - 1]);
+
+                dp[0][n] = ans;
+            }
+
+            dp[2] = dp[1];
+            dp[1] = dp[0];
+        }
+
+        return dp[0][count];
+    }
+
+public:
+    int maxSizeSlices(vector<int> &slices)
+    {
+        int n = slices.size() / 3;
+
+        auto s1 = slices, s2 = slices;
+        s1.erase(s1.begin());
+        s2.erase(s2.end() - 1);
+
+        // vector<vector<int>> dp(slices.size() + 1, vector<int>(n + 1, -1));
+        // int ans = solve(0, n, s1, dp);
+
+        // dp = vector<vector<int>>(slices.size() + 1, vector<int>(n + 1, -1));
+        // ans = max(ans, solve(0, n, s2, dp));
+
+        int ans = max(solveTab(s1), solveTab(s2));
+
+        return ans;
+    }
+};
 
 int main()
 {
-    // Solution obj;
+    Solution obj;
 
-    vector<int> a = {4, 0, 8, 10, 5, 6};
+    vector<int> a = {1, 2, 3, 4, 5, 6};
+    cout << obj.maxSizeSlices(a);
 
-    // cout << houseRobber(a);
+    vector<vector<int>> cuboids = {
+        {50, 45, 20},
+        {95, 37, 53},
+        {45, 23, 12}};
+
+    // cout << obj.maxHeight(cuboids) << endl;
+
     return 0;
 }
