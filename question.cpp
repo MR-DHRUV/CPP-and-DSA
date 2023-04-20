@@ -2,134 +2,232 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Item
+struct Node
 {
-    int value;
-    int weight;
+    int data;
+    Node *left;
+    Node *right;
 };
+
+Node *newNode(int val)
+{
+    Node *temp = new Node;
+    temp->data = val;
+    temp->left = NULL;
+    temp->right = NULL;
+
+    return temp;
+}
+
+Node *buildTree(string str)
+{
+    // Corner Case
+    if (str.length() == 0 || str[0] == 'N')
+        return NULL;
+
+    // Creating vector of strings from input
+    // string after spliting by space
+    vector<string> ip;
+
+    istringstream iss(str);
+    for (string str; iss >> str;)
+        ip.push_back(str);
+
+    // Create the root of the tree
+    Node *root = newNode(stoi(ip[0]));
+
+    // Push the root to the queue
+    queue<Node *> queue;
+    queue.push(root);
+
+    // Starting from the second element
+    int i = 1;
+    while (!queue.empty() && i < ip.size())
+    {
+
+        // Get and remove the front of the queue
+        Node *currNode = queue.front();
+        queue.pop();
+
+        // Get the current node's value from the string
+        string currVal = ip[i];
+
+        // If the left child is not null
+        if (currVal != "N")
+        {
+
+            // Create the left child for the current node
+            currNode->left = newNode(stoi(currVal));
+
+            // Push it to the queue
+            queue.push(currNode->left);
+        }
+
+        // For the right child
+        i++;
+        if (i >= ip.size())
+            break;
+        currVal = ip[i];
+
+        // If the right child is not null
+        if (currVal != "N")
+        {
+
+            // Create the right child for the current node
+            currNode->right = newNode(stoi(currVal));
+
+            // Push it to the queue
+            queue.push(currNode->right);
+        }
+        i++;
+    }
+
+    return root;
+}
 
 // } Driver Code Ends
-// class implemented
 /*
-struct Item{
-    int value;
-    int weight;
-};
-*/
+// node structure:
 
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Item
+struct Node
 {
-    int value;
-    int weight;
+    int data;
+    Node* left;
+    Node* right;
 };
 
-// } Driver Code Ends
-// class implemented
-/*
-struct Item{
-    int value;
-    int weight;
-};
 */
 
 class Solution
 {
-public:
-    // Function to get the maximum total value in the knapsack.
-    double fractionalKnapsack(int W, Item arr[], int n)
-    {
-        // wo item dallo jiski value/weight ratio maximum ho
-        vector<pair<double, int>> storage;
 
-        for (int i = 0; i < n; i++)
+    Node *createParentMapping(Node *root, int target, unordered_map<Node *, Node *> &nodeToParent)
+    {
+        // we will create such mapping using level order traversal
+        Node *res = NULL;
+
+        queue<Node *> q;
+        q.push(root);
+
+        // root node will not have any parent
+        nodeToParent[root] = NULL;
+
+        while (!q.empty())
         {
-            double r = (double)arr[i].value / (double)arr[i].weight;
-            storage.push_back({r, arr[i].weight});
+            Node *front = q.front();
+            q.pop();
+
+            // checking if it is our target node or not
+            if (front->data == target)
+            {
+                res = front;
+            }
+
+            // setting mapping
+            if (front->left != NULL)
+            {
+                // marking parent
+                nodeToParent[front->left] = front;
+                q.push(front->left);
+            }
+            if (front->right != NULL)
+            {
+                // marking parent
+                nodeToParent[front->right] = front;
+                q.push(front->right);
+            }
         }
 
-        sort(storage.begin(), storage.end());
-        cout << storage[n - 1].first << endl;
+        return res;
+    }
 
-        double ans = 0;
-        double used = 0;
+    int solve(Node *target, unordered_map<Node *, Node *> &nodeToParent, int &k)
+    {
+        // this map will check that we have burned that element or not
+        map<Node *, bool> visited;
 
-        for (int i = n - 1; i >= 0 && used < W; i--)
+        // for iterations
+        queue<Node *> q;
+        q.push(target);
+
+        int ans = 0;
+
+        for (int i = 0; i < k && !q.empty(); i++)
         {
-            double left = (double)W - used;
+            int size = q.size();
+            bool burned = false;
 
-            if (storage[i].second >= left)
+            for (int i = 0; i < size; i++)
             {
-                ans += (left * storage[i].first);
-                used += left;
-            }
-            else
-            {
-                // saara lelo
-                ans += (storage[i].first * storage[i].second);
-                used += storage[i].second;
+                // process neighbouring node
+                Node *front = q.front();
+                q.pop();
+
+                // attached haii so it will take 0 seconds to burn so just ignore it
+                if (front->left != NULL && visited[front->left] == false)
+                {
+                    // marking that we have visited this element
+                    visited[front->left] = true;
+                    q.push(front->left);
+                    burned = true;
+                    ans += front->left->data;
+                }
+                if (front->right != NULL && visited[front->right] == false)
+                {
+                    // marking that we have visited this element
+                    visited[front->right] = true;
+                    q.push(front->right);
+                    burned = true;
+                    ans += front->right->data;
+                }
+
+                // checking for its parent
+                if (nodeToParent[front] != NULL && visited[nodeToParent[front]] == false)
+                {
+                    q.push(nodeToParent[front]);
+                    visited[nodeToParent[front]] = true;
+                    burned = true;
+                    ans += nodeToParent[front]->data;
+                }
             }
         }
 
         return ans;
     }
+
+public:
+    int ladoos(Node *root, int home, int k)
+    {
+        unordered_map<Node *, Node *> nodeToParent;
+        Node *targetNode = createParentMapping(root, home, nodeToParent);
+
+        if (targetNode == NULL)
+            return 0;
+
+        return solve(targetNode, nodeToParent, k);
+    }
 };
 
 //{ Driver Code Starts.
 int main()
 {
     int t;
-    // taking testcases
     cin >> t;
-    cout << setprecision(2) << fixed;
+    getchar();
+
     while (t--)
     {
-        // size of array and weight
-        int n, W;
-        cin >> n >> W;
+        string s;
+        getline(cin, s);
+        Node *root = buildTree(s);
 
-        Item arr[n];
-        // value and weight of each item
-        for (int i = 0; i < n; i++)
-        {
-            cin >> arr[i].value >> arr[i].weight;
-        }
-
-        // function call
-        Solution ob;
-        cout << ob.fractionalKnapsack(W, arr, n) << endl;
+        int home, k;
+        cin >> home >> k;
+        getchar();
+        Solution obj;
+        cout << obj.ladoos(root, home, k) << endl;
     }
     return 0;
 }
-// } Driver Code Ends
 
-//{ Driver Code Starts.
-int main()
-{
-    int t;
-    // taking testcases
-    cin >> t;
-    cout << setprecision(2) << fixed;
-    while (t--)
-    {
-        // size of array and weight
-        int n, W;
-        cin >> n >> W;
-
-        Item arr[n];
-        // value and weight of each item
-        for (int i = 0; i < n; i++)
-        {
-            cin >> arr[i].value >> arr[i].weight;
-        }
-
-        // function call
-        Solution ob;
-        cout << ob.fractionalKnapsack(W, arr, n) << endl;
-    }
-    return 0;
-}
 // } Driver Code Ends
