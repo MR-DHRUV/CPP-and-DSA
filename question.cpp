@@ -116,10 +116,10 @@ public:
             reverse(s.begin(), s.end());
             a += t2.countWordsStartingWith(s);
 
-            if(a > 0)
+            if (a > 0)
                 ans++;
         }
-        
+
         return ans;
     }
 };
