@@ -1,135 +1,158 @@
 //{ Driver Code Starts
+// Initial Template for C++
+
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Item
-{
-    int value;
-    int weight;
-};
-
 // } Driver Code Ends
-// class implemented
-/*
-struct Item{
-    int value;
-    int weight;
-};
-*/
+// User function Template for C++
 
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Item
+class TrieNode
 {
-    int value;
-    int weight;
+public:
+// to change from lowercase to uppercase in just one change
+#define baseLetter 'a'
+
+    // children
+    TrieNode *children[26];
+
+    // count of no of words that end on this letter
+    int terminalCount = 0;
+
+    // count of no of words which have this prefix
+    int prefixCount = 0;
+
+    // check whether it contains the following key or not
+    bool containsKey(char ch)
+    {
+        return children[ch - baseLetter] != NULL;
+    }
+
+    // get specific children
+    TrieNode *get(char ch)
+    {
+        return children[ch - baseLetter];
+    }
+
+    // set a children
+    void set(TrieNode *n, char ch)
+    {
+        children[ch - baseLetter] = n;
+    }
 };
 
-// } Driver Code Ends
-// class implemented
-/*
-struct Item{
-    int value;
-    int weight;
+class Trie
+{
+    TrieNode *root;
+
+public:
+    Trie() { root = new TrieNode(); }
+
+    void insert(string s)
+    {
+        TrieNode *temp = root;
+
+        for (int i = 0; i < s.length(); i++)
+        {
+            // if not present just put node
+            if (!temp->containsKey(s[i]))
+            {
+                temp->set(new TrieNode(), s[i]);
+            }
+
+            // point temp to next child
+            temp = temp->get(s[i]);
+            temp->prefixCount++;
+        }
+
+        // now temp points to terminal node
+        temp->terminalCount++;
+    }
+
+    int countWordsStartingWith(string s)
+    {
+        TrieNode *temp = root;
+
+        for (int i = 0; i < s.length(); i++)
+        {
+            // if not present just return 0
+            if (!temp->containsKey(s[i]))
+            {
+                return 0;
+            }
+
+            // point temp to next child
+            temp = temp->get(s[i]);
+        }
+
+        return temp->prefixCount;
+    }
 };
-*/
 
 class Solution
 {
 public:
-    // Function to get the maximum total value in the knapsack.
-    double fractionalKnapsack(int W, Item arr[], int n)
+    int prefixSuffixString(vector<string> &s1, vector<string> s2)
     {
-        // wo item dallo jiski value/weight ratio maximum ho
-        vector<pair<double, int>> storage;
+        // loading s1
+        Trie t1, t2;
 
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < s1.size(); i++)
         {
-            double r = (double)arr[i].value / (double)arr[i].weight;
-            storage.push_back({r, arr[i].weight});
+            string s = s1[i];
+            t1.insert(s);
+
+            reverse(s.begin(), s.end());
+            t2.insert(s);
         }
 
-        sort(storage.begin(), storage.end());
-        cout << storage[n - 1].first << endl;
+        int ans = 0;
 
-        double ans = 0;
-        double used = 0;
-
-        for (int i = n - 1; i >= 0 && used < W; i--)
+        for (int i = 0; i < s2.size(); i++)
         {
-            double left = (double)W - used;
+            string s = s2[i];
+            int a = t1.countWordsStartingWith(s);
 
-            if (storage[i].second >= left)
-            {
-                ans += (left * storage[i].first);
-                used += left;
-            }
-            else
-            {
-                // saara lelo
-                ans += (storage[i].first * storage[i].second);
-                used += storage[i].second;
-            }
+            reverse(s.begin(), s.end());
+            a += t2.countWordsStartingWith(s);
+
+            if(a > 0)
+                ans++;
         }
-
+        
         return ans;
     }
 };
 
 //{ Driver Code Starts.
+
 int main()
 {
     int t;
-    // taking testcases
     cin >> t;
-    cout << setprecision(2) << fixed;
-    while (t--)
+    for (int i = 0; i < t; i++)
     {
-        // size of array and weight
-        int n, W;
-        cin >> n >> W;
-
-        Item arr[n];
-        // value and weight of each item
-        for (int i = 0; i < n; i++)
+        string str1, str2, newline;
+        if (i == 0)
+            getline(cin, newline);
+        getline(cin, str1);
+        getline(cin, str2);
+        // getline(cin,newline);
+        // cout<<str1<<endl<<str2<<endl;
+        vector<string> s1, s2;
+        stringstream ss1(str1);
+        stringstream ss2(str2);
+        string str;
+        while (ss1 >> str)
         {
-            cin >> arr[i].value >> arr[i].weight;
+            s1.push_back(str);
         }
-
-        // function call
-        Solution ob;
-        cout << ob.fractionalKnapsack(W, arr, n) << endl;
-    }
-    return 0;
-}
-// } Driver Code Ends
-
-//{ Driver Code Starts.
-int main()
-{
-    int t;
-    // taking testcases
-    cin >> t;
-    cout << setprecision(2) << fixed;
-    while (t--)
-    {
-        // size of array and weight
-        int n, W;
-        cin >> n >> W;
-
-        Item arr[n];
-        // value and weight of each item
-        for (int i = 0; i < n; i++)
+        while (ss2 >> str)
         {
-            cin >> arr[i].value >> arr[i].weight;
+            s2.push_back(str);
         }
-
-        // function call
         Solution ob;
-        cout << ob.fractionalKnapsack(W, arr, n) << endl;
+        cout << ob.prefixSuffixString(s1, s2) << endl;
     }
-    return 0;
 }
 // } Driver Code Ends
