@@ -23,7 +23,7 @@ public:
         // mst[0] = true
 
         // now we'll traverse the adj[0] and mark the weights of adjacent nodes in the key array and update their parent
-        // now repeat the process, get min from key which is not included in mst and repeat the steps\
+        // now repeat the process, get min from key which is not included in mst and repeat the steps
 
         // min weight will be the sum of key array
         // parent array will define the mst

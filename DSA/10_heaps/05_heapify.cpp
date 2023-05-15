@@ -48,12 +48,12 @@ void heapifyRec(vector<int> &arr, int n, int i)
     int right = left + 1;
 
     // finding max child if it exisits
-    if(right < n & arr[right] > arr[largest])
+    if(right < n && arr[right] > arr[largest])
     {
         largest = right;
     }
 
-    if(left < n & arr[left] > arr[largest])
+    if(left < n && arr[left] > arr[largest])
     {
         largest = left;
     }

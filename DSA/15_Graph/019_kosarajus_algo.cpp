@@ -75,7 +75,7 @@ int stronglyConnectedComponents(int v, vector<vector<int>> &edges)
         adjT[edge[1]].push_back(edge[0]);
     }
 
-    // topo sort, isme cycle hoga tog dfs wala topo hi chalega kahn ni chal payag
+    // topo sort, isme cycle hoga tog dfs wala topo hi chalega kahn ni chal payga
     vector<int> topo = DFSTopo(v, adj);
 
     // dfs using topo ordering

@@ -1,61 +1,41 @@
-//{ Driver Code Starts
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
-
-
-// } Driver Code Ends
 
 class Solution
 {
-    const int MOD = 1e9 + 7;
-    vector<int> dp;
-
-    // making n as root node
-    long long solve(int N)
+    string solve(int s, int e, string &str, vector<vector<string>> &dp)
     {
-        if (dp[N] != -1)
+        if (s > e)
+            return "";
+
+        if (s == e)
+            return {str[s]};
+
+        if (dp[s][e] != "-1")
+            return dp[s][e];
+
+        // chek if we can include or not
+        if (str[s] == str[e])
         {
-            return dp[N];
+            return dp[s][e] = (str[s] + solve(s + 1, e - 1, str, dp) + str[e]);
         }
-        if (N == 0 or N == 1)
-        {
-            return dp[N] = 1;
-        }
-        else
-        {
-            long long sum = 0;
-            for (int i = 1; i <= N; i++)
-            {
-                sum = (sum + ((solve(i - 1) % MOD) * (solve(N - i) % MOD)) % MOD) % MOD;
-            }
-            return dp[N] = sum;
-        }
+
+        string ans1 = solve(s + 1, e, str, dp);
+        string ans2 = solve(s, e - 1, str, dp);
+
+        return ans1.length() > ans2.length() ? dp[s][e] = ans1 : dp[s][e] = ans2;
     }
 
 public:
-    // Function to return the total number of possible unique BST.
-    int numTrees(int n)
+    string longestPalindrome(string s)
     {
-        dp.resize(1001,-1);
-        return solve(n);
+        vector<vector<string>> dp(s.length() + 1, vector<string>(s.length() + 1, "-1"));
+        return solve(0, s.length() - 1, s, dp);
     }
 };
 
-//{ Driver Code Starts.
-#define mod (int)(1e9+7)
-int main(){
-    
-    //taking total testcases
-    int t;
-    cin>>t;
-    while(t--){
-        
-        //taking total number of elements
-        int n;
-        cin>>n;
-        Solution ob;
-        //calling function numTrees()
-        cout<<ob.numTrees(n)<<"\n";
-    }
-}	
-// } Driver Code Ends
+int main()
+{
+
+    return 0;
+}
