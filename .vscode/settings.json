@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "vector": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "utility": "cpp",
+        "valarray": "cpp",
+        "ratio": "cpp",
+        "unordered_map": "cpp",
+        "string": "cpp",
+        "fstream": "cpp",
+        "functional": "cpp",
+        "*.tcc": "cpp",
+        "unordered_set": "cpp"
+    }
+}

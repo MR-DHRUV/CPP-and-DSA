@@ -9,6 +9,8 @@ using namespace std;
 // 2. Down-UP DP : tabulation
 // 3. Space optimization
 
+// Good Practive 
+// keep memoization top down 
 
 int main()
 {

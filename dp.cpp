@@ -1,41 +1,31 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void printArr(vector<int> arr)
+class Solution
 {
-    for (int i = 0; i < arr.size(); i++)
+public:
+    int change(int amount, vector<int> &coins)
     {
-        cout << arr[i] << " ";
+        // wohi include exlude wala game ahii
+        // we just have to check if current value is the multiple of any number present in coins as a base case as we dont need permuattions like this
+        // 1 1 2 and 2 1 1 are concidered as same and its given that all values of coins is unique so duplicacy is eliminated
+
+        vector<int> dp(amount + 1, 0);
+        dp[0] = 1; // 0 can be made without any coin
+        sort(coins.begin(),coins.end()); // sort as its bottom-up approach so we will need smaller coins first
+
+        for (int c : coins)
+        {
+            for (int i = c; i <= amount; i++)
+            {
+                if (i - c >= 0)
+                    dp[i] += dp[i - c];
+            }
+        }
+
+        return dp[amount];
     }
-
-    cout << endl;
-}
-
-long long int mod = 1e9 + 7;
-
-int solve(int n, int k, vector<int> &dp)
-{
-    if (n <= 0)
-        return 0;
-
-    if (n == 1)
-        return k;
-
-    if (dp[n] != -1)
-        return dp[n];
-
-    // ya toh next wale ko k se paint krunga ya current wale se
-    return dp[n] = (k * (solve(n - 1, k, dp) + solve(n - 2, k, dp)-1)) % mod;
-}
-
-int numberOfWays(int n, int k)
-{
-    // Write your code here.
-    // max 2 ka color same ho skta haii
-
-    vector<int> dp(n + 1, -1);
-    return solve(n, k, dp);
-}
+};
 
 int main()
 {

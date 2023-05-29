@@ -1,53 +1,32 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int mod = 1e9 + 7;
-void multiply(long long int F[2][2], long long int M[2][2]);
-void power(long long int F[2][2], long long int n);
+long countWaysToMakeChangeUtil(vector<int>& arr,int ind, int T, vector<vector<long
+>>& dp){
 
-int fib(long long int n)
-{
-    long long int F[2][2] = {{1, 1}, {1, 0}};
-    if (n == 0)
-        return 0;
-    power(F, n - 1);
-    return F[0][0];
-}
-void power(long long int F[2][2], long long int n)
-{
-    if (n == 0 || n == 1)
-        return;
-
-    long long int M[2][2] = {{1, 1}, {1, 0}};
-
-    power(F, n / 2);
-    multiply(F, F);
-
-    if (n % 2 != 0)
-        multiply(F, M);
-}
-void multiply(long long int F[2][2], long long int M[2][2])
-{
-    int x = ((F[0][0] % mod * M[0][0] % mod) % mod + (F[0][1] % mod * M[1][0] % mod) % mod) % mod;
-    int y = ((F[0][0] % mod * M[0][1] % mod) % mod + (F[0][1] % mod * M[1][1] % mod) % mod) % mod;
-    int z = ((F[1][0] % mod * M[0][0] % mod) % mod + (F[1][1] % mod * M[1][0] % mod) % mod) % mod;
-    int w = ((F[1][0] % mod * M[0][1] % mod) % mod + (F[1][1] % mod * M[1][1] % mod) % mod) % mod;
-
-    F[0][0] = x;
-    F[0][1] = y;
-    F[1][0] = z;
-    F[1][1] = w;
-}
-
-class Solution
-{
-public:
-    int countStrings(long long int n)
-    {
-        int res = fib(n + 2);
-        return res;
+    if(ind == 0){
+        return (T%arr[0]==0);
     }
-};
+    
+    if(dp[ind][T]!=-1)
+        return dp[ind][T];
+        
+    long notTaken = countWaysToMakeChangeUtil(arr,ind-1,T,dp);
+    
+    long taken = 0;
+    if(arr[ind] <= T)
+        taken = countWaysToMakeChangeUtil(arr,ind,T-arr[ind],dp);
+        
+    return dp[ind][T] = notTaken + taken;
+}
+
+
+long countWaysToMakeChange(vector<int>& arr, int n, int T){
+    
+    vector<vector<long>> dp(n,vector<long>(T+1,-1));
+    return countWaysToMakeChangeUtil(arr,n-1, T, dp);
+}
+
 
 int main()
 {
