@@ -53,11 +53,11 @@ public:
 int main()
 {
     // init
-    int arr[] = {800};
+    int arr[] = {100};
     int n = sizeof(arr) / sizeof(arr[0]);
 
     // init lcg function
-    LCG<long long int> func(1,1000000000,894,39,71,75957937);
+    LCG<long long int> func(0,500,8343494,39,71,75957937);
 
     // Generate files
     for (int i = 0; i < n; i++)

@@ -62,24 +62,24 @@ vector<vector<int>> printAllLis(vector<int> &nums)
         auto top = qt.front();
         qt.pop();
 
-        // ab dekho ki yeh kis kis previous elementt se bn skta haii
+        // ab dekho ki yeh kis kis previous element se bn skta haii
         // to check it
         // length of lis at that index should be top wale ki length -1
         // and element at that index should be less than top wala element
 
         int currLen = top.first[0];
-        int currEle = nums[top.first[1]];
+        int currIdx = top.first[1];
 
-        if (currLen == 1)
+        if (currLen-1 == 0)
         {
             reverse(top.second.begin(), top.second.end());
             ans.push_back(top.second);
             continue;
         }
 
-        for (auto i : mp[currLen])
+        for (auto i : mp[currLen-1])
         {
-            if (nums[i] < currEle)
+            if (i < currIdx && nums[i] < nums[currIdx])
             {
                 vector<int> temp = top.second;
                 temp.push_back(nums[i]);
@@ -93,7 +93,7 @@ vector<vector<int>> printAllLis(vector<int> &nums)
 
 int main()
 {
-    vector<int> nums = {10,22,42,33,21,50,41,60,80,3};
+    vector<int> nums = {10, 22, 9, 33, 21, 50, 41, 60, 80, 1};
     vector<vector<int>> ans = printAllLis(nums);
     printMat(ans);
 

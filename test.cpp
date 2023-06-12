@@ -1,32 +1,41 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-long countWaysToMakeChangeUtil(vector<int>& arr,int ind, int T, vector<vector<long
->>& dp){
-
-    if(ind == 0){
-        return (T%arr[0]==0);
+class Solution
+{
+public:
+    vector<int> ans;
+    vector<int> dp;
+    
+    void lds(vector<int> temp, int i, int prev, vector<int> &nums)
+    {
+        if (i >= nums.size())
+        {
+            if (temp.size() > ans.size())
+                ans = temp;
+            return;
+        }
+        // We can't directly use temp.size() without typecasting because it will return an unsigned int and hence if() will not work.
+        if ((int)temp.size() > dp[i] && (nums[i] % prev == 0))
+        {
+            dp[i] = temp.size();
+            temp.push_back(nums[i]);
+            lds(temp, i + 1, nums[i], nums);
+            temp.pop_back();
+        }
+        lds(temp, i + 1, prev, nums);
     }
-    
-    if(dp[ind][T]!=-1)
-        return dp[ind][T];
-        
-    long notTaken = countWaysToMakeChangeUtil(arr,ind-1,T,dp);
-    
-    long taken = 0;
-    if(arr[ind] <= T)
-        taken = countWaysToMakeChangeUtil(arr,ind,T-arr[ind],dp);
-        
-    return dp[ind][T] = notTaken + taken;
-}
 
-
-long countWaysToMakeChange(vector<int>& arr, int n, int T){
-    
-    vector<vector<long>> dp(n,vector<long>(T+1,-1));
-    return countWaysToMakeChangeUtil(arr,n-1, T, dp);
-}
-
+    vector<int> largestDivisibleSubset(vector<int> &nums)
+    {
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i <= nums.size(); i++)
+            dp.push_back(-1);
+        vector<int> temp;
+        lds(temp, 0, 1, nums);
+        return ans;
+    }
+};
 
 int main()
 {
