@@ -1,61 +1,137 @@
 //{ Driver Code Starts
-// Initial Template for C++
-
 #include <bits/stdc++.h>
 using namespace std;
 
+struct node
+{
+    int data;
+    struct node *next;
+
+    node(int x)
+    {
+        data = x;
+        next = NULL;
+    }
+};
+
+/* Function to print linked list */
+void printList(struct node *node)
+{
+    while (node != NULL)
+    {
+        printf("%d ", node->data);
+        node = node->next;
+    }
+    printf("\n");
+}
+
 // } Driver Code Ends
-// User function Template for C++
+/*
+  Reverse a linked list
+  The input list will have at least one element
+  Return the node which points to the head of the new LinkedList
+  Node is defined as
+    struct node
+    {
+        int data;
+        struct node* next;
+
+        node(int x){
+            data = x;
+            next = NULL;
+        }
+
+    }*head;
+*/
 
 class Solution
 {
-
-    int solve(int l, int price[], vector<int> &dp)
+    // function to reverse k nodes from head
+    struct node *rev(node *head, int k)
     {
-        if (l <= 0)
-            return 0;
+        node *prev = NULL, *curr = head, *next = NULL;
 
-        if (dp[l] != -1)
-            return dp[l];
-
-        // no cut
-        int ans = price[l - 1];
-
-        // cut
-        for (int i = 1; i < l; i++)
+        for (int i = 0; i < k && curr != NULL; i++)
         {
-            ans = max(ans, price[i] + solve(l - i, price, dp));
+            next = curr->next;
+            curr->next = prev;
+            prev = curr;
+
+            curr = next;
         }
 
-        return dp[l] = ans;
+        if (curr != NULL)
+            head->next = curr;
+        else
+            head->next = NULL;
+
+        return prev;
     }
 
 public:
-    int cutRod(int price[], int n)
+    struct node *reverse(struct node *head, int k)
     {
-        vector<int> dp(n + 1, -1);
-        return solve(n, price, dp);
+        // initially
+        node *temp = rev(head, k);
+        node *ans = temp;
+
+        while (temp != NULL)
+        {
+            // skip k-1
+            for (int i = 1; i < k && temp != NULL; i++)
+            {
+                temp = temp->next;
+            }
+
+            // rev
+            if (temp != NULL)
+                temp->next = rev(temp->next, k);
+        }
+
+        return ans;
     }
 };
 
 //{ Driver Code Starts.
 
-int main()
+/* Drier program to test above function*/
+int main(void)
 {
     int t;
     cin >> t;
+
     while (t--)
     {
+        struct node *head = NULL;
+        struct node *temp = NULL;
         int n;
         cin >> n;
-        int a[n];
+
         for (int i = 0; i < n; i++)
-            cin >> a[i];
+        {
+            int value;
+            cin >> value;
+            if (i == 0)
+            {
+                head = new node(value);
+                temp = head;
+            }
+            else
+            {
+                temp->next = new node(value);
+                temp = temp->next;
+            }
+        }
+
+        int k;
+        cin >> k;
 
         Solution ob;
-
-        cout << ob.cutRod(a, n) << endl;
+        head = ob.reverse(head, k);
+        printList(head);
     }
-    return 0;
+
+    return (0);
 }
+
 // } Driver Code Ends
