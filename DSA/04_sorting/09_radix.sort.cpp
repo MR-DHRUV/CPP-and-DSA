@@ -55,7 +55,7 @@ ul *RadixSort(ul data[], long Size)
     int max = getMax(data, Size);
     int i = 1;
 
-    while (max > 0)
+    while (max > 0) 
     {
         data = countSortHelper(data, Size, i);
         i *= 10;

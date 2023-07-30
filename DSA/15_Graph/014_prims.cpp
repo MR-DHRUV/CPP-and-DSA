@@ -86,21 +86,21 @@ public:
         // Algo
         // instead of key array we'll use minHeap or set
 
-        vector<bool> visited(V, false);
+        vector<bool> mst(V, false);
         vector<int> parent(V, -1);
-        vector<int> dist(V, INT_MAX);
+        vector<int> key(V, INT_MAX);
 
         set<pair<int, int>> st;
         st.insert({0, 0}); // weight then vertex
 
         parent[0] = -1;
-        dist[0] = 0;
+        key[0] = 0;
 
         while (!st.empty())
         {
             auto top = *(st.begin());
             st.erase(st.begin());
-            visited[top.second] = true;
+            mst[top.second] = true;
 
             for (auto edge : adj[top.second])
             {
@@ -111,9 +111,9 @@ public:
                 // we have to update set with minimum weights for all possible adges we have
 
                 // new weight is smaller and this vertex is not included in mst
-                if (w < dist[e] && !visited[e])
+                if (w < key[e] && !mst[e])
                 {
-                    auto inSet = st.find({dist[e], e});
+                    auto inSet = st.find({key[e], e});
 
                     if (inSet != st.end())
                     {
@@ -124,7 +124,7 @@ public:
 
                     // update parent and weight
                     parent[e] = top.second;
-                    dist[e] = w;
+                    key[e] = w;
                 }
             }
         }
@@ -134,7 +134,7 @@ public:
         for (int i = 0; i < V; i++)
         {
             // cout<<parent[i]<<" ";
-            ans += dist[i];
+            ans += key[i];
         }
 
         return ans;

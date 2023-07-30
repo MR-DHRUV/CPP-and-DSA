@@ -1,9 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// O(n+m)
 void solve(string text, string pattern)
 {
     // lps : longest prefix which is same as suffix
+    // lps[i] denotes the length of longest prefix which is also a suffix of the string till index i.
+    // this means if we backtrack to lps[i] we will be at next character that has to be matched as we take length of this prefix.
 
     // In the naive algorithm we have to backtrack everytime we find a mismatch to i+1th location so to avoid this will contruct a lps array for pattern and using which we will only backtrack as much need
 
@@ -24,7 +27,8 @@ void solve(string text, string pattern)
 
     vector<int> lps(m, 0);
 
-    int i = 1, len = 0;
+    int i = 1; // pointer 
+    int len = 0; // length of prefix
 
     while (i < m)
     {
@@ -35,6 +39,10 @@ void solve(string text, string pattern)
 
         else
         {
+            // Now there is is mismatch
+            // if len = 0, then its ok as we are starting prefix from index 0
+            // but if len != 0 and there is a mis match then we have lost the continuity so, we have to backtrack to such a position that can serve as a match thus we backtrack to last prefix  
+
             if (len != 0)
             {
                 len = lps[len - 1];
@@ -48,6 +56,9 @@ void solve(string text, string pattern)
             }
         }
     }
+
+    for(int i : lps)
+        cout<<i<<" ";
 
     // start kmp search
     i = 0;
@@ -69,6 +80,7 @@ void solve(string text, string pattern)
         else if (i < n && text[i] != pattern[j])
         {
             // mismatch
+
             if (j != 0)
                 j = lps[j-1]; // backtrack
             else
@@ -79,6 +91,6 @@ void solve(string text, string pattern)
 
 int main()
 {
-    solve("geeksforgeeks", "geeks");
+    solve("oonoonions", "oonions");
     return 0;
 }

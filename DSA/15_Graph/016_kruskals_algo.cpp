@@ -19,7 +19,6 @@ public:
         {
             parent[i] = i; // initially sab apne parent h
         }
-
     }
 
     int findParent(int node)
@@ -101,9 +100,6 @@ int minimumSpanningTree(vector<vector<int>> &edges, int n)
 
     return ans;
 }
-
-
-
 
 int main()
 {

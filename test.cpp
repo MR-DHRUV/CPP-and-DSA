@@ -1,61 +1,54 @@
-#include <bits/stdc++.h>
-using namespace std;
-
-// User function template for C++
-
-class Solution
+void search(char pat[], char txt[], int q)
 {
-    // count elements with given a and d
-    int countEle(int i, int d, int A[])
-    {
-        if (i < 0)
-            return 0;
+	int M = strlen(pat);
+	int N = strlen(txt);
+	int i, j;
+	int p = 0; // hash value for pattern
+	int t = 0; // hash value for txt
+	int h = 1;
 
-        int ans = 0;
+	// The value of h would be "pow(d, M-1)%q"
+	for (i = 0; i < M - 1; i++)
+		h = (h * d) % q;
 
-        for (int j = i - 1; j >= 0; j--)
-        {
-            if (A[i] - A[j] == d)
-            {
-                ans++;
-                i = j;
-            }
-        }
+	// Calculate the hash value of pattern and first
+	// window of text
+	for (i = 0; i < M; i++) {
+		p = (d * p + pat[i]) % q;
+		t = (d * t + txt[i]) % q;
+	}
 
-        return ans;
-    }
+	// Slide the pattern over text one by one
+	for (i = 0; i <= N - M; i++) {
 
-    // int optimized brute force
-    int optBrute(int A[], int n)
-    {
-        if (n <= 2)
-            return n;
+		// Check the hash values of current window of text
+		// and pattern. If the hash values match then only
+		// check for characters one by one
+		if (p == t) {
+			/* Check for characters one by one */
+			for (j = 0; j < M; j++) {
+				if (txt[i + j] != pat[j]) {
+					break;
+				}
+			}
 
-        // fix 2 elements to make a and d
-        int ans = 0;
+			// if p == t and pat[0...M-1] = txt[i, i+1,
+			// ...i+M-1]
 
-        // unordered_map<int, int> dp[n + 1];
+			if (j == M)
+				cout << "Pattern found at index " << i
+					<< endl;
+		}
 
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = i + 1; j < n; j++)
-            {
-                ans = max(ans, 2 + countEle(i, A[j] - A[i], A));
-            }
-        }
+		// Calculate hash value for next window of text:
+		// Remove leading digit, add trailing digit
+		if (i < N - M) {
+			t = (d * (t - txt[i] * h) + txt[i + M]) % q;
 
-        return ans;
-    }
-
-public:
-    int lengthOfLongestAP(int A[], int n)
-    {
-        return optBrute(A, n);
-    }
-};
-
-int main()
-{
-
-    return 0;
+			// We might get negative value of t, converting
+			// it to positive
+			if (t < 0)
+				t = (t + q);
+		}
+	}
 }

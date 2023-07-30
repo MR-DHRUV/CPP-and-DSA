@@ -11,8 +11,8 @@ void bucketSort(float arr[], int n)
     for (int i = 0; i < n; i++)
     {
         // Calculate index in bucket
-        int bi = n * arr[i]; 
-        
+        int bi = n * arr[i];
+
         b[bi].push_back(arr[i]);
     }
 

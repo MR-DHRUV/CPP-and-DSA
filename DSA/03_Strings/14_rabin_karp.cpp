@@ -1,26 +1,15 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+//  Avg : O(n+m), worst : O(n * m)
+// By using a rolling hash, the algorithm can compute the hash value of each window in the text in constant time,
 void find(string text, string pattern)
 {
-    if (text.length() <= pattern.length())
-    {
-        if (text == pattern)
-            cout << "0" << endl;
-
-        return;
-    }
-
-    int i = 0, j = pattern.size() - 1;
-
-    string s = text;
-    s.substr(0, pattern.length());
-
     // calculate hash value
-    int hp = 0, ht = 0, h = 0;
+    int hp = 0, ht = 0, h = 1;
     int d = 256, q = INT_MAX; // d is no of distinct characters so in ascii we have 256
 
-    for (i = 0; i < pattern.length() - 1; i++)
+    for (int i = 0; i < pattern.length() - 1; i++)
         h = (h * d) % q;
 
     // initial hash values of pattern and text
@@ -59,7 +48,7 @@ void find(string text, string pattern)
 
 int main()
 {
-    find("geeksforgeeks", "geek");
+    find("batmanandrobinarebat", "bat");
 
     return 0;
 }

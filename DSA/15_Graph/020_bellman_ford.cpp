@@ -45,6 +45,7 @@ int bellmonFord(int n, int m, int src, int dest, vector<vector<int>> &edges)
         {
             // current edge is a part of -ve edge cycle
             flag = true;
+            break;
         }
     }
 
