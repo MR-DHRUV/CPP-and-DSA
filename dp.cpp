@@ -3,45 +3,34 @@ using namespace std;
 
 class Solution
 {
-    static inline auto max(vector<int> a, vector<int> b)
+    int dp[21][10005];
+
+    int solve(int i, int diff, vector<int> &rods)
     {
-        if (a.size() > b.size())
-            return a;
+        if (i == rods.size())
+            return diff == 0 ? 0 : -1e9;
 
-        return b;
-    }
+        if (dp[i][diff + 5000] != -1)
+            return dp[i][diff + 5000];
 
-    void solve(int i, vector<int> sub, vector<int> &nums, vector<int> &dp, vector<int> &res)
-    {
-        if (i >= nums.size())
-        {
-            res = max(res, sub);
-            return;
-        }
+        int exclude = solve(i + 1, diff, rods);
 
-        int last = sub.size() == 0 ? 1 : sub.back();
+        int include = max(solve(i + 1, diff + rods[i], rods), solve(i + 1, diff - rods[i], rods)) + rods[i];
 
-        if ((int)sub.size() > dp[i] && (nums[i] % last == 0))
-        {
-            dp[i] = sub.size();
-
-            sub.push_back(nums[i]);
-            solve(i + 1, sub, nums, dp, res);
-
-            // backtrack
-            sub.pop_back();
-        }
-
-        // exclude case
-        solve(i + 1, sub, nums, dp, res);
+        return dp[i][diff + 5000] = max(exclude, include);
     }
 
 public:
-    vector<int> largestDivisibleSubset(vector<int> &nums)
+    int tallestBillboard(vector<int> &rods)
     {
-        vector<int> ans, dp(nums.size() + 1, -1);
-        solve(0, {}, nums, dp, ans);
-        return ans;
+        memset(dp, -1, sizeof(dp));
+
+        int ans = solve(0, 0, rods);
+
+        if (ans <= 0)
+            return 0;
+
+        return ans / 2;
     }
 };
 

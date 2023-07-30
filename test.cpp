@@ -1,39 +1,56 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// User function template for C++
+
 class Solution
 {
-public:
-    vector<int> ans;
-    vector<int> dp;
-    
-    void lds(vector<int> temp, int i, int prev, vector<int> &nums)
+    // count elements with given a and d
+    int countEle(int i, int d, int A[])
     {
-        if (i >= nums.size())
+        if (i < 0)
+            return 0;
+
+        int ans = 0;
+
+        for (int j = i - 1; j >= 0; j--)
         {
-            if (temp.size() > ans.size())
-                ans = temp;
-            return;
+            if (A[i] - A[j] == d)
+            {
+                ans++;
+                i = j;
+            }
         }
-        // We can't directly use temp.size() without typecasting because it will return an unsigned int and hence if() will not work.
-        if ((int)temp.size() > dp[i] && (nums[i] % prev == 0))
-        {
-            dp[i] = temp.size();
-            temp.push_back(nums[i]);
-            lds(temp, i + 1, nums[i], nums);
-            temp.pop_back();
-        }
-        lds(temp, i + 1, prev, nums);
+
+        return ans;
     }
 
-    vector<int> largestDivisibleSubset(vector<int> &nums)
+    // int optimized brute force
+    int optBrute(int A[], int n)
     {
-        sort(nums.begin(), nums.end());
-        for (int i = 0; i <= nums.size(); i++)
-            dp.push_back(-1);
-        vector<int> temp;
-        lds(temp, 0, 1, nums);
+        if (n <= 2)
+            return n;
+
+        // fix 2 elements to make a and d
+        int ans = 0;
+
+        // unordered_map<int, int> dp[n + 1];
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                ans = max(ans, 2 + countEle(i, A[j] - A[i], A));
+            }
+        }
+
         return ans;
+    }
+
+public:
+    int lengthOfLongestAP(int A[], int n)
+    {
+        return optBrute(A, n);
     }
 };
 

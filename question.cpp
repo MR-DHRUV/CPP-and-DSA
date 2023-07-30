@@ -3,85 +3,136 @@
 using namespace std;
 #define MAX 1000
 
-// } Driver Code Ends
-class Solution
+struct node
 {
-public:
-    /*You are required to complete this method*/
-    int findK(int a[MAX][MAX], int n, int m, int k)
+    int data;
+    struct node *next;
+
+    node(int x)
     {
+        data = x;
+        next = NULL;
+    }
+};
 
-        vector<int> ans;
+/* Function to print linked list */
+void printList(struct node *node)
+{
+    while (node != NULL)
+    {
+        printf("%d ", node->data);
+        node = node->next;
+    }
+    printf("\n");
+}
 
-        int rs = 0;
-        int re = n - 1;
+// } Driver Code Ends
+/*
+  Reverse a linked list
+  The input list will have at least one element
+  Return the node which points to the head of the new LinkedList
+  Node is defined as
+    struct node
+    {
+        int data;
+        struct node* next;
 
-        int cs = 0;
-        int ce = m - 1;
-
-        while (rs <= re && cs <= ce)
-        {
-
-            // left to right
-            for (int i = cs; i <= ce; i++)
-            {
-                ans.push_back(a[rs][i]);
-            }
-            rs++;
-
-            // top to bottom
-            for (int i = rs; i <= re; i++)
-            {
-                ans.push_back(a[i][ce]);
-            }
-            ce--;
-
-            if (rs <= re)
-            {
-                for (int i = ce; i >= cs; i--)
-                {
-                    ans.push_back(a[re][i]);
-                }
-                re--;
-            }
-
-            if (cs <= ce)
-            {
-                for (int i = re; i >= rs; i--)
-                {
-                    ans.push_back(a[i][cs]);
-                }
-                cs++;
-            }
+        node(int x){
+            data = x;
+            next = NULL;
         }
 
-        return ans[k - 1];
+    }*head;
+*/
+
+class Solution
+{
+    // function to reverse k nodes from head
+    struct node *rev(node *head, int k)
+    {
+        node *prev = NULL, *curr = head, *next = NULL;
+
+        for (int i = 0; i < k && curr != NULL; i++)
+        {
+            next = curr->next;
+            curr->next = prev;
+            prev = curr;
+
+            curr = next;
+        }
+
+        if (curr != NULL)
+            head->next = curr;
+        else
+            head->next = NULL;
+
+        return prev;
+    }
+
+public:
+    struct node *reverse(struct node *head, int k)
+    {
+        // initially
+        node *temp = rev(head, k);
+        node *ans = temp;
+
+        while (temp != NULL)
+        {
+            // skip k-1
+            for (int i = 1; i < k && temp != NULL; i++)
+            {
+                temp = temp->next;
+            }
+
+            // rev
+            if (temp != NULL)
+                temp->next = rev(temp->next, k);
+        }
+
+        return ans;
     }
 };
 
 //{ Driver Code Starts.
-int main()
-{
-    int T;
-    cin >> T;
 
-    while (T--)
+/* Drier program to test above function*/
+int main(void)
+{
+    int t;
+    cin >> t;
+
+    while (t--)
     {
-        int n, m;
-        int k = 0;
-        // cin>>k;
-        cin >> n >> m >> k;
-        int a[MAX][MAX];
+        struct node *head = NULL;
+        struct node *temp = NULL;
+        int n;
+        cin >> n;
 
         for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < m; j++)
+            int value;
+            cin >> value;
+            if (i == 0)
             {
-                cin >> a[i][j];
+                head = new node(value);
+                temp = head;
+            }
+            else
+            {
+                temp->next = new node(value);
+                temp = temp->next;
             }
         }
+
+        int k;
+        cin >> k;
+
         Solution ob;
-        cout << ob.findK(a, n, m, k) << endl;
+        head = ob.reverse(head, k);
+        printList(head);
     }
+
+    return (0);
 }
+
 // } Driver Code Ends
