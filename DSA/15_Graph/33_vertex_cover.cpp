@@ -30,6 +30,7 @@ void Graph::printVertexCover()
 {
     vector<bool> visited(V, false);
 
+
     for (int u = 0; u < V; u++)
     {
         if (!visited[u])
