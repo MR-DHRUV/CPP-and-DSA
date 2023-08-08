@@ -15,6 +15,7 @@
         "*.tcc": "cpp",
         "unordered_set": "cpp",
         "chrono": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "iostream": "cpp"
     }
 }

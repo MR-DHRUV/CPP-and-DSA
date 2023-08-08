@@ -2,84 +2,95 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// } Driver Code Ends
-class Solution
-{
-public:
-    // Function to find the shortest distance of all the vertices
-    // from the source vertex S.
-    vector<int> dijkstra(int V, vector<vector<int>> adj[], int S)
-    {
-        vector<int> dist(V, 1e9 + 7);
+int *constructST(int arr[], int n);
 
-        dist[S] = 0;
-        set<pair<int, int>> st;
-
-        st.insert({0, S});
-
-        while (!st.empty())
-        {
-            auto t = *(st.begin());
-            st.erase(st.begin());
-
-            for (auto &nbr : adj[t.second])
-            {
-                if (t.first + nbr[1] < dist[nbr[0]])
-                {
-                    auto record = st.find({dist[nbr[0]], nbr[0]});
-                    if (record != st.end())
-                        st.erase(record);
-
-                    dist[nbr[0]] = t.first + nbr[1];
-                    st.insert({dist[nbr[0]], nbr[0]});
-                }
-            }
-        }
-
-        for (int i = 0; i < V; i++)
-            if (dist[i] == 1e9)
-                dist[i] = -1;
-
-        return dist;
-    }
-};
-
-//{ Driver Code Starts.
-
+int RMQ(int st[], int n, int a, int b);
 int main()
 {
-    int t;
-    cin >> t;
-    while (t--)
+    int T;
+    cin >> T;
+    while (T--)
     {
-        int V, E;
-        cin >> V >> E;
-        vector<vector<int>> adj[V];
-        int i = 0;
-        while (i++ < E)
+        int N;
+        cin >> N;
+        int A[N];
+        for (int i = 0; i < N; i++)
+            cin >> A[i];
+        int Q;
+        cin >> Q;
+
+        int *segTree = constructST(A, N);
+
+        for (int i = 0; i < Q; i++)
         {
-            int u, v, w;
-            cin >> u >> v >> w;
-            vector<int> t1, t2;
-            t1.push_back(v);
-            t1.push_back(w);
-            adj[u].push_back(t1);
-            t2.push_back(u);
-            t2.push_back(w);
-            adj[v].push_back(t2);
+            int start, e;
+
+            cin >> start >> e;
+            if (start > e)
+            {
+                swap(start, e);
+            }
+            cout << RMQ(segTree, N, start, e) << " ";
         }
-        int S;
-        cin >> S;
-
-        Solution obj;
-        vector<int> res = obj.dijkstra(V, adj, S);
-
-        for (int i = 0; i < V; i++)
-            cout << res[i] << " ";
         cout << endl;
     }
-
-    return 0;
 }
 
 // } Driver Code Ends
+
+/* The functions which
+builds the segment tree */
+
+int segTree[10000];
+
+void buildHelper(int s, int e, int idx, int nums[])
+{
+    if (s == e)
+    {
+        segTree[idx] = nums[s];
+        return;
+    }
+
+    int mid = s + (e - s) / 2;
+
+    // left half
+    buildHelper(s, mid, (2 * idx) + 1, nums);
+    // right half
+    buildHelper(mid + 1, e, (2 * idx) + 2, nums);
+
+    // curr
+    segTree[idx] = min(segTree[(2 * idx) + 1], segTree[(2 * idx) + 2]);
+}
+
+int *constructST(int arr[], int n)
+{
+    buildHelper(0, n - 1, 0, arr);
+}
+
+/* The functions returns the
+ min element in the range
+ from a and b */
+int queryHelper(int idx, int s, int e, int &l, int &r)
+{
+    // no overlap
+    if (r < s || l > e)
+        return 1e9 + 7;
+
+    // complete overlap
+    if (s >= l && e <= r)
+        return segTree[idx];
+
+    // partial overlap
+    int mid = s + (e - s) / 2;
+
+    int left = queryHelper((idx * 2) + 1, s, mid, l, r);
+    int right = queryHelper((idx * 2) + 2, mid + 1, e, l, r);
+
+    return min(left, right);
+}
+
+int RMQ(int st[], int n, int a, int b)
+{
+    // cout<<"n "<<n<<endl;
+    return queryHelper(0, 0, n - 1, a, b);
+}

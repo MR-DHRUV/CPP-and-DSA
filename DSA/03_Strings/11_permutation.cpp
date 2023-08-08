@@ -12,7 +12,6 @@ int length(string str)
     return i;
 }
 
-
 // incedible solution by dhruv
 void permutation(string str)
 {

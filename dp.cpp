@@ -3,34 +3,64 @@ using namespace std;
 
 class Solution
 {
-    int dp[21][10005];
-
-    int solve(int i, int diff, vector<int> &rods)
+    int solve(int s, vector<int> &arr, int &k, vector<int> &dp)
     {
-        if (i == rods.size())
-            return diff == 0 ? 0 : -1e9;
+        if (s >= arr.size())
+            return 0;
 
-        if (dp[i][diff + 5000] != -1)
-            return dp[i][diff + 5000];
+        if (dp[s] != -1)
+            return dp[s];
 
-        int exclude = solve(i + 1, diff, rods);
+        int ans = 0;
 
-        int include = max(solve(i + 1, diff + rods[i], rods), solve(i + 1, diff - rods[i], rods)) + rods[i];
+        // max partition can be of size k
+        for (int part = s; part < s + k && part < arr.size(); part++)
+        {
+            int maxEle = arr[s];
 
-        return dp[i][diff + 5000] = max(exclude, include);
+            for (int i = s; i <= part; i++)
+            {
+                maxEle = max(maxEle, arr[i]);
+            }
+
+            ans = max(ans, (maxEle * (part - s + 1) + solve(part + 1, arr, k, dp)));
+        }
+
+        return dp[s] = ans;
+    }
+
+    int solveTab(vector<int> &arr, int k)
+    {
+        int dp[501] = {0};
+        int maxEle[501][501] = {0};
+
+        for (int i = 0; i < arr.size(); i++)
+        {
+            int maxi = arr[i];
+            for (int j = i; j < arr.size(); j++)
+            {
+                maxi = max(maxi, arr[j]);
+                maxEle[i][j] = maxi;
+            }
+        }
+
+        for (int s = arr.size() - 1; s >= 0; s--)
+        {
+            // max partition can be of size k
+            for (int part = s; part < s + k && part < arr.size(); part++)
+            {
+                dp[s] = max(dp[s], (maxEle[s][part] * (part - s + 1) + dp[part + 1]));
+            }
+        }
+
+        return dp[0];
     }
 
 public:
-    int tallestBillboard(vector<int> &rods)
+    int maxSumAfterPartitioning(vector<int> &arr, int k)
     {
-        memset(dp, -1, sizeof(dp));
-
-        int ans = solve(0, 0, rods);
-
-        if (ans <= 0)
-            return 0;
-
-        return ans / 2;
+        vector<int> dp(arr.size() + 1, -1);
+        return solve(0, arr, k, dp);
     }
 };
 

@@ -4,7 +4,7 @@ using namespace std;
 class Solution
 {
 public:
-    int countSubstrings(string s)
+    int countSubstrings(string str)
     {
         // format of a general palindrome
         // x(str)x
@@ -17,22 +17,22 @@ public:
 
         // Trivial cases : each string of lengh 1 and 2 can be judged in 0(1) time
 
-        vector<vector<bool>> dp(s.length(), vector<bool>(s.length(), false));
+        vector<vector<bool>> dp(str.length(), vector<bool>(str.length(), false));
         int ans = 0;
 
         // upper diagonal traversal in a 2-d array
 
         // gap : length of string in terms of index (o to n-1)
-        for (int gap = 0; gap < s.length(); gap++)
+        for (int gap = 0; gap < str.length(); gap++)
         {
             // int i = 0; // starting row of each upper diagonal is 0
             // int j = i+gap; // starting col of each upper diagonal is row+gap
-            for (int i = 0, j = i + gap; i < s.length() && j < s.length(); i++, j++)
+            for (int i = 0, j = i + gap; i < str.length() && j < str.length(); i++, j++)
             {
                 // Trivial Case or Base Case
                 if (gap < 2)
                 {
-                    if (s[i] == s[j])
+                    if (str[i] == str[j])
                     {
                         dp[i][j] = true;
                         ans++;
@@ -40,7 +40,7 @@ public:
                 }
                 else
                 {
-                    if (s[i] == s[j] && dp[i + 1][j - 1])
+                    if (str[i] == str[j] && dp[i + 1][j - 1])
                     {
                         dp[i][j] = true;
                         ans++;
