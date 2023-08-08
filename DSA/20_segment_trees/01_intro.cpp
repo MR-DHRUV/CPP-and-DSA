@@ -130,5 +130,6 @@ int main()
     // int r = func(e/2 + 1 , e)
     // int mini = min(l,r)
 
+
     return 0;
 }
