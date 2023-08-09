@@ -1,118 +1,82 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int segTree[10000];
-
-void buildHelper(int s, int e, int idx, int nums[])
+void build(int ind, int low, int high, int arr[], int seg[], int orr)
 {
-    if (s == e)
+    if (low == high)
     {
-        segTree[idx] = nums[s];
+        seg[ind] = arr[low];
         return;
     }
 
-    int mid = s + (e - s) / 2;
+    int mid = (high + low) / 2;
+    build((2 * ind) + 1, low, mid, arr, seg, !orr);
+    build((2 * ind) + 2, mid + 1, high, arr, seg, !orr);
 
-    // left half
-    buildHelper(s, mid, (2 * idx) + 1, nums);
-    // right half
-    buildHelper(mid + 1, e, (2 * idx) + 2, nums);
-
-    // curr
-    segTree[idx] = min(segTree[(2 * idx) + 1], segTree[(2 * idx) + 2]);
+    if (orr) seg[ind] = seg[(2 * ind) + 1] | seg[(2 * ind) + 2];
+    else seg[ind] = seg[(2 * ind) + 1] ^ seg[(2 * ind) + 2];
 }
 
-int *constructST(int arr[], int n)
+void update(int ind,int low, int high, int seg[], int orr, int i, int val)
 {
-    buildHelper(0, n - 1, 0, arr);
-}
-
-/* The functions returns the
- min element in the range
- from a and b */
-int queryHelper(int idx, int s, int e, int &l, int &r)
-{
-    // no overlap
-    if (r < s || l > e)
-        return 1e9 + 7;
-
-    // complete overlap
-    if (s >= l && e <= r)
-        return segTree[idx];
-
-    // partial overlap
-    int mid = s + (e - s) / 2;
-
-    int left = queryHelper((idx * 2) + 1, s, mid, l, r);
-    int right = queryHelper((idx * 2) + 2, mid + 1, e, l, r);
-
-    return min(left, right);
-}
-
-int RMQ(int st[], int n, int a, int b)
-{
-    // cout<<"n "<<n<<endl;
-    return queryHelper(0, 0, n - 1, a, b);
-}
-
-int updateHelper(int s, int e, int idx, int &target, int &val)
-{
-    // current interval ka koi lena dena nahi haii
-    if (target < s || target > e)
-        return 1e9;
-
-    if (s == e)
+    if(low == high)
     {
-        segTree[s] = val;
-        return val;
+        seg[ind] = val;
+        return;
     }
 
-    int mid = s + (e - s) / 2;
+    int mid = (high + low) / 2;
+    
+    if(i <= mid) update((2*ind)+1,low,mid,seg,!orr,i,val);
+    else update((2*ind)+2,mid+1,high,seg,!orr,i,val);
 
-    if (target <= mid)
-        return updateHelper(s, mid, (2 * idx) + 1, target, val);
-    else
-        return updateHelper(mid + 1, e, (2 * idx) + 2, target, val);
-
-    // now update current node
-    segTree[idx] = min(segTree[(2 * idx) + 1], segTree[(2 * idx) + 2]);
+    if (orr) seg[ind] = seg[(2 * ind) + 1] | seg[(2 * ind) + 2];
+    else seg[ind] = seg[(2 * ind) + 1] ^ seg[(2 * ind) + 2];
 }
 
-void update(int target, int val, int n)
+void solve()
 {
-    // point updates or update queries
-    // we are now given an index and a value and we have to update the array[idx] to val
-    // wohi same postorder style me values update krdo target se
-    updateHelper(0, n - 1, 0, target, val);
-}
-
-int main()
-{
-    int T;
-    cin >> T;
-    while (T--)
+    // dekho pahle segment tree banalo for initial data then update it and print root
+    int n, m;
+    cin >> n >> m;
+    int ele = pow(2, n);
+    int arr[ele];
+    for (int i = 0; i < ele; i++)
     {
-        int N;
-        cin >> N;
-        int A[N];
-        for (int i = 0; i < N; i++)
-            cin >> A[i];
-        int Q;
-        cin >> Q;
-
-        int *segTree = constructST(A, N);
-
-        for (int i = 0; i < Q; i++)
-        {
-            int start, e;
-
-            cin >> start >> e;
-            if (start > e)
-            {
-                swap(start, e);
-            }
-            cout << RMQ(segTree, N, start, e) << " ";
-        }
-        cout << endl;
+        cin >> arr[i];
     }
+
+    int seg[4*ele];
+    if(n%2 == 0) build(0,0,ele-1,arr,seg,0);
+    else build(0,0,ele-1,arr,seg,1);
+
+    while (m--)
+    {
+        int i, val;
+        cin >> i >> val;
+        i--; // 1 based indexing
+        
+        if(n%2 == 0) update(0,0,ele-1,seg,0,i,val);
+        else update(0,0,ele-1,seg,1,i,val);
+
+        cout << seg[0] << endl;
+    }
+}
+
+signed main()
+{
+
+    // #ifndef ONLINE_JUDGE
+    //     freopen("input.txt", "r", stdin);
+    //     freopen("output.txt", "w", stdout);
+    // #endif
+
+// #ifndef IO_FROM_FILE
+//     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+//     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+// #endif
+
+    solve();
+
+    return 0;
 }

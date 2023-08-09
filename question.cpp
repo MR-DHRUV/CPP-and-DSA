@@ -70,7 +70,7 @@ int *constructST(int arr[], int n)
 /* The functions returns the
  min element in the range
  from a and b */
-int queryHelper(int idx, int s, int e, int &l, int &r)
+int query(int idx, int s, int e, int &l, int &r)
 {
     // no overlap
     if (r < s || l > e)
@@ -83,8 +83,8 @@ int queryHelper(int idx, int s, int e, int &l, int &r)
     // partial overlap
     int mid = s + (e - s) / 2;
 
-    int left = queryHelper((idx * 2) + 1, s, mid, l, r);
-    int right = queryHelper((idx * 2) + 2, mid + 1, e, l, r);
+    int left = query((idx * 2) + 1, s, mid, l, r);
+    int right = query((idx * 2) + 2, mid + 1, e, l, r);
 
     return min(left, right);
 }
@@ -92,5 +92,5 @@ int queryHelper(int idx, int s, int e, int &l, int &r)
 int RMQ(int st[], int n, int a, int b)
 {
     // cout<<"n "<<n<<endl;
-    return queryHelper(0, 0, n - 1, a, b);
+    return query(0, 0, n - 1, a, b);
 }

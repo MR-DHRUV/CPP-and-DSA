@@ -17,7 +17,7 @@ class SegTree
         int m = (low + high) / 2;
 
         build(2 * idx + 1, low, m, nums);
-        build(2 * idx + 2, m+1, high, nums);
+        build(2 * idx + 2, m + 1, high, nums);
         seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
     }
 
@@ -73,7 +73,6 @@ public:
         return query(0, 0, size, left, right);
     }
 };
-
 
 int main()
 {
