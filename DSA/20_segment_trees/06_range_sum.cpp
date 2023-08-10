@@ -68,7 +68,7 @@ public:
         updateHelper(0, 0, size, index, val);
     }
 
-    int sumRange(int left, int right)
+    int rangeSum(int left, int right)
     {
         return query(0, 0, size, left, right);
     }

@@ -1,12 +1,10 @@
-#include <iostream>
-#include <vector>
-
+#include <bits/stdc++.h>
 using namespace std;
 
 class SegTree
 {
     vector<int> seg;
-    vector<int> lazy;
+    vector<bool> lazy;
     int size;
 
     void build(int idx, int low, int high, vector<int> &nums)
@@ -108,17 +106,15 @@ class SegTree
         int left = query(2 * idx + 1, low, m, l, r);
         int right = query(2 * idx + 2, m + 1, high, l, r);
 
-        seg[idx] = left + right;
+        return left + right;
     }
 
 public:
     SegTree(vector<int> &nums)
     {
-        seg.resize(nums.size() * 4);
-        lazy.resize(nums.size() * 4, 0);
-
         size = nums.size() - 1;
-
+        seg.resize(4 * size);
+        lazy.resize(4 * size, false);
         build(0, 0, nums.size() - 1, nums);
     }
 
@@ -135,29 +131,18 @@ public:
 
 int main()
 {
+    // 1 -> head
+    // 0 -> tail
+    // T1 query l,r  how many heads
+    // T2 query flip coins in the range l,r
 
-#ifndef IO_FROM_FILE
-    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
-    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
-#endif
+    vector<int> nums = {1, 1, 0, 0, 1, 0, 1};
 
-    int n, q;
-    cin >> n >> q;
-
-    vector<int> coins(n, 0); // all tails
-
-    SegTree st(coins);
-
-    while (q--)
-    {
-        int t, l, r;
-        cin >> t >> l >> r;
-
-        if (t == 1)
-            cout << st.heads(l, r) << endl;
-        else
-            st.updateRange(l, r);
-    }
+    SegTree st(nums);
+    cout << st.heads(1, 5) << endl;
+    st.updateRange(1, 4);
+    st.updateRange(2, 4);
+    cout << st.heads(1, 5) << endl;
 
     return 0;
 }
