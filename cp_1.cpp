@@ -4,121 +4,122 @@ using namespace std;
 
 class SegTree
 {
-    // now we have this inversion count array and we are required to build the original permutation from it
-    // arr : 0 1 1 0 3
-    // we'll start from right so the count at last index is 3 and all the elements are unused till now, no the elemnt in range 1 to 5 that will have exactly 3 elements greater from it will be 2
-    // so the last element s 2
-    // no we'll mark 2 as used
-    // now we need to find element that is greater than 0 elments excluding 2
-    // and so on
-
-    // Now, in terms of segment tree, we initially have all indices from 0-4 as 1 and we have created a sum segment tree
-    // now starting from 3 we need to know the position of kth one where k = 3 from right , so originaly we need index of n-k'th one
-
-    // now we'll mark this index as 0
-
-    // now in next iteration if we need index of j'th one we'll make it j-1 as one element is already used and we are left with n-1 elements and so on
-
-    ll seg[400010]{};
+    ll seg[400010]{0}, lazy[400010]{0};
     ll size;
 
-    void build(ll idx, ll low, ll high)
+    // range update
+    void updateHelper(ll idx, ll low, ll high, ll &l, ll &r, ll &val)
     {
-        if (low == high)
+        // check for previous update
+        if (lazy[idx] != 0)
         {
-            seg[idx] = 1;
+            seg[idx] += (high - low + 1) * lazy[idx];
+
+            // propagate down
+            if (low != high)
+            {
+                lazy[2 * idx + 1] += lazy[idx];
+                lazy[2 * idx + 2] += lazy[idx];
+            }
+
+            lazy[idx] = 0;
+        }
+
+        if (r < low || l > high)
+            return;
+
+        if (low >= l && high <= r)
+        {
+            seg[idx] += (high - low + 1) * val;
+
+            // propagate down
+            if (low != high)
+            {
+                lazy[2 * idx + 1] += val;
+                lazy[2 * idx + 2] += val;
+            }
+
             return;
         }
 
         ll m = (low + high) / 2;
 
-        build(2 * idx + 1, low, m);
-        build(2 * idx + 2, m + 1, high);
+        updateHelper(2 * idx + 1, low, m, l, r, val);
+        updateHelper(2 * idx + 2, m + 1, high, l, r, val);
 
         seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
     }
 
-    void updateHelper(ll idx, ll low, ll high, ll &i)
+    ll query(ll idx, ll low, ll high, ll &i)
     {
-        if (low == high)
+        if (lazy[idx] != 0)
         {
-            seg[idx] = 0; // element visited
-            return;
+            seg[idx] += (high - low + 1) * lazy[idx];
+
+            // check if there are children
+            if (low != high)
+            {
+                // propagate down
+                lazy[2 * idx + 1] += lazy[idx];
+                lazy[2 * idx + 2] += lazy[idx];
+            }
+
+            lazy[idx] = 0;
         }
+
+        if (low == high)
+            return seg[idx];
 
         ll m = (low + high) / 2;
 
         if (i <= m)
-            updateHelper(2 * idx + 1, low, m, i);
+            return query(2 * idx + 1, low, m, i);
         else
-            updateHelper(2 * idx + 2, m + 1, high, i);
-
-        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
-    }
-
-    // we just need the index of k'th one
-    ll queryHelper(ll idx, ll low, ll high, ll k)
-    {
-        if (low == high)
-            return low;
-
-        int m = (low + high) / 2;
-
-        if (k <= seg[2 * idx + 1])
-            return queryHelper(2 * idx + 1, low, m, k);
-        else
-            return queryHelper(2 * idx + 2, m + 1, high, k - seg[2 * idx + 1]);
+            return query(2 * idx + 2, m + 1, high, i);
     }
 
 public:
     SegTree(int n)
     {
         size = n;
-        build(0, 0, n);
     }
 
-    void update(ll index)
+    void update(ll l, ll r, ll val)
     {
-        updateHelper(0, 0, size, index);
+        updateHelper(0, 0, size, l, r, val);
     }
 
-    ll query(ll k)
+    ll value(ll i)
     {
-        return queryHelper(0, 0, size, k);
+        return query(0, 0, size, i);
     }
 };
 
-signed main()
+int main()
 {
     // #ifndef IO_FROM_FILE
     //     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
     //     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
     // #endif
-    ll n;
-    cin >> n;
 
-    vector<ll> arr(n);
-    for (ll i = 0; i < n; i++)
+    ll n, m;
+    cin >> n >> m;
+    SegTree st(n);
+
+    ll t, a, b, c;
+    while (m--)
     {
-        cin >> arr[i];
-    }
-
-    SegTree st(n - 1);
-    vector<int> ans(n);
-
-    // for first element
-    for (int i = n - 1; i >= 0; i--)
-    {
-        ll k = i + 1 - arr[i];
-        ll idx = st.query(k);
-
-        ans[i] = idx + 1; // +1 as indexed segment tree haii
-        st.update(idx);
-    }
-
-    for (int i = 0; i < n; i++)
-    {
-        cout << ans[i] << " ";
+        cin >> t;
+        if (t == 1)
+        {
+            cin >> a >> b >> c;
+            st.update(a, b - 1, c);
+        }
+        else
+        {
+            cin >> a;
+            cout << st.value(a) << endl;
+        }
     }
 
     return 0;
