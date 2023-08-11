@@ -109,10 +109,12 @@ signed main()
     // for first element
     for (int i = n - 1; i >= 0; i--)
     {
+        // K = N-arr[i] - no of elements used 
+        //   = i+1 - arr[i]
         ll k = i + 1 - arr[i];
         ll idx = st.query(k);
 
-        ans[i] = idx + 1; // +1 as indexed segment tree haii
+        ans[i] = idx + 1; // +1 as 0 indexed segment tree haii
         st.update(idx);
     }
 

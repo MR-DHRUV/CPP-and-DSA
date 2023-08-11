@@ -2,95 +2,75 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int *constructST(int arr[], int n);
+// } Driver Code Ends
 
-int RMQ(int st[], int n, int a, int b);
+class Solution
+{
+    long long int solve(int i, int sum, int coins[], int &N, vector<vector<long long int>> &dp)
+    {
+        if (i == 0)
+            return (sum % coins[0] == 0) * 1ll;
+
+        if (dp[i][sum] != -1)
+            return dp[i][sum];
+
+        // exclude
+        long long int ans = solve(i - 1, sum, coins, N, dp);
+
+        // try to use current coin
+        if (sum - coins[i] >= 0)
+            ans += solve(i, sum - coins[i], coins, N, dp);
+
+        return dp[i][sum] = ans;
+    }
+
+public:
+    long long int count(int coins[], int N, int val)
+    {
+        vector<vector<long long int>> dp(N + 1, vector<long long int>(val + 1, 0));
+
+        for (int i = 0; i < N; i++)
+        {
+            for (int sum = 0; sum <= val; sum++)
+            {
+                if (i == 0)
+                {
+                    dp[i][sum] = sum % coins[i] == 0;
+                }
+                else
+                {
+                    long long int ans = dp[i - 1][sum];
+
+                    // try to use current coin
+                    if (sum - coins[i] >= 0)
+                        ans += dp[i][sum - coins[i]];
+
+                    dp[i][sum] = ans;
+                }
+            }
+        }
+
+        return dp[N - 1][val];
+    }
+};
+
+//{ Driver Code Starts.
 int main()
 {
-    int T;
-    cin >> T;
-    while (T--)
+    int t;
+    cin >> t;
+    while (t--)
     {
-        int N;
-        cin >> N;
-        int A[N];
+        int sum, N;
+        cin >> sum >> N;
+        int coins[N];
         for (int i = 0; i < N; i++)
-            cin >> A[i];
-        int Q;
-        cin >> Q;
-
-        int *segTree = constructST(A, N);
-
-        for (int i = 0; i < Q; i++)
-        {
-            int start, e;
-
-            cin >> start >> e;
-            if (start > e)
-            {
-                swap(start, e);
-            }
-            cout << RMQ(segTree, N, start, e) << " ";
-        }
-        cout << endl;
+            cin >> coins[i];
+        Solution ob;
+        cout << ob.count(coins, N, sum) << endl;
     }
+
+    return 0;
 }
 
 // } Driver Code Ends
-
-/* The functions which
-builds the segment tree */
-
-int segTree[10000];
-
-void buildHelper(int s, int e, int idx, int nums[])
-{
-    if (s == e)
-    {
-        segTree[idx] = nums[s];
-        return;
-    }
-
-    int mid = s + (e - s) / 2;
-
-    // left half
-    buildHelper(s, mid, (2 * idx) + 1, nums);
-    // right half
-    buildHelper(mid + 1, e, (2 * idx) + 2, nums);
-
-    // curr
-    segTree[idx] = min(segTree[(2 * idx) + 1], segTree[(2 * idx) + 2]);
-}
-
-int *constructST(int arr[], int n)
-{
-    buildHelper(0, n - 1, 0, arr);
-}
-
-/* The functions returns the
- min element in the range
- from a and b */
-int query(int idx, int s, int e, int &l, int &r)
-{
-    // no overlap
-    if (r < s || l > e)
-        return 1e9 + 7;
-
-    // complete overlap
-    if (s >= l && e <= r)
-        return segTree[idx];
-
-    // partial overlap
-    int mid = s + (e - s) / 2;
-
-    int left = query((idx * 2) + 1, s, mid, l, r);
-    int right = query((idx * 2) + 2, mid + 1, e, l, r);
-
-    return min(left, right);
-}
-
-int RMQ(int st[], int n, int a, int b)
-{
-    // cout<<"n "<<n<<endl;
-    return query(0, 0, n - 1, a, b);
-}
