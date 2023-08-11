@@ -1,162 +1,141 @@
-#include <iostream>
-#include <vector>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-class SegTree
+using vec = vector<int>;
+int mod;
+const int nax = 2e5 * 4;
+
+inline int cal(int a, int b, int c, int d)
 {
-    vector<int> seg;
-    vector<int> lazy;
-    int size;
-
-    void build(int idx, int low, int high, vector<int> &nums)
+    long long ans = a * b + c * d;
+    if (ans >= mod)
     {
-        if (low == high)
+        int x = int(ans % mod);
+        return x;
+    }
+    return (int)ans;
+}
+
+struct matrix
+{
+
+    int m[2][2];
+    void read()
+    {
+        for (int i = 0; i < 2; i++)
         {
-            seg[idx] = nums[low] == 1;
-            return;
+            for (int j = 0; j < 2; j++)
+            {
+                scanf("%d", &m[i][j]);
+            }
         }
-
-        int m = (low + high) / 2;
-
-        build(2 * idx + 1, low, m, nums);
-        build(2 * idx + 2, m + 1, high, nums);
-
-        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
     }
 
-    void updateHelper(int idx, int low, int high, int &l, int &r)
+    void print()
     {
-        // update the previous remaning updates and propagate them
-        if (lazy[idx] != 0)
+        for (int i = 0; i < 2; i++)
         {
-            // now I am flipping in rangle low, high
-            // total coins = high-low+1
-            // total heads = seg[idx]
-            // new heads will be
-            seg[idx] = (high - low + 1) - seg[idx];
-
-            // check if there are children
-            if (low != high)
+            for (int j = 0; j < 2; j++)
             {
-                // propagate down
-                // not as multiple swaps aagye toh same hi rahnege
-                // 2 flips is range will not cause any change
-                lazy[2 * idx + 1] = !lazy[2 * idx + 1];
-                lazy[2 * idx + 2] = !lazy[2 * idx + 2];
+                if (j)
+                    printf(" ");
+                printf("%d", m[i][j]);
             }
-
-            lazy[idx] = 0;
+            puts("");
         }
-
-        // no overlap
-        if (r < low || l > high)
-            return;
-
-        // complete overlap
-        if (low >= l && high <= r)
-        {
-            seg[idx] = (high - low + 1) - seg[idx];
-
-            if (low != high)
-            {
-                // propagate down
-                lazy[2 * idx + 1] = !lazy[2 * idx + 1];
-                lazy[2 * idx + 2] = !lazy[2 * idx + 2];
-            }
-
-            return;
-        }
-
-        // partial overlap
-        int m = (low + high) / 2;
-        updateHelper(2 * idx + 1, low, m, l, r);
-        updateHelper(2 * idx + 2, m + 1, high, l, r);
-
-        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
+        puts("");
     }
+};
 
-    int query(int idx, int low, int high, int &l, int &r)
-    {
-        // if there is previous update remaining do it and propagate down
-        if (lazy[idx] != 0)
-        {
-            // lazy == 1 i.e flip
-            seg[idx] = (high - low + 1) - seg[idx];
-
-            // check if there are children
-            if (low != high)
-            {
-                // propagate down
-                // not as multiple swaps aagye toh same hi rahnege
-                // 2 flips is range will not cause any change
-                lazy[2 * idx + 1] = !lazy[2 * idx + 1];
-                lazy[2 * idx + 2] = !lazy[2 * idx + 2];
-            }
-
-            lazy[idx] = 0;
-        }
-
-        if (r < low || l > high)
-            return 0;
-
-        if (low >= l && high <= r)
-            return seg[idx];
-
-        int m = (low + high) / 2;
-
-        int left = query(2 * idx + 1, low, m, l, r);
-        int right = query(2 * idx + 2, m + 1, high, l, r);
-
-        seg[idx] = left + right;
-    }
+class Segment_tree
+{
 
 public:
-    SegTree(vector<int> &nums)
+    vector<matrix> tree;
+
+    Segment_tree(int n)
     {
-        seg.resize(nums.size() * 4);
-        lazy.resize(nums.size() * 4, 0);
-
-        size = nums.size() - 1;
-
-        build(0, 0, nums.size() - 1, nums);
+        tree.resize(n * 4);
     }
 
-    void updateRange(int l, int r)
+    void query(int node, int l, int r, int low, int high, matrix &mat)
     {
-        updateHelper(0, 0, size, l, r);
+        if (low >= l && high <= r)
+        {
+            mat = tree[node];
+        }
+        else
+        {
+            int lt = (node << 1);
+            int rt = lt + 1;
+            int mid = low + ((high - low) >> 1);
+
+            matrix q1, q2;
+            bool a, b;
+            a = b = true;
+
+            if (!(low > r || mid < l))
+                query(lt, l, r, low, mid, q1);
+            else
+                a = false;
+            if (!(mid + 1 > r || high < l))
+                query(rt, l, r, mid + 1, high, q2);
+            else
+                b = false;
+
+            if (!a)
+                mat = q2;
+            else if (!b)
+                mat = q1;
+            else
+            {
+                mat.m[0][0] = cal(q1.m[0][0], q2.m[0][0], q1.m[0][1], q2.m[1][0]);
+                mat.m[0][1] = cal(q1.m[0][0], q2.m[0][1], q1.m[0][1], q2.m[1][1]);
+                mat.m[1][0] = cal(q1.m[1][0], q2.m[0][0], q1.m[1][1], q2.m[1][0]);
+                mat.m[1][1] = cal(q1.m[1][0], q2.m[0][1], q1.m[1][1], q2.m[1][1]);
+            }
+        }
     }
 
-    int heads(int left, int right)
+    void build(int node, int st, int sp)
     {
-        return query(0, 0, size, left, right);
+        if (st == sp)
+        {
+            tree[node].read();
+        }
+        else
+        {
+            int lt = (node << 1);
+            int rt = lt + 1;
+            int mid = st + ((sp - st) >> 1);
+
+            build(lt, st, mid);
+            build(rt, mid + 1, sp);
+
+            tree[node].m[0][0] = cal(tree[lt].m[0][0], tree[rt].m[0][0], tree[lt].m[0][1], tree[rt].m[1][0]);
+            tree[node].m[0][1] = cal(tree[lt].m[0][0], tree[rt].m[0][1], tree[lt].m[0][1], tree[rt].m[1][1]);
+            tree[node].m[1][0] = cal(tree[lt].m[1][0], tree[rt].m[0][0], tree[lt].m[1][1], tree[rt].m[1][0]);
+            tree[node].m[1][1] = cal(tree[lt].m[1][0], tree[rt].m[0][1], tree[lt].m[1][1], tree[rt].m[1][1]);
+        }
     }
 };
 
 int main()
 {
+    int n, m;
+    scanf("%d%d%d", &mod, &n, &m);
 
-#ifndef IO_FROM_FILE
-    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
-    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
-#endif
+    matrix mat;
+    Segment_tree tree(n);
+    tree.build(1, 1, n);
 
-    int n, q;
-    cin >> n >> q;
-
-    vector<int> coins(n, 0); // all tails
-
-    SegTree st(coins);
-
-    while (q--)
+    for (int i = 0; i < m; i++)
     {
-        int t, l, r;
-        cin >> t >> l >> r;
+        int l, r;
+        scanf("%d%d", &l, &r);
 
-        if (t == 1)
-            cout << st.heads(l, r) << endl;
-        else
-            st.updateRange(l, r);
+        tree.query(1, l, r, 1, n, mat);
+        mat.print();
     }
 
     return 0;

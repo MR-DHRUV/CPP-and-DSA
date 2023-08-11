@@ -1,92 +1,100 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
+#define ll long long int
+#define MAX 810000
+#define mat vector<vector<ll>>
+
 using namespace std;
-long long segtree[400002];
-bool lazy[400002];
 
-// add val to array[idx], idx is from left to right inclusive both sides
-void updateRangeLazy(int node, int start, int end, int left, int right)
+class SegTree
 {
-   if (lazy[node])
-   {                                                     // update this node
-      segtree[node] = (end - start + 1) - segtree[node]; // myself
-      if (start != end)
-      {
-         lazy[node * 2] = !lazy[node * 2];
-         lazy[node * 2 + 1] = !lazy[node * 2 + 1];
-      }
-      lazy[node] = false;
-   }
-   if (right < start or left > end)
-   { // this node is completely outside the range of query
-      return;
-   }
+   mat seg[MAX];
+   ll size;
+   ll mod;
 
-   if (start >= left and end <= right) // I am completely inside the range of update
+   mat multiply(const mat &a, const mat &b)
    {
-      segtree[node] = (end - start + 1) - segtree[node];
-      if (start != end)
-      {
-         lazy[node * 2] = !lazy[node * 2];
-         lazy[node * 2 + 1] = !lazy[node * 2 + 1];
-      }
-      return;
-   }
-   int mid = (start + end) / 2;
-   updateRangeLazy(node * 2, start, mid, left, right);
-   updateRangeLazy(node * 2 + 1, mid + 1, end, left, right);
+      mat res(2, vector<ll>(2, 0));
 
-   segtree[node] = segtree[node * 2] + segtree[node * 2 + 1];
-}
+      res[0][0] = (a[0][0] * b[0][0] + a[0][1] * b[1][0]) % mod;
+      res[0][1] = (a[0][0] * b[0][1] + a[0][1] * b[1][1]) % mod;
+      res[1][0] = (a[1][0] * b[0][0] + a[1][1] * b[1][0]) % mod;
+      res[1][1] = (a[1][0] * b[0][1] + a[1][1] * b[1][1]) % mod;
 
-long long queryLazy(int node, int start, int end, int left, int right)
-{
-   if (right < start or left > end)
-   { // this node is completely outside the range of query
-      return 0;
+      return res;
    }
-   if (lazy[node])
-   {                                                     // update this node
-      segtree[node] = (end - start + 1) - segtree[node]; // myself
-      if (start != end)
+
+   void build(ll idx, ll low, ll high)
+   {
+      if (low == high)
       {
-         lazy[node * 2] = !lazy[node * 2];
-         lazy[node * 2 + 1] = !lazy[node * 2 + 1];
+         cin >> seg[idx][0][0] >> seg[idx][0][1] >> seg[idx][1][0] >> seg[idx][1][1];
+         return;
       }
-      lazy[node] = false;
+
+      ll m = (low + high) / 2;
+      build(2 * idx + 1, low, m);
+      build(2 * idx + 2, m + 1, high);
+
+      // multiply matrices
+      seg[idx] = multiply(seg[2 * idx + 1], seg[2 * idx + 2]);
    }
-   if (start >= left and end <= right)
-   { // this node is completely inside the range of query
-      return segtree[node];
+
+   mat queryHelper(ll idx, ll low, ll high, ll &l, ll &r)
+   {
+      if (low >= l && high <= r)
+         return seg[idx];
+
+      ll mid = (low + high) / 2;
+      bool a = true, b = true;
+      mat left, right;
+
+      if (!(low > r || mid < l))
+         left = queryHelper(2 * idx + 1, low, mid, l, r);
+      else
+         a = false;
+      if (!(mid + 1 > r || high < l))
+         right = queryHelper(2 * idx + 2, mid + 1, high, l, r);
+      else
+         b = false;
+
+      if (!a)
+         return right;
+      else if (!b)
+         return left;
+
+      return multiply(left, right);
    }
-   int mid = (start + end) / 2;
-   return queryLazy(node * 2, start, mid, left, right) +
-          queryLazy(node * 2 + 1, mid + 1, end, left, right);
-}
+
+public:
+   SegTree(ll n, ll r)
+   {
+      mod = r;
+      size = n - 1;
+      build(0, 0, size);
+   }
+
+   mat query(ll &l, ll &r)
+   {
+      return queryHelper(0, 0, size, l, r);
+   }
+};
 
 int main()
 {
-#ifndef IO_FROM_FILE
-   freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
-   freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
-#endif
+   ll r, n, m;
+   scanf("%lld%lld%lld", &r, &n, &m);
+   SegTree st(n, r);
 
-   int n;
-   cin >> n;
-   int q;
-   cin >> q;
-   while (q--)
+   ll a, b;
+   while (m--)
    {
-      int a;
-      int b, c;
-      cin >> a >> b >> c;
-      if (a == 1)
-      {
-         cout << queryLazy(1, 0, n - 1, b, c) << endl;
-      }
-      else
-      {
-         updateRangeLazy(1, 0, n - 1, b, c);
-      }
+      scanf("%lld%lld", &a, &b);
+
+      mat ans = st.query(--a, --b);
+
+      printf("%lld %lld\n", ans[0][0], ans[0][1]);
+      printf("%lld %lld\n\n", ans[1][0], ans[1][1]);
    }
+
+   return 0;
 }

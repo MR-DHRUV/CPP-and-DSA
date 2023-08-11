@@ -1,97 +1,84 @@
 #include <bits/stdc++.h>
-#define ll long long int
+#define mat vector<vector<int>>
+
 using namespace std;
 
 class SegTree
 {
-    ll seg[400010]{0}, lazy[400010]{0};
-    ll size;
+    mat *seg;
+    int size;
+    int mod;
 
-    // range update
-    void updateHelper(ll idx, ll low, ll high, ll &l, ll &r, ll &val)
+    inline mat multiply(mat a, mat b)
     {
-        // check for previous update
-        if (lazy[idx] != 0)
-        {
-            seg[idx] += (high - low + 1) * lazy[idx];
+        mat res(2, vector<int>(2, 0));
 
-            // propagate down
-            if (low != high)
-            {
-                lazy[2 * idx + 1] += lazy[idx];
-                lazy[2 * idx + 2] += lazy[idx];
-            }
+        res[0][0] = (a[0][0] * b[0][0] + a[0][1] * b[1][0]) % mod;
+        res[0][1] = (a[0][0] * b[0][1] + a[0][1] * b[1][1]) % mod;
+        res[1][0] = (a[1][0] * b[0][0] + a[1][1] * b[1][0]) % mod;
+        res[1][1] = (a[1][0] * b[0][1] + a[1][1] * b[1][1]) % mod;
 
-            lazy[idx] = 0;
-        }
-
-        if (r < low || l > high)
-            return;
-
-        if (low >= l && high <= r)
-        {
-            seg[idx] += (high - low + 1) * val;
-
-            // propagate down
-            if (low != high)
-            {
-                lazy[2 * idx + 1] += val;
-                lazy[2 * idx + 2] += val;
-            }
-
-            return;
-        }
-
-        ll m = (low + high) / 2;
-
-        updateHelper(2 * idx + 1, low, m, l, r, val);
-        updateHelper(2 * idx + 2, m + 1, high, l, r, val);
-
-        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
+        return res;
     }
 
-    ll query(ll idx, ll low, ll high, ll &i)
+    void build(int idx, int low, int high)
     {
-        if (lazy[idx] != 0)
+        if (low == high)
         {
-            seg[idx] += (high - low + 1) * lazy[idx];
-
-            // check if there are children
-            if (low != high)
-            {
-                // propagate down
-                lazy[2 * idx + 1] += lazy[idx];
-                lazy[2 * idx + 2] += lazy[idx];
-            }
-
-            lazy[idx] = 0;
+            seg[idx] = vector<vector<int>>(2, vector<int>(2, 0));
+            cin >> seg[idx][0][0] >> seg[idx][0][1] >> seg[idx][1][0] >> seg[idx][1][1];
+            return;
         }
 
-        if (low == high)
+        int m = (low + high) / 2;
+        build(2 * idx + 1, low, m);
+        build(2 * idx + 2, m + 1, high);
+
+        // multiply matrices
+        seg[idx] = multiply(seg[2 * idx + 1], seg[2 * idx + 2]);
+    }
+
+    // core optimizarion
+    // do not do unneccassary multiplications
+    mat queryHelper(int idx, int low, int high, int &l, int &r)
+    {
+        if (low >= l && high <= r)
             return seg[idx];
 
-        ll m = (low + high) / 2;
+        int mid = (low + high) >> 1;
+        bool a = true, b = true;
+        mat left, right;
 
-        if (i <= m)
-            return query(2 * idx + 1, low, m, i);
+        // do not make unneccacary caints
+        if (!(low > r || mid < l))
+            left = queryHelper(2 * idx + 1, low, mid, l, r);
         else
-            return query(2 * idx + 2, m + 1, high, i);
+            a = false;
+        if (!(mid + 1 > r || high < l))
+            right = queryHelper(2 * idx + 2, mid + 1, high, l, r);
+        else
+            b = false;
+
+        if (!a)
+            return right;
+        else if (!b)
+            return left;
+
+        return multiply(left, right);
     }
 
 public:
-    SegTree(int n)
+    SegTree(int n, int r)
     {
-        size = n;
+        seg = new mat[4 * n];
+        mod = r;
+        size = n - 1;
+        build(0, 0, size);
     }
 
-    void update(ll l, ll r, ll val)
+    mat query(int &l, int &r)
     {
-        updateHelper(0, 0, size, l, r, val);
-    }
-
-    ll value(ll i)
-    {
-        return query(0, 0, size, i);
+        return queryHelper(0, 0, size, l, r);
     }
 };
 
@@ -102,24 +89,25 @@ int main()
     //     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
     // #endif
 
-    ll n, m;
-    cin >> n >> m;
-    SegTree st(n);
+    int r, n, m;
+    cin >> r >> n >> m;
+    SegTree st(n, r);
 
-    ll t, a, b, c;
+    int a, b;
     while (m--)
     {
-        cin >> t;
-        if (t == 1)
-        {
-            cin >> a >> b >> c;
-            st.update(a, b - 1, c);
-        }
-        else
-        {
-            cin >> a;
-            cout << st.value(a) << endl;
-        }
+        cin >> a >> b;
+
+        mat ans = st.query(--a, --b);
+
+        cout << ans[0][0] << " ";
+        cout << ans[0][1] << " ";
+        cout << endl;
+        cout << ans[1][0] << " ";
+        cout << ans[1][1] << " ";
+        cout << endl;
+
+        cout << endl;
     }
 
     return 0;
