@@ -1,141 +1,92 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include<vector>
+#define ll long long int
 using namespace std;
 
-using vec = vector<int>;
-int mod;
-const int nax = 2e5 * 4;
-
-inline int cal(int a, int b, int c, int d)
+class SegTree
 {
-    long long ans = a * b + c * d;
-    if (ans >= mod)
-    {
-        int x = int(ans % mod);
-        return x;
-    }
-    return (int)ans;
-}
+    vector<ll> seg;
+    ll size = 40;
 
-struct matrix
-{
-
-    int m[2][2];
-    void read()
+    void update(ll idx, ll low, ll high, int target)
     {
-        for (int i = 0; i < 2; i++)
+        if (low == high)
         {
-            for (int j = 0; j < 2; j++)
-            {
-                scanf("%d", &m[i][j]);
-            }
+            seg[idx]++; // one more occurance of this element is found
+            return;
         }
+
+        ll m = (low + high) >> 1;
+
+        if (target <= m)
+            update(2 * idx + 1, low, m, target);
+        else
+            update(2 * idx + 2, m + 1, high, target);
+
+        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
     }
 
-    void print()
+    ll queryHelper(ll idx, ll low, ll high, ll l, ll r)
     {
-        for (int i = 0; i < 2; i++)
-        {
-            for (int j = 0; j < 2; j++)
-            {
-                if (j)
-                    printf(" ");
-                printf("%d", m[i][j]);
-            }
-            puts("");
-        }
-        puts("");
-    }
-};
+        if (r < low || l > high)
+            return 0;
 
-class Segment_tree
-{
+        if (low >= l && high <= r)
+            return seg[idx];
+
+        ll mid = (low + high) >> 1;
+        ll left = queryHelper(2 * idx + 1, low, mid, l, r);
+        ll right = queryHelper(2 * idx + 2, mid + 1, high, l, r);
+
+        return left + right;
+    }
 
 public:
-    vector<matrix> tree;
-
-    Segment_tree(int n)
+    ll construct(vector<ll> &nums, ll &l, ll &r)
     {
-        tree.resize(n * 4);
-    }
+        seg = vector<ll>(170, 0);
+        ll ans = 0; // stores inversion count for any index i
 
-    void query(int node, int l, int r, int low, int high, matrix &mat)
-    {
-        if (low >= l && high <= r)
+        for (int i = l; i <= r; i++)
         {
-            mat = tree[node];
+            ll sp = queryHelper(0, 0, size, nums[i] + 1, 40);
+            ans += sp;
+            update(0, 0, size, nums[i]);
         }
-        else
-        {
-            int lt = (node << 1);
-            int rt = lt + 1;
-            int mid = low + ((high - low) >> 1);
 
-            matrix q1, q2;
-            bool a, b;
-            a = b = true;
-
-            if (!(low > r || mid < l))
-                query(lt, l, r, low, mid, q1);
-            else
-                a = false;
-            if (!(mid + 1 > r || high < l))
-                query(rt, l, r, mid + 1, high, q2);
-            else
-                b = false;
-
-            if (!a)
-                mat = q2;
-            else if (!b)
-                mat = q1;
-            else
-            {
-                mat.m[0][0] = cal(q1.m[0][0], q2.m[0][0], q1.m[0][1], q2.m[1][0]);
-                mat.m[0][1] = cal(q1.m[0][0], q2.m[0][1], q1.m[0][1], q2.m[1][1]);
-                mat.m[1][0] = cal(q1.m[1][0], q2.m[0][0], q1.m[1][1], q2.m[1][0]);
-                mat.m[1][1] = cal(q1.m[1][0], q2.m[0][1], q1.m[1][1], q2.m[1][1]);
-            }
-        }
-    }
-
-    void build(int node, int st, int sp)
-    {
-        if (st == sp)
-        {
-            tree[node].read();
-        }
-        else
-        {
-            int lt = (node << 1);
-            int rt = lt + 1;
-            int mid = st + ((sp - st) >> 1);
-
-            build(lt, st, mid);
-            build(rt, mid + 1, sp);
-
-            tree[node].m[0][0] = cal(tree[lt].m[0][0], tree[rt].m[0][0], tree[lt].m[0][1], tree[rt].m[1][0]);
-            tree[node].m[0][1] = cal(tree[lt].m[0][0], tree[rt].m[0][1], tree[lt].m[0][1], tree[rt].m[1][1]);
-            tree[node].m[1][0] = cal(tree[lt].m[1][0], tree[rt].m[0][0], tree[lt].m[1][1], tree[rt].m[1][0]);
-            tree[node].m[1][1] = cal(tree[lt].m[1][0], tree[rt].m[0][1], tree[lt].m[1][1], tree[rt].m[1][1]);
-        }
+        return ans;
     }
 };
 
 int main()
 {
-    int n, m;
-    scanf("%d%d%d", &mod, &n, &m);
+// #ifndef IO_FROM_FILE
+//     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+//     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+// #endif
 
-    matrix mat;
-    Segment_tree tree(n);
-    tree.build(1, 1, n);
+    // increases speed by prventing the overhead
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-    for (int i = 0; i < m; i++)
+    ll n, q, t, a, b;
+    cin >> n >> q;
+    vector<ll> arr(n);
+
+    for (int i = 0; i < n; i++)
     {
-        int l, r;
-        scanf("%d%d", &l, &r);
+        cin >> arr[i];
+    }
 
-        tree.query(1, l, r, 1, n, mat);
-        mat.print();
+    SegTree st;
+
+    while (q--)
+    {
+        cin >> t >> a >> b;
+        if (t == 1)
+            cout << st.construct(arr, --a, --b) << endl;
+        else
+            arr[--a] = b; // 1 based indexing
     }
 
     return 0;

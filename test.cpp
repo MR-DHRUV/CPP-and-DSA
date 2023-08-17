@@ -1,99 +1,103 @@
 #include <bits/stdc++.h>
-#define ll long long int
-#define MAX 810000
-#define mat vector<vector<ll>>
-
+#define ll long long
 using namespace std;
 
-class SegTree
+struct segtree
 {
-   mat seg[MAX];
-   ll size;
-   ll mod;
 
-   mat multiply(const mat &a, const mat &b)
+   int size;
+   vector<int> sums;
+
+   void init(int n)
    {
-      mat res(2, vector<ll>(2, 0));
-
-      res[0][0] = (a[0][0] * b[0][0] + a[0][1] * b[1][0]) % mod;
-      res[0][1] = (a[0][0] * b[0][1] + a[0][1] * b[1][1]) % mod;
-      res[1][0] = (a[1][0] * b[0][0] + a[1][1] * b[1][0]) % mod;
-      res[1][1] = (a[1][0] * b[0][1] + a[1][1] * b[1][1]) % mod;
-
-      return res;
+      size = 1;
+      while (size < n)
+         size *= 2;
+      sums.assign(2 * size, 0);
    }
 
-   void build(ll idx, ll low, ll high)
+   void change(int i, int v, int x, int lx, int rx)
    {
-      if (low == high)
+      if (rx - lx == 1)
       {
-         cin >> seg[idx][0][0] >> seg[idx][0][1] >> seg[idx][1][0] >> seg[idx][1][1];
+         sums[x] += v;
          return;
       }
-
-      ll m = (low + high) / 2;
-      build(2 * idx + 1, low, m);
-      build(2 * idx + 2, m + 1, high);
-
-      // multiply matrices
-      seg[idx] = multiply(seg[2 * idx + 1], seg[2 * idx + 2]);
-   }
-
-   mat queryHelper(ll idx, ll low, ll high, ll &l, ll &r)
-   {
-      if (low >= l && high <= r)
-         return seg[idx];
-
-      ll mid = (low + high) / 2;
-      bool a = true, b = true;
-      mat left, right;
-
-      if (!(low > r || mid < l))
-         left = queryHelper(2 * idx + 1, low, mid, l, r);
+      int m = (lx + rx) / 2;
+      if (i < m)
+         change(i, v, 2 * x + 1, lx, m);
       else
-         a = false;
-      if (!(mid + 1 > r || high < l))
-         right = queryHelper(2 * idx + 2, mid + 1, high, l, r);
-      else
-         b = false;
-
-      if (!a)
-         return right;
-      else if (!b)
-         return left;
-
-      return multiply(left, right);
+         change(i, v, 2 * x + 2, m, rx);
+      sums[x] = sums[2 * x + 1] + sums[2 * x + 2];
+   }
+   void change(int i, int v)
+   {
+      change(i, v, 0, 0, size);
    }
 
-public:
-   SegTree(ll n, ll r)
+   int calc(int l, int r, int x, int lx, int rx)
    {
-      mod = r;
-      size = n - 1;
-      build(0, 0, size);
+      if (lx >= l && rx <= r)
+         return sums[x];
+      if (rx <= l || lx >= r)
+         return 0;
+      int m = (lx + rx) / 2;
+      return calc(l, r, 2 * x + 1, lx, m) + calc(l, r, 2 * x + 2, m, rx);
    }
-
-   mat query(ll &l, ll &r)
+   int calc(int l)
    {
-      return queryHelper(0, 0, size, l, r);
+      return calc(l, size, 0, 0, size);
    }
 };
 
 int main()
 {
-   ll r, n, m;
-   scanf("%lld%lld%lld", &r, &n, &m);
-   SegTree st(n, r);
+   #ifndef IO_FROM_FILE
+       freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+       freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+   #endif
 
-   ll a, b;
+   int n, m;
+   cin >> n >> m;
+
+   vector<int> a(n);
+
+   for (int i = 0; i < n; ++i)
+      cin >> a[i];
+
    while (m--)
    {
-      scanf("%lld%lld", &a, &b);
+      int op;
+      cin >> op;
 
-      mat ans = st.query(--a, --b);
+      if (op == 1)
+      {
 
-      printf("%lld %lld\n", ans[0][0], ans[0][1]);
-      printf("%lld %lld\n\n", ans[1][0], ans[1][1]);
+         int x, y;
+         cin >> x >> y;
+
+         x -= 1;
+
+         segtree st;
+         st.init(40);
+
+         int sum = 0;
+
+         for (int i = x; i < y; ++i)
+         {
+            int val = a[i];
+            sum += st.calc(val);
+            st.change(val - 1, 1);
+         }
+
+         cout << sum << "\n";
+      }
+      else
+      {
+         int x, y;
+         cin >> x >> y;
+         a[x - 1] = y;
+      }
    }
 
    return 0;

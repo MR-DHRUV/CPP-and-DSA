@@ -5,7 +5,7 @@ using namespace std;
 class SegTree
 {
     // Now we need to count inversions for each index i such that i > j and arr[i] < arr[j]
-    // So initially we'll have a frequency array initialised to 0, thus we dont need to build the tree all the elements are 0
+    // So initially we'll have a frequency array initialised to 0, thus we dont need to build the tree all the elements are 0 
     // as we visit elements we find ans for them and update the segment tree
     // segment tree is made up of frequency array
     // we will be given with 1-n elements all unique

@@ -1,113 +1,112 @@
 #include <bits/stdc++.h>
-#define mat vector<vector<int>>
-
+#define ll long long int
 using namespace std;
 
 class SegTree
 {
-    mat *seg;
-    int size;
-    int mod;
+    vector<ll> seg, ans;
+    ll size = 40;
 
-    inline mat multiply(mat a, mat b)
-    {
-        mat res(2, vector<int>(2, 0));
-
-        res[0][0] = (a[0][0] * b[0][0] + a[0][1] * b[1][0]) % mod;
-        res[0][1] = (a[0][0] * b[0][1] + a[0][1] * b[1][1]) % mod;
-        res[1][0] = (a[1][0] * b[0][0] + a[1][1] * b[1][0]) % mod;
-        res[1][1] = (a[1][0] * b[0][1] + a[1][1] * b[1][1]) % mod;
-
-        return res;
-    }
-
-    void build(int idx, int low, int high)
+    void update(ll idx, ll low, ll high, int target)
     {
         if (low == high)
         {
-            seg[idx] = vector<vector<int>>(2, vector<int>(2, 0));
-            cin >> seg[idx][0][0] >> seg[idx][0][1] >> seg[idx][1][0] >> seg[idx][1][1];
+            seg[idx]++; // one more occurance of this element is found
             return;
         }
 
-        int m = (low + high) / 2;
-        build(2 * idx + 1, low, m);
-        build(2 * idx + 2, m + 1, high);
+        ll m = (low + high) >> 1;
 
-        // multiply matrices
-        seg[idx] = multiply(seg[2 * idx + 1], seg[2 * idx + 2]);
+        if (target <= m)
+            update(2 * idx + 1, low, m, target);
+        else
+            update(2 * idx + 2, m + 1, high, target);
+
+        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
     }
 
-    // core optimizarion
-    // do not do unneccassary multiplications
-    mat queryHelper(int idx, int low, int high, int &l, int &r)
+    ll queryHelper(ll idx, ll low, ll high, ll l, ll r)
     {
+        if (r < low || l > high)
+            return 0;
+
         if (low >= l && high <= r)
             return seg[idx];
 
-        int mid = (low + high) >> 1;
-        bool a = true, b = true;
-        mat left, right;
+        ll mid = (low + high) >> 1;
+        ll left = queryHelper(2 * idx + 1, low, mid, l, r);
+        ll right = queryHelper(2 * idx + 2, mid + 1, high, l, r);
 
-        // do not make unneccacary caints
-        if (!(low > r || mid < l))
-            left = queryHelper(2 * idx + 1, low, mid, l, r);
-        else
-            a = false;
-        if (!(mid + 1 > r || high < l))
-            right = queryHelper(2 * idx + 2, mid + 1, high, l, r);
-        else
-            b = false;
-
-        if (!a)
-            return right;
-        else if (!b)
-            return left;
-
-        return multiply(left, right);
+        return left + right;
     }
 
 public:
-    SegTree(int n, int r)
+    void construct(vector<ll> &nums)
     {
-        seg = new mat[4 * n];
-        mod = r;
-        size = n - 1;
-        build(0, 0, size);
+        seg = vector<ll>(180, 0);
+        ans = vector<ll>(nums.size(), 0); // stores inversion count for any index i
+
+        for (int i = 0; i < nums.size(); i++)
+        {
+            // prefix sum ans to answer queries in O(1)
+            ans[i] = queryHelper(0, 0, size, nums[i] + 1, 40);
+            update(0, 0, size, nums[i]);
+        }
     }
 
-    mat query(int &l, int &r)
+    ll query(ll &l, ll &r)
     {
-        return queryHelper(0, 0, size, l, r);
+        ll sum = 0;
+        for (int i = l; i <= r; i++)
+        {
+            sum += ans[i];
+        }
+
+        return sum;
     }
 };
 
 int main()
 {
-    // #ifndef IO_FROM_FILE
-    //     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
-    //     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
-    // #endif
+#ifndef IO_FROM_FILE
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+#endif
 
-    int r, n, m;
-    cin >> r >> n >> m;
-    SegTree st(n, r);
+    // increases speed by prventing the overhead
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-    int a, b;
-    while (m--)
+    ll n, q, t, a, b;
+    cin >> n >> q;
+    vector<ll> arr(n);
+
+    for (int i = 0; i < n; i++)
     {
-        cin >> a >> b;
+        cin >> arr[i];
+    }
 
-        mat ans = st.query(--a, --b);
+    SegTree st;
+    st.construct(arr);
 
-        cout << ans[0][0] << " ";
-        cout << ans[0][1] << " ";
-        cout << endl;
-        cout << ans[1][0] << " ";
-        cout << ans[1][1] << " ";
-        cout << endl;
+    while (q--)
+    {
+        cin >> t >> a >> b;
 
-        cout << endl;
+        if (t == 1)
+        {
+            // t1 query
+            cout << st.query(--a, --b) << endl;
+        }
+        else
+        {
+            // 1 based indexing
+            a--;
+            arr[a] = b;
+
+            // rebuild the tree for t2 query
+            st.construct(arr);
+        }
     }
 
     return 0;
