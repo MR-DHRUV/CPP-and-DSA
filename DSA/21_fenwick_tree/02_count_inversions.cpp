@@ -3,15 +3,21 @@
 using namespace std;
 
 // } Driver Code Ends
-
 using ll = long long int;
-ll bit[(ll)(1e18 + 7)];
+
+// we can use unorderd map to optimize space but that will use logarithmic time in worst case
 
 class BIT
 {
+    ll *bit;
     ll size;
 
 public:
+    BIT(ll n) : size(n)
+    {
+        bit = new ll[n + 1]{0};
+    }
+
     void update(ll i, ll val)
     {
         for (; i < size; i += (i & (-i)))
@@ -47,8 +53,9 @@ public:
     long long int inversionCount(long long arr[], long long N)
     {
         ll maxi = *max_element(arr, arr + N);
+
+        BIT b(maxi + 2);
         ll ans = 0;
-        BIT b;
 
         for (ll i = 0; i < N; i++)
         {

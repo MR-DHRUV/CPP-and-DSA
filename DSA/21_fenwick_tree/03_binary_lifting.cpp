@@ -2,8 +2,6 @@
 #define ll long long int
 using namespace std;
 
-// BIT for range sum
-// BIT uses 1 based indexing
 class BIT
 {
     ll *bit;
@@ -15,30 +13,18 @@ public:
         bit = new ll[n + 1]{0};
     }
 
-    // adding a value x at index i
-    // log(N)
     void update(int i, int val)
     {
-        // now here we need to concider all the indices which will keep a track of current index
-
-        // so all the incides will be
-        // i, j = i+lastSetBit(i)
-        // k = j + lastsetBit(j)
-        // .... till its less than size
-
         for (; i < size; i += (i & (-i)))
         {
             bit[i] += val;
         }
     }
 
-    // to obtain sum till index i
-    // max complexity logi as max number of bits in a number N can be logN
     ll sum(int i)
     {
         ll ans = 0;
 
-        // every time we remove last set bit from i to get the sum of next non overlaping interval
         for (; i > 0; i -= (i & (-i)))
         {
             ans += bit[i];
@@ -50,6 +36,57 @@ public:
     ll query(int l, int r)
     {
         return sum(r) - sum(l - 1);
+    }
+
+    int lower_bound(ll sum)
+    {
+        // Now, here we need one more operation
+        // to find index till which a given prefix sum is a lower_bound
+        // i.e first index till which prefix sum is equal or just greater than a given value
+        // So' to deal this we'll use binary lifting
+
+        // Observation
+        // find the maximum index till which sum is just smaller
+        // add 1 to it
+        // return ans;
+
+        // We will search in our BIT logarathimcally
+        // we'll start from index which is the max power of 2
+        // 20 -> 4
+        // 32 -> 5
+        // 16-> 4
+        // and we'll check value at that index  if its less then we can use it, else we'll decrease the power of 2 by 1 
+
+        // now, if we can use any index then we will navigate to the last value till which the sum is smaller 
+        // so we'll add the remaning power of 2 to current index to check if we can take the sum till that index 
+
+        // if now skip, if yes add 
+        // ansd we'll continue till 2^0
+
+        // This works as
+        // say val at 2^3 is large and 2^2 is small 
+        // so we can add 2^1 and 2^0 
+        // so the max index we can navigate is
+        // 4+2+1 = 7 which is less than 8
+        // we are doing this in a logarithmic style  
+
+        // we can say that sumTill(2^i) = sumTill(2^i+1) - 1
+        // so we are always before index where the value is greater 
+        
+
+        ll idx = 0, prevSum = 0;
+
+        for (int i = log2(size); i >= 0; i--)
+        {
+            // can be used
+            if (prevSum + bit[idx + (1 << i)] < sum)
+            {
+                idx += (1 << i);
+                prevSum += bit[idx];
+            }
+        }
+
+        return idx + 1;
     }
 };
 
@@ -105,10 +142,10 @@ int main()
         else
         {
             // calculate differnce from actual value so that we can update our BIT
-            b.update(l,r-arr[l-1]);
+            b.update(l, r - arr[l - 1]);
 
             // update original array
-            arr[l-1] = r;
+            arr[l - 1] = r;
         }
     }
 
