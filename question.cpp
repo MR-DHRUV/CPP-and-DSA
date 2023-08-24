@@ -1,88 +1,107 @@
 //{ Driver Code Starts
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
+ 
 
 // } Driver Code Ends
 
-using ll = long long int;
-ll bit[(ll)(1e18 + 7)];
 
-class BIT
-{
-    ll size;
-
-public:
-    void update(ll i, ll val)
-    {
-        for (; i < size; i += (i & (-i)))
-        {
-            bit[i] += val;
-        }
-    }
-
-    ll sum(ll i)
-    {
-        ll ans = 0;
-
-        for (; i > 0; i -= (i & (-i)))
-        {
-            ans += bit[i];
-        }
-
-        return ans;
-    }
-
-    ll query(ll l, ll r)
-    {
-        return sum(r) - sum(l - 1);
-    }
-};
 
 class Solution
 {
-public:
-    // arr[]: Input Array
-    // N : Size of the Array arr[]
-    // Function to count inversions in the array.
-    long long int inversionCount(long long arr[], long long N)
+    inline int multiply(char &a, char &b, int &c)
     {
-        ll maxi = *max_element(arr, arr + N);
-        ll ans = 0;
-        BIT b;
+        int a1 = a - '0';
+        int b1 = b - '0';
+        return a1 * b1 + c;
+    }
 
-        for (ll i = 0; i < N; i++)
+    void add(string &a, string &b)
+    {
+        int lenA = a.size();
+        int lenB = b.size();
+        int carry = 0;
+        string result;
+
+        // Traverse the strings from right to left
+        for (int i = lenA - 1, j = lenB - 1; i >= 0 || j >= 0 || carry > 0; i--, j--)
         {
-            ans += b.query(arr[i] + 1, maxi + 1);
-            b.update(arr[i], 1);
+            int numA = (i >= 0) ? (a[i] - '0') : 0;
+            int numB = (j >= 0) ? (b[j] - '0') : 0;
+
+            int sum = numA + numB + carry;
+            carry = sum / 10;
+            sum %= 10;
+
+            result.push_back(char(sum + '0'));
         }
 
-        return ans;
+        reverse(result.begin(), result.end());
+
+        a = result;
+    }
+
+public:
+    /*You are required to complete below function */
+    string multiplyStrings(string s1, string s2)
+    {
+        // simple multiple krna haii carry wala jaise bachpan me krte the
+        string ans(max(s1.length(), s2.length()), '0');
+        string g = "";
+
+        for (int i = s2.length() - 1; i >= 0; i--)
+        {
+            string temp;
+            int carry = 0;
+
+            for (int j = s1.length() - 1; j >= 0; j--)
+            {
+                int m = multiply(s1[j], s2[i], carry);
+
+                temp.push_back((m % 10) + '0');
+                carry = m / 10;
+
+                // cout<<s1[j]<<" "<<s2[i]<<" "<<m<<" "<<carry<<endl;
+            }
+
+            if (carry > 0)
+                temp.push_back(carry + '0');
+
+            reverse(temp.begin(), temp.end());
+            temp.append(g.begin(), g.end());
+
+            // add this to answer
+            add(ans, temp);
+
+            // add gap
+            g += "0";
+        }
+
+        // remove leading zeros from answer
+        int i =0;
+        while (i < ans.length() && ans[i] == 0)
+        {
+            i++;
+        }
+
+        return ans.substr(i);
     }
 };
 
 //{ Driver Code Starts.
-
-int main()
-{
-
-    long long T;
-    cin >> T;
-
-    while (T--)
+ 
+int main() {
+     
+    int t;
+    cin>>t;
+    while(t--)
     {
-        long long N;
-        cin >> N;
-
-        long long A[N];
-        for (long long i = 0; i < N; i++)
-        {
-            cin >> A[i];
-        }
-        Solution obj;
-        cout << obj.inversionCount(A, N) << endl;
+    	string a;
+    	string b;
+    	cin>>a>>b;
+    	Solution obj;
+    	cout<<obj.multiplyStrings(a,b)<<endl;
     }
-
-    return 0;
+     
 }
-
 // } Driver Code Ends

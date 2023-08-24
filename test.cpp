@@ -1,104 +1,66 @@
-#include <bits/stdc++.h>
-#define ll long long
-using namespace std;
-
-struct segtree
+using ll = long long int;
+class BIT
 {
+   ll *bit;
+   ll size;
 
-   int size;
-   vector<int> sums;
-
-   void init(int n)
+public:
+   BIT(ll n) : size(n)
    {
-      size = 1;
-      while (size < n)
-         size *= 2;
-      sums.assign(2 * size, 0);
+      bit = new ll[n + 1]{0};
    }
 
-   void change(int i, int v, int x, int lx, int rx)
+   void update(ll i, ll val)
    {
-      if (rx - lx == 1)
+      for (; i <= size; i += (i & (-i)))
       {
-         sums[x] += v;
-         return;
+         bit[i] += val;
       }
-      int m = (lx + rx) / 2;
-      if (i < m)
-         change(i, v, 2 * x + 1, lx, m);
-      else
-         change(i, v, 2 * x + 2, m, rx);
-      sums[x] = sums[2 * x + 1] + sums[2 * x + 2];
-   }
-   void change(int i, int v)
-   {
-      change(i, v, 0, 0, size);
    }
 
-   int calc(int l, int r, int x, int lx, int rx)
+   ll sum(ll i)
    {
-      if (lx >= l && rx <= r)
-         return sums[x];
-      if (rx <= l || lx >= r)
-         return 0;
-      int m = (lx + rx) / 2;
-      return calc(l, r, 2 * x + 1, lx, m) + calc(l, r, 2 * x + 2, m, rx);
+      ll ans = 0;
+
+      for (; i > 0; i -= (i & (-i)))
+      {
+         ans += bit[i];
+      }
+
+      return ans;
    }
-   int calc(int l)
+
+   ll query(ll l, ll r)
    {
-      return calc(l, size, 0, 0, size);
+      return sum(r) - sum(l - 1);
    }
 };
 
-int main()
+class Solution
 {
-   #ifndef IO_FROM_FILE
-       freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
-       freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
-   #endif
-
-   int n, m;
-   cin >> n >> m;
-
-   vector<int> a(n);
-
-   for (int i = 0; i < n; ++i)
-      cin >> a[i];
-
-   while (m--)
+public:
+   int reversePairs(vector<int> nums)
    {
-      int op;
-      cin >> op;
+      vector<int> order(nums.begin(), nums.end());
 
-      if (op == 1)
+      sort(order.begin(), order.end());
+      order.erase(unique(order.begin(), order.end()), order.end());
+
+      int ans = 0;
+
+      BIT b(nums.size() + 1);
+
+      for (int i = 0; i < nums.size(); i++)
       {
+         int &ele = nums[i];
+         int ele_rank = upper_bound(order.begin(), order.end(), 2 * 1ll * ele) - order.begin();
 
-         int x, y;
-         cin >> x >> y;
+         ans += b.query(ele_rank + 1, nums.size());
 
-         x -= 1;
-
-         segtree st;
-         st.init(40);
-
-         int sum = 0;
-
-         for (int i = x; i < y; ++i)
-         {
-            int val = a[i];
-            sum += st.calc(val);
-            st.change(val - 1, 1);
-         }
-
-         cout << sum << "\n";
+         int ele_index = lower_bound(order.begin(), order.end(), ele) - order.begin();
+         b.update(ele_index + 1, 1);
       }
-      else
-      {
-         int x, y;
-         cin >> x >> y;
-         a[x - 1] = y;
-      }
+
+      return ans;
    }
-
-   return 0;
-}
+};

@@ -15,30 +15,18 @@ public:
         bit = new ll[n + 1]{0};
     }
 
-    // adding a value x at index i
-    // log(N)
     void update(int i, int val)
     {
-        // now here we need to concider all the indices which will keep a track of current index
-
-        // so all the incides will be
-        // i, j = i+lastSetBit(i)
-        // k = j + lastsetBit(j)
-        // .... till its less than size
-
         for (; i <= size; i += (i & (-i)))
         {
             bit[i] += val;
         }
     }
 
-    // to obtain sum till index i
-    // max complexity logi as max number of bits in a number N can be logN
     ll sum(int i)
     {
         ll ans = 0;
 
-        // every time we remove last set bit from i to get the sum of next non overlaping interval
         for (; i > 0; i -= (i & (-i)))
         {
             ans += bit[i];
@@ -55,24 +43,6 @@ public:
 
 int main()
 {
-    // also called binary indexed trees
-    // its a data structure which computes things by doing prefix operations on array
-    // its a online data structure i.e we can add elements in the end withoud changing the previous one's
-    // can't solve complex problems like we saw in segment trees
-
-    // faster than segment trees if applicable on a problem
-    /// very small code and can be quickly coded
-
-    // to obtain right most set bit of any number
-    // rsb = (x)&(-x)
-
-    // in segment trees andy index i will store data of range
-    // j = removeLastBit(i)
-    // range -> j+i to i
-
-    // querying
-    // to get sum of range (i,j)
-
 #ifndef IO_FROM_FILE
     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);

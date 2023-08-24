@@ -20,7 +20,7 @@ public:
 
     void update(ll i, ll val)
     {
-        for (; i < size; i += (i & (-i)))
+        for (; i <= size; i += (i & (-i)))
         {
             bit[i] += val;
         }
