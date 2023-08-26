@@ -2,11 +2,11 @@
 #define ll long long int
 using namespace std;
 
-// BIT for range sum
-// BIT uses 1 based indexing
+
 class BIT
 {
-    ll *bit;
+    // to support range updates in O(logN) we need 2 arrays 
+    ll *bit1, *bit2;
     int size;
 
 public:

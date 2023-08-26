@@ -1,107 +1,103 @@
 //{ Driver Code Starts
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
- 
+
 
 // } Driver Code Ends
 
 
-
-class Solution
+using ll = long long int;
+class BIT
 {
-    inline int multiply(char &a, char &b, int &c)
-    {
-        int a1 = a - '0';
-        int b1 = b - '0';
-        return a1 * b1 + c;
-    }
-
-    void add(string &a, string &b)
-    {
-        int lenA = a.size();
-        int lenB = b.size();
-        int carry = 0;
-        string result;
-
-        // Traverse the strings from right to left
-        for (int i = lenA - 1, j = lenB - 1; i >= 0 || j >= 0 || carry > 0; i--, j--)
-        {
-            int numA = (i >= 0) ? (a[i] - '0') : 0;
-            int numB = (j >= 0) ? (b[j] - '0') : 0;
-
-            int sum = numA + numB + carry;
-            carry = sum / 10;
-            sum %= 10;
-
-            result.push_back(char(sum + '0'));
-        }
-
-        reverse(result.begin(), result.end());
-
-        a = result;
-    }
+    ll *bit;
+    ll size;
 
 public:
-    /*You are required to complete below function */
-    string multiplyStrings(string s1, string s2)
+    BIT(int n)
     {
-        // simple multiple krna haii carry wala jaise bachpan me krte the
-        string ans(max(s1.length(), s2.length()), '0');
-        string g = "";
+        size = n + 1;
+        bit = new ll[n + 2]{0};
+    }
 
-        for (int i = s2.length() - 1; i >= 0; i--)
+    void update(ll i, ll val)
+    {
+        ++i;
+        for (; i < size; i += (i & (-i)))
         {
-            string temp;
-            int carry = 0;
+            bit[i] += val;
+        }
+    }
 
-            for (int j = s1.length() - 1; j >= 0; j--)
-            {
-                int m = multiply(s1[j], s2[i], carry);
+    ll sum(ll i)
+    {
+        ++i;
+        ll ans = 0;
 
-                temp.push_back((m % 10) + '0');
-                carry = m / 10;
-
-                // cout<<s1[j]<<" "<<s2[i]<<" "<<m<<" "<<carry<<endl;
-            }
-
-            if (carry > 0)
-                temp.push_back(carry + '0');
-
-            reverse(temp.begin(), temp.end());
-            temp.append(g.begin(), g.end());
-
-            // add this to answer
-            add(ans, temp);
-
-            // add gap
-            g += "0";
+        for (; i > 0; i -= (i & (-i)))
+        {
+            ans += bit[i];
         }
 
-        // remove leading zeros from answer
-        int i =0;
-        while (i < ans.length() && ans[i] == 0)
-        {
-            i++;
-        }
+        return ans;
+    }
 
-        return ans.substr(i);
+    ll query(ll l, ll r)
+    {
+        return sum(r) - sum(l - 1);
     }
 };
 
-//{ Driver Code Starts.
- 
-int main() {
-     
-    int t;
-    cin>>t;
-    while(t--)
+class Solution
+{
+public:
+    // arr[]: Input Array
+    // N : Size of the Array arr[]
+    // Function to count inversions in the array.
+    long long int inversionCount(long long arr[], long long N)
     {
-    	string a;
-    	string b;
-    	cin>>a>>b;
-    	Solution obj;
-    	cout<<obj.multiplyStrings(a,b)<<endl;
+        ll ans = 0;
+        BIT b(N + 2);
+
+        set<ll> nums(arr, arr + N);
+        unordered_map<ll, ll> eleToIdx;
+
+        int j = 0;
+        for (auto &e : nums)
+            eleToIdx[e] = j++;
+
+        for (ll i = 0; i < N; i++)
+        {
+            ll idx = eleToIdx[arr[i]];
+
+            ans += b.query(idx + 1, j - 1); // j-1 points to max element
+            b.update(idx, 1);
+        }
+
+        return ans;
     }
-     
+};
+
+
+//{ Driver Code Starts.
+
+int main() {
+    
+    long long T;
+    cin >> T;
+    
+    while(T--){
+        long long N;
+        cin >> N;
+        
+        long long A[N];
+        for(long long i = 0;i<N;i++){
+            cin >> A[i];
+        }
+        Solution obj;
+        cout << obj.inversionCount(A,N) << endl;
+    }
+    
+    return 0;
 }
+
 // } Driver Code Ends

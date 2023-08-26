@@ -9,7 +9,7 @@ public:
     ll sum;
 
     // it will store the count of any set bit present in numbers that have occured in sum of this node
-    ll bits[MAX_BIT]{0};
+    ll bits[MAX_BIT];
     Node(){};
     Node(int n)
     {
@@ -19,8 +19,8 @@ public:
         for (int i = 0; i < MAX_BIT; i++)
         {
             ll mask = 1ll << i;
-            if (mask & n)
-                bits[i] = 1;
+            if()
+            bits[i] = (mask & n);
         }
     }
 
@@ -97,7 +97,7 @@ class SegTree
             ll mask = 1ll << i;
 
             // if bit is 1 in xor
-            if (mask & x)
+            if ((mask & x) > 0)
             {
                 ll cnt1 = seg[idx].bits[i];
                 // count of zeros is total elements in range - no of 1's
@@ -106,13 +106,10 @@ class SegTree
                 ll diff = (cnt0 - cnt1);
                 // change = diff * 2 raised to the power i
                 sum += (diff * mask);
-
-                // count of new 1's
-                seg[idx].bits[i] = cnt0;
             }
         }
 
-        seg[idx].sum = sum;
+        seg[idx] = Node(sum);
     }
 
     void update(ll idx, ll low, ll high, ll &l, ll &r, ll &val)
@@ -176,10 +173,10 @@ public:
 
 int main()
 {
-    // #ifndef IO_FROM_FILE
-    //     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
-    //     freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
-    // #endif
+#ifndef IO_FROM_FILE
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+#endif
 
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);

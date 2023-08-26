@@ -1,66 +1,115 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int mod = 1e9 + 7;
 using ll = long long int;
+class Node
+{
+public:
+    int val;
+    int mul = 1;
+    int add = 0;
+
+    Node(int x) : val(x){};
+};
+
 class BIT
 {
-   ll *bit;
-   ll size;
+    vector<Node> bit;
 
 public:
-   BIT(ll n) : size(n)
-   {
-      bit = new ll[n + 1]{0};
-   }
+    BIT()
+    {
+        bit.push_back(Node(0)); // init with an element 0
+    }
 
-   void update(ll i, ll val)
-   {
-      for (; i <= size; i += (i & (-i)))
-      {
-         bit[i] += val;
-      }
-   }
+    void append(int &x)
+    {
+        bit.push_back(Node(x));
+    }
 
-   ll sum(ll i)
-   {
-      ll ans = 0;
+    void add(int i, int val)
+    {
+        while (i > 0)
+        {
+            bit[i].add = (bit[i].add + val) % mod;
+            i -= i & -i;
+        }
+    }
 
-      for (; i > 0; i -= (i & (-i)))
-      {
-         ans += bit[i];
-      }
+    void multiply(int i, int val)
+    {
+        while (i > 0)
+        {
+            // addition multiply
+            bit[i].add = (bit[i].add * val) % mod;
 
-      return ans;
-   }
+            // multiply factor multiply
+            bit[i].mul = (bit[i].mul * val) % mod;
+            i -= i & -i;
+        }
+    }
 
-   ll query(ll l, ll r)
-   {
-      return sum(r) - sum(l - 1);
-   }
+    int query(int i)
+    {
+        ++i;
+        long long ans = bit[i].val;
+
+        while (i < bit.size())
+        {
+            auto &p = bit[i];
+            ans = (ans * p.mul) % mod;
+            ans = (ans + p.add) % mod;
+
+            i += (i) & (-i);
+        }
+
+        return ans;
+    }
 };
 
-class Solution
+class Fancy
 {
+    BIT b;
+    int n = 0;
+
 public:
-   int reversePairs(vector<int> nums)
-   {
-      vector<int> order(nums.begin(), nums.end());
+    Fancy()
+    {
+    }
 
-      sort(order.begin(), order.end());
-      order.erase(unique(order.begin(), order.end()), order.end());
+    void append(int val)
+    {
+        // point update : O(log N)
+        n++;
+        b.append(val);
+    }
 
-      int ans = 0;
+    void addAll(int inc)
+    {
+        // range update
+        b.add(n, inc);
+    }
 
-      BIT b(nums.size() + 1);
+    void multAll(int m)
+    {
+        // range update
+        b.multiply(n, m);
+    }
 
-      for (int i = 0; i < nums.size(); i++)
-      {
-         int &ele = nums[i];
-         int ele_rank = upper_bound(order.begin(), order.end(), 2 * 1ll * ele) - order.begin();
+    int getIndex(int idx)
+    {
+        // query
+        if (idx > n - 1)
+            return -1;
 
-         ans += b.query(ele_rank + 1, nums.size());
-
-         int ele_index = lower_bound(order.begin(), order.end(), ele) - order.begin();
-         b.update(ele_index + 1, 1);
-      }
-
-      return ans;
-   }
+        return b.query(idx);
+    }
 };
+
+
+int main()
+{
+
+    return 0;
+}
