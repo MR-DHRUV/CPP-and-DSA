@@ -1,103 +1,129 @@
 //{ Driver Code Starts
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+
 using namespace std;
+
+struct Node
+{
+    int data;
+    Node* next;
+    
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+};
+
+
+void print(Node *root)
+{
+    Node *temp = root;
+    while(temp!=NULL)
+    {
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+}
+
 
 
 // } Driver Code Ends
+/*
 
+The structure of linked list is the following
 
-using ll = long long int;
-class BIT
+struct Node
 {
-    ll *bit;
-    ll size;
-
-public:
-    BIT(int n)
-    {
-        size = n + 1;
-        bit = new ll[n + 2]{0};
-    }
-
-    void update(ll i, ll val)
-    {
-        ++i;
-        for (; i < size; i += (i & (-i)))
-        {
-            bit[i] += val;
-        }
-    }
-
-    ll sum(ll i)
-    {
-        ++i;
-        ll ans = 0;
-
-        for (; i > 0; i -= (i & (-i)))
-        {
-            ans += bit[i];
-        }
-
-        return ans;
-    }
-
-    ll query(ll l, ll r)
-    {
-        return sum(r) - sum(l - 1);
+    int data;
+    Node* next;
+    
+    Node(int x){
+        data = x;
+        next = NULL;
     }
 };
-
+*/
 class Solution
 {
-public:
-    // arr[]: Input Array
-    // N : Size of the Array arr[]
-    // Function to count inversions in the array.
-    long long int inversionCount(long long arr[], long long N)
+    Node *reverseList(Node *head)
     {
-        ll ans = 0;
-        BIT b(N + 2);
-
-        set<ll> nums(arr, arr + N);
-        unordered_map<ll, ll> eleToIdx;
-
-        int j = 0;
-        for (auto &e : nums)
-            eleToIdx[e] = j++;
-
-        for (ll i = 0; i < N; i++)
+        Node *prev = NULL, *curr = head, *next = NULL;
+        
+        while(curr != NULL)
         {
-            ll idx = eleToIdx[arr[i]];
-
-            ans += b.query(idx + 1, j - 1); // j-1 points to max element
-            b.update(idx, 1);
+            next = curr->next;
+            curr->next = prev;
+            
+            prev = curr;
+            curr = next;
         }
-
-        return ans;
+        
+        return prev;
     }
+    
+    public:
+    Node *compute(Node *head)
+    {
+        Node *h = reverseList(head), *prev = h, *temp = prev->next;
+        int maxi = prev->data;
+        
+        while(temp != NULL)
+        {
+            if(temp->data < maxi)
+            {
+                prev->next = temp->next;
+                temp = prev->next;
+            }
+            else
+            {
+                prev = temp;
+                temp = temp->next;
+                maxi = max(maxi,temp->data);
+            }
+        }
+        
+        return reverseList(h);
+    }
+    
 };
+   
 
 
 //{ Driver Code Starts.
 
-int main() {
-    
-    long long T;
-    cin >> T;
-    
-    while(T--){
-        long long N;
-        cin >> N;
-        
-        long long A[N];
-        for(long long i = 0;i<N;i++){
-            cin >> A[i];
-        }
-        Solution obj;
-        cout << obj.inversionCount(A,N) << endl;
+int main()
+{
+    #ifndef IO_FROM_FILE
+        freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+        freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+    #endif
+
+    int T;
+	cin>>T;
+
+	while(T--)
+	{
+		int K;
+		cin>>K;
+		struct Node *head = NULL;
+        struct Node *temp = head;
+
+		for(int i=0;i<K;i++){
+		    int data;
+		    cin>>data;
+			if(head==NULL)
+			    head=temp=new Node(data);
+			else
+			{
+				temp->next = new Node(data);
+				temp = temp->next;
+			}
+		}
+        Solution ob;
+        Node *result = ob.compute(head);
+        print(result);
+        cout<<endl;
     }
-    
-    return 0;
 }
 
 // } Driver Code Ends
