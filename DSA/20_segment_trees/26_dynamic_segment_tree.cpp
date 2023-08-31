@@ -76,7 +76,7 @@ class DynamicSegTree
 public:
     DynamicSegTree()
     {
-        seg = new Node(0, 1e9, 0); // only a single node with 0 value, to represent nothing is being tracked.
+        seg = new Node(0, 1e9, 0);
     }
 
     void update(int l, int r, int val)

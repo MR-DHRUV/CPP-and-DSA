@@ -1,93 +1,120 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct segmentNodes
+class SegTree
 {
-    int low, high, data;
-    segmentNodes *left, *right;
-    segmentNodes(int low, int high, int data)
-    {
-        this->low = low;
-        this->high = high;
-        this->data = data;
-        this->left = NULL;
-        this->right = NULL;
-    }
-};
+    vector<int> seg;
+    vector<bool> lazy;
+    int size;
+    long long int sum = 0;
 
-class RangeModule
-{
-    // unordered_map<long long int,int>seg;
-    // as numbers are from 1 to 1e9 it will take more memory as compare to Tree - MLE WILL BE FIXED
-    void updateRangeSeg(segmentNodes *root, int l, int r, int add)
+    void build(int idx, int low, int high, vector<int> &nums)
     {
-        if (root->low == l && root->high == r)
+        if (low == high)
         {
-            root->data = add;
-            root->left = NULL;
-            root->right = NULL;
+            seg[idx] = nums[low];
             return;
         }
 
-        int mid = root->low + (root->high - root->low) / 2;
+        int m = low + (high - low) / 2;
 
-        if (!root->left) // first time insertion of nodes
-        {
-            root->left = new segmentNodes(root->low, mid, root->data);
-            root->right = new segmentNodes(mid + 1, root->high, root->data);
-        }
-
-        if (r <= mid)
-            updateRangeSeg(root->left, l, r, add);
-        else if (l > mid)
-            updateRangeSeg(root->right, l, r, add);
-        else
-        {
-            updateRangeSeg(root->left, l, mid, add);
-            updateRangeSeg(root->right, mid + 1, r, add);
-        }
-
-        root->data = root->left->data && root->right->data;
+        build(2 * idx + 1, low, m, nums);
+        build(2 * idx + 2, m + 1, high, nums);
+        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
     }
 
-    bool QueryRangeSeg(segmentNodes *root, int l, int r) // just go to the interval using BS
+    void merge(int idx, int low, int high)
     {
-        if (!root->left) // leafNode
-            return root->data;
+        if (lazy[idx])
+        {
+            seg[idx] = (high - low + 1) - seg[idx];
 
-        if (root->low == l && root->high == r)
-            return root->data;
+            // check if there are children
+            if (low != high)
+            {
+                // propagate down
+                lazy[2 * idx + 1] = !lazy[2 * idx + 1];
+                lazy[2 * idx + 2] = !lazy[2 * idx + 2];
+            }
 
-        int mid = root->low + (root->high - root->low) / 2;
+            lazy[idx] = false;
+        }
+    }
 
-        if (r <= mid)
-            return QueryRangeSeg(root->left, l, r);
-        else if (l > mid)
-            return QueryRangeSeg(root->right, l, r);
+    void updateHelper(int idx, int low, int high, int &l, int &r)
+    {
+        merge(idx, low, high);
 
-        return QueryRangeSeg(root->left, l, mid) && QueryRangeSeg(root->right, mid + 1, r);
+        // no overlap
+        if (r < low || l > high)
+            return;
+
+        // complete overlap
+        if (low >= l && high <= r)
+        {
+            lazy[idx] = true;
+            merge(idx, low, high);
+            return;
+        }
+
+        // partial overlap
+        int m = low + (high - low) / 2;
+        updateHelper(2 * idx + 1, low, m, l, r);
+        updateHelper(2 * idx + 2, m + 1, high, l, r);
+
+        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
     }
 
 public:
-    segmentNodes *seg;
-    RangeModule()
+    SegTree(vector<int> &nums, long long int s) : sum(s)
     {
-        seg = new segmentNodes(0, 1e9, 0); // initially nothing is tracked
+        seg.resize(nums.size() * 4, 0);
+        lazy.resize(nums.size() * 4, 0);
+        size = nums.size() - 1;
+        build(0, 0, nums.size() - 1, nums);
     }
 
-    void addRange(int left, int right)
+    void updateRange(int l, int r)
     {
-        updateRangeSeg(seg, left, right - 1, 1);
+        updateHelper(0, 0, size, l, r);
     }
 
-    bool queryRange(int left, int right)
+    void updateSum(int p)
     {
-        return QueryRangeSeg(seg, left, right - 1);
+        long long int diff = 1ll * p * seg[0];
+        sum += diff;
     }
 
-    void removeRange(int left, int right)
+    long long int query()
     {
-        updateRangeSeg(seg, left, right - 1, 0);
+        return sum;
+    }
+};
+
+class Solution
+{
+public:
+    vector<long long> handleQuery(vector<int> &nums1, vector<int> &nums2, vector<vector<int>> &queries)
+    {
+        vector<long long> ans;
+
+        long long int sum = 0;
+        for (int &i : nums2)
+            sum += i;
+
+        SegTree st(nums1, sum);
+
+        for (auto &q : queries)
+        {
+            if (q[0] == 1)
+                st.updateRange(q[1], q[2]);
+            else if (q[0] == 2)
+                st.updateSum(q[1]);
+            else
+                ans.push_back(st.query());
+        }
+
+        return ans;
     }
 };
 
