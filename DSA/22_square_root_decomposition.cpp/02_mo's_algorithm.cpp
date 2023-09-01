@@ -43,6 +43,7 @@ int main()
 
     // sorting queries
     // we sorting them is such a way that the movement b/w any two consicutive queries is rootN
+    // this sorting function is called Mo's comparator
     sort(queries.begin(), queries.end(), [](vector<int> &a, vector<int> &b)
          {
         if(a[0]/rootN == b[0]/rootN)
