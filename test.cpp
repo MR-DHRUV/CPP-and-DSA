@@ -1,113 +1,73 @@
-#include<cstdio>
-#include<cmath>
-#include<algorithm>
-
-typedef long long int ll;
-
+#include <bits/stdc++.h>
 using namespace std;
 
-const int s=200005;
-const int S=1e6+100;
-int block,n,m;
-int l,r,x;
-int a[s],mp[S];
-ll ans[s],sum;
-
-struct query
-{
-    int l,r,idx;
-}q[s];
-
-bool cmp(query a,query b)
-{
-    if(a.l/block!=b.l/block)
-        return a.l<b.l;
-
-    return a.r<b.r;
-}
+bool bfs(int s, int t,vector<vector<int>>&graph,int parent[],int n)
+    {
+        vector<bool>visited(n+1,false);
+        queue<int>q;
+        q.push(s);
+        while(!q.empty())
+        {
+            int u=q.front();
+            q.pop();
+            visited[u]=true;
+            for(int i=1;i<=n;i++)
+            {
+                if(graph[u][i]>0 && visited[i]==false)
+                {
+                    parent[i]=u;
+                    q.push(i);
+                    
+                    if(i==t)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+        
+    }
+    int findMaxFlow(int n,int m,vector<vector<int>> edge)
+    {
+        vector<vector<int>>graph(n+1,vector<int>(n+1,0)) ;
+        
+        for(int i=0;i<m;i++)
+        {
+            graph[edge[i][0]][edge[i][1]]+=edge[i][2] ;
+            graph[edge[i][1]][edge[i][0]]+=edge[i][2];
+        }
+        
+        int parent[n+1];
+        int ans=0;
+        int s=1,t=n;
+        while(bfs(1,n,graph,parent,n))
+        {
+            int max_flow=INT_MAX;
+            for(int v=t;v!=s;v=parent[v])
+            {
+                int u=parent[v];
+                max_flow=min(max_flow,graph[u][v]) ;
+                
+            }
+            ans=ans+max_flow ;
+            
+            for(int v=t;v!=s;v=parent[v])
+            {
+                int u=parent[v];
+                graph[u][v]-=max_flow;
+                graph[v][u]+=max_flow ;
+                
+            }
+        }
+        
+        return ans ;
+    }
 
 int main()
 {
-    int i,j,k;
-
-    scanf("%d%d",&n,&m);
-
-    block=450;
-
-    for(i=0; i<n; i++)
-        scanf("%d",&a[i]);
-
-    for(i=0; i<m; i++)
-    {
-        scanf("%d%d",&l,&r);
-        q[i].l=l-1;q[i].r=r;q[i].idx= i;
-    }
-
-    sort(q,q+m,cmp);
-
-    int cl,cr;
-    int pl,pr;
-
-    //process the queries
-    pl=0;pr=0;sum=0;
-    for(i=0; i<m; i++)
-    {
-        cl=q[i].l;
-        cr=q[i].r;
-
-        //add elements to the left
-        while(pl>cl)
-        {
-            pl--;
-            x=a[pl];
-
-            sum-=(ll)mp[x]*mp[x]*x;
-            mp[x]++;
-            sum+=(ll)mp[x]*mp[x]*x;
-        }
-
-        //remove from left
-        while(pl<cl)
-        {
-            x=a[pl];
-
-            sum-=(ll)mp[x]*mp[x]*x;
-            mp[x]--;
-            sum+=(ll)mp[x]*mp[x]*x;
-
-            pl++;
-        }
-
-        //add to right
-        while(pr<cr)
-        {
-            x=a[pr];
-
-            sum-=(ll)mp[x]*mp[x]*x;
-            mp[x]++;
-
-            sum+=(ll)mp[x]*mp[x]*x;
-
-            pr++;
-        }
-
-        //remove from right
-        while(pr>cr)
-        {
-            pr--;
-            x=a[pr];
-
-            sum-=(ll)mp[x]*mp[x]*x;
-            mp[x]--;
-
-            sum+=(ll)mp[x]*mp[x]*x;
-        }
-
-        ans[q[i].idx]=sum;
-    }
-
-    for(i=0; i<m; i++)
-        printf("%I64d\n",ans[i]);
-
+  
+    
     return 0;
 }

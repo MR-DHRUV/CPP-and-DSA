@@ -65,7 +65,7 @@ public:
         stack<int> st = topoSort(N, adj);
         int src = 0; // fixed acc to question
 
-        vector<int> dist(N, INT_MAX); // INT_MAX to denote that that certex is unreachable
+        vector<int> dist(N, INT_MAX); // INT_MAX to denote that that vertex is unreachable
         dist[src] = 0;
 
         while (!st.empty())

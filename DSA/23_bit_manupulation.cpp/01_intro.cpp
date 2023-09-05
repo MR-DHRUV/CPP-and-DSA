@@ -79,6 +79,19 @@ int setRange(int n, int l, int r)
     return n | mask;
 }
 
+// function to set bits between l and r in n same as in m, or we can say that m becomes a substring in binary of n starting from l
+int setBitsInNasM(int n, int m, int l, int r)
+{
+    // first I need to clear bits from j to i in n
+    n = clearRange(n, l, r);
+
+    // now we to create a mask
+    // shift all bits in m by r steps
+    int mask = m << r;
+
+    return n | mask;
+}
+
 void printBin(int n)
 {
     for (int i = 31; i >= 0; i--)
@@ -89,20 +102,52 @@ void printBin(int n)
     cout << endl;
 }
 
+bool isPowerOf2(int n)
+{
+    // if a number is power of 2, say 16 we can observe the following property
+
+    // 16 -> 10000
+    // 15 -> 01111
+    // ans -> 0
+
+    // for not power of 2
+    // 5 -> 101
+    // 4 -> 100
+    // and -> 100
+
+    return (n & (n - 1) == 0);
+}
+
+int countSetBits(int n)
+{
+    int ans = 0;
+
+    while (n > 0)
+    {
+        n &= n - 1;
+        ans++;
+    }
+
+    return ans; 
+}
+
 int main()
-{   
+{
     // important
     // indexing is from 0 in bits
     // rightmost bit/lsb is at index 0
 
-    #ifndef IO_FROM_FILE
-        freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
-        freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
-    #endif
+#ifndef IO_FROM_FILE
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+#endif
 
-    int n = 974454555;
+    int n = 15;
+    int m = 2;
     printBin(n);
-    printBin(setRange(n,5,1));
+    printBin(m);
+    printBin(setBitsInNasM(n, m, 3, 1));
+    cout << setBitsInNasM(n, m, 3, 1) << endl;
 
     return 0;
 }

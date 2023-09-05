@@ -18,11 +18,11 @@ int bellmonFord(int n, int m, int src, int dest, vector<vector<int>> &edges)
     // n-1 times
     for (int i = 0; i < n - 1; i++)
     {
-        for (auto edge : edges)
+        for (auto &edge : edges)
         {
-            int u = edge[0];
-            int v = edge[1];
-            int w = edge[2];
+            int &u = edge[0];
+            int &v = edge[1];
+            int &w = edge[2];
 
             // relax
             if (dist[u] != INT_MAX && dist[u] + w < dist[v])
@@ -34,11 +34,11 @@ int bellmonFord(int n, int m, int src, int dest, vector<vector<int>> &edges)
 
     // check for -ve edge cycle
     bool flag = false;
-    for (auto edge : edges)
+    for (auto &edge : edges)
     {
-        int u = edge[0];
-        int v = edge[1];
-        int w = edge[2];
+        int &u = edge[0];
+        int &v = edge[1];
+        int &w = edge[2];
 
         // relax
         if (dist[u] != INT_MAX && dist[u] + w < dist[v])
