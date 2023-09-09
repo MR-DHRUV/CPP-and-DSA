@@ -90,7 +90,6 @@ bool isCircular(Node *head)
     return false;
 }
 
-
 // step 1 : find point of intersection using floys cycle detection algo
 // step 2 : if point of intersection null nahi haii toh slow aur fast ko ek sath chalao ,jaha meet kar jaye waha se start h loop
 Node *startLoop(Node *head)
@@ -139,6 +138,28 @@ Node *startLoop(Node *head)
     // so agar slow start se A times chale toh woh loop start pr aajayga
     // aur agar fast point of intersection se A times chale toh wo loop complete krke uske start pr aajayga, as pahle hi POI B distace pr haii
     // and B + A = C
+
+    /*
+        crisp explaination
+        x : list start to loop start
+        y : loop start to poi
+        z : poi to loop start
+
+        dist moved by fast = df = x + p(y+z) + y
+        dist moved by slow = ds = x + (p-1/2)(y+z) + y // slow will took p- 1/2 complete revolutions
+
+        time = time
+        distance/speed = distance/speed
+
+        (x + p(y+z) + y) / 2v = (x + (p-1/2)(y+z) + y) / v
+
+        (x + p(y+z) + y) =  2*(x + (p-1/2)(y+z) + y)
+        x + p(y+z) + y =  2x + p-1(y+z) + 2y
+
+        x + y +z + y =  2x + 2y
+        x + z = 2x
+        z = x
+    */
 
     slow = head;
 
