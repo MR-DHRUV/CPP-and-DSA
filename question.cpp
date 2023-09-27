@@ -1,63 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct ListNode
+string decodeAtIndex(string s, int k)
 {
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
 
-class Solution
-{
-    class Cmp
+    string ans;
+
+    for (int i = 0; i < s.length() && ans.size() < k; i++)
     {
-    public:
-        bool operator()(const ListNode *a, const ListNode *b)
+        if (!(s[i] >= '0' && s[i] <= '9'))
+            ans.push_back(s[i]);
+        else
         {
-            return a->val > b->val;
+            // build number
+            int n = 0;
+            while (s[i] >= '0' && s[i] <= '9')
+                n = n * 10 + (s[i++] - '0');
+
+            i--;
+            n--;
+
+            string temp = ans;
+            while (n-- && ans.size() < k)
+                ans.append(temp.begin(), temp.end());
         }
-    };
-
-public:
-    ListNode *mergeKLists(vector<ListNode *> &lists)
-    {
-
-        multiset<ListNode *, Cmp> st;
-
-        for (auto head : lists)
-        {
-            while (head != NULL)
-            {
-                st.insert(head);
-                head = head->next;
-            }
-        }
-
-        ListNode *head = new ListNode(-1), *temp = head;
-
-        for (auto it : st)
-        {
-            temp->next = it;
-            temp = temp->next;
-        }
-
-        temp->next = NULL;
-        return head->next;
     }
-};
 
-/**
- * Your MedianFinder object will be instantiated and called as such:
- * MedianFinder* obj = new MedianFinder();
- * obj->addNum(num);
- * double param_2 = obj->findMedian();
- */
+    cout<<ans;
+    return {ans[k - 1]};
+}
 
 int main()
 {
+    cout << decodeAtIndex("vzpp636m8y",2920);
 
     return 0;
 }
