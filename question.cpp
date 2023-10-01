@@ -1,38 +1,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-string decodeAtIndex(string s, int k)
+class Solution
 {
-
-    string ans;
-
-    for (int i = 0; i < s.length() && ans.size() < k; i++)
+public:
+    bool find132pattern(vector<int> &nums)
     {
-        if (!(s[i] >= '0' && s[i] <= '9'))
-            ans.push_back(s[i]);
-        else
+        // i have have to find an increasing subsequence of size 3
+
+        // using multiset as segment tree
+        // I will put two pointers i and j and will look for k using set
+        set<int> st;
+        st.insert(nums.back());
+
+        vector<int> prevSmall(nums.size());
+        prevSmall[0] = nums[0];
+
+        for (int i = 1; i < nums.size(); i++)
         {
-            // build number
-            int n = 0;
-            while (s[i] >= '0' && s[i] <= '9')
-                n = n * 10 + (s[i++] - '0');
-
-            i--;
-            n--;
-
-            string temp = ans;
-            while (n-- && ans.size() < k)
-                ans.append(temp.begin(), temp.end());
+            prevSmall[i] = min(prevSmall[i - 1], nums[i - 1]);
         }
-    }
 
-    cout<<ans;
-    return {ans[k - 1]};
-}
+        for (int i = nums.size() - 2; i >= 1; i--)
+        {
+            if (prevSmall[i] < nums[i])
+            {
+                auto r = st.upper_bound(prevSmall[i]);
+                if (r != st.end() && *r < nums[i])
+                    return true;
+            }
+
+            st.insert(nums[i]);
+        }
+
+        return false;
+    }
+};
 
 int main()
 {
-    cout << decodeAtIndex("vzpp636m8y",2920);
 
     return 0;
 }
