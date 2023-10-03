@@ -9,7 +9,7 @@ void totient()
     vector<int> t(N + 1, 1);
 
     // fills array with incresing values, 1 2 3 4 ...
-    // iota(t.begin(),t.end(),0);
+    iota(t.begin(), t.end(), 0);
 
     for (int i = 2; i <= N; i++)
     {
@@ -17,10 +17,11 @@ void totient()
         {
             t[i] = i - 1;
 
-            for (int j = i+i; j <= N; j += i)
+            for (int j = i + i; j <= N; j += i)
             {
                 isPrime[j] = 0; // non prime
-                t[j] *= t[i];
+                t[j] /= i;
+                t[j] *= (i - 1);
             }
         }
     }
@@ -35,7 +36,7 @@ int32_t main()
 {
     // totient function returns the no of integers that are co-prime to a given number
     // t(n) = n-1  // for prime number
-    // else t(n) = t(p1) * t(p2) * ...
+    // else t(n) = n * (1-1/p1) * (1-1/p2) ....
     // where p1, p2 .. pn are distinct primes in factorization of n
 
     // find number of integers x such that gcd(x,n) = g
