@@ -6,7 +6,7 @@ using namespace std;
 void totient()
 {
     vector<int> isPrime(N + 1, 1);
-    vector<int> t(N + 1, 1);
+    vector<int> t(N + 1);
 
     // fills array with incresing values, 1 2 3 4 ...
     iota(t.begin(), t.end(), 0);
