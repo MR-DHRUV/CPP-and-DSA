@@ -1,53 +1,64 @@
+//{ Driver Code Starts
+// Initial Template for C++
+
 #include <bits/stdc++.h>
 using namespace std;
 
-#define int unsigned long long int 
-const int mod = 1e9 + 7;
+// } Driver Code Ends
+// Back-end complete function Template for C++
 
-bool solve(vector<int> &v)
+class Solution
 {
-    int n = v.size();
-
-    for (int i = 0; i < n; i++)
+public:
+    vector<vector<int>> transitiveClosure(int N, vector<vector<int>> matrix)
     {
-        for (int j = i + 1; j < n; j++)
+        for (int via = 0; via < matrix.size(); via++)
         {
-            for (int k = j + 1; k < n; k++)
+            for (int i = 0; i < matrix.size(); i++)
             {
-                for (int l = k + 1; l < n; l++)
+                for (int j = 0; j < matrix[0].size(); j++)
                 {
-                    int val = ((v[i] ^ v[j]) ^ (v[k] ^ v[l]));
-                    if (val == 0)
-                        return true;
+                    if (matrix[i][j] == 1)
+                        continue;
+
+                    // i se j gaya direct
+                    // i se via gaya , via se j
+
+                    // checking if we can reach or not
+                    if (matrix[i][via] != 0 && matrix[via][j] != 0)
+                    {
+                        matrix[i][j] = 1;
+                    }
                 }
             }
         }
     }
-    return false;
-}
+};
 
-int32_t main()
+//{ Driver Code Starts.
+
+int main()
 {
-    int n;
-    cin >> n;
-
-    vector<int> a(n);
-
-    for (auto &i : a)
-        cin >> i;
-
-
-    if (n >= 130)
-        cout << "Yes" << endl;
-
-    else
+    int t;
+    cin >> t;
+    while (t--)
     {
-        if (solve(a))
-            cout << "Yes" << endl;
+        int N;
+        cin >> N;
+        vector<vector<int>> graph(N, vector<int>(N, -1));
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                cin >> graph[i][j];
 
-        else
-            cout << "No" << endl;
+        Solution ob;
+        vector<vector<int>> ans = ob.transitiveClosure(N, graph);
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < N; j++)
+                cout << ans[i][j] << " ";
+            cout << "\n";
+        }
     }
-
     return 0;
 }
+// } Driver Code Ends
