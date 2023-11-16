@@ -1,64 +1,47 @@
-//{ Driver Code Starts
-// Initial Template for C++
-
 #include <bits/stdc++.h>
 using namespace std;
 
-// } Driver Code Ends
-// Back-end complete function Template for C++
-
-class Solution
+void dfs(int k, string current, unordered_set<string> &visited, vector<int> &path)
 {
-public:
-    vector<vector<int>> transitiveClosure(int N, vector<vector<int>> matrix)
+    for (int i = 0; i < k; i++)
     {
-        for (int via = 0; via < matrix.size(); via++)
+        string next = current + static_cast<char>('0' + i);
+        if (visited.find(next) == visited.end())
         {
-            for (int i = 0; i < matrix.size(); i++)
-            {
-                for (int j = 0; j < matrix[0].size(); j++)
-                {
-                    if (matrix[i][j] == 1)
-                        continue;
-
-                    // i se j gaya direct
-                    // i se via gaya , via se j
-
-                    // checking if we can reach or not
-                    if (matrix[i][via] != 0 && matrix[via][j] != 0)
-                    {
-                        matrix[i][j] = 1;
-                    }
-                }
-            }
+            visited.insert(next);
+            dfs(k, next.substr(1), visited, path);
+            path.push_back(i);
         }
     }
-};
+}
 
-//{ Driver Code Starts.
+string findString(int n, int k)
+{
+    // code here
+    unordered_set<string> visited;
+    string startingNode(n - 1, '0');
+    vector<int> path;
+
+    dfs(k, startingNode, visited, path);
+
+    stringstream result;
+    int totalPaths = pow(k, n);
+
+    for (int i = 0; i < totalPaths; i++)
+    {
+        result << path[i];
+    }
+
+    result << startingNode;
+
+    return result.str();
+}
+
+
 
 int main()
 {
-    int t;
-    cin >> t;
-    while (t--)
-    {
-        int N;
-        cin >> N;
-        vector<vector<int>> graph(N, vector<int>(N, -1));
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
-                cin >> graph[i][j];
+    cout << findString(3, 5) << endl;
 
-        Solution ob;
-        vector<vector<int>> ans = ob.transitiveClosure(N, graph);
-        for (int i = 0; i < N; i++)
-        {
-            for (int j = 0; j < N; j++)
-                cout << ans[i][j] << " ";
-            cout << "\n";
-        }
-    }
     return 0;
 }
-// } Driver Code Ends

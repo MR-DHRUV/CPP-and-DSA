@@ -1,70 +1,115 @@
+//{ Driver Code Starts
+// Initial Template for C++
 #include <bits/stdc++.h>
 using namespace std;
 
+// } Driver Code Ends
+// User function Template for C++
+
 class Solution
 {
-    unordered_map<string, unordered_map<string, int>> hd;
+    unordered_set<string> st;
+    string ans;
 
-    int hammingDist(string &a, string &b)
+    set<string> st1;
+
+    void gen1(string s, int i, int &n, int &k)
     {
-        if (a.length() != b.length())
-            return 2;
-
-        if (hd.count(a) && hd[a].count(b))
-            return hd[a][b];
-
-        int ans = 0;
-
-        for (int i = 0; i < a.length(); i++)
+        if (i == n)
         {
-            if (a[i] != b[i])
-            {
-                if (++ans > 1)
-                    return hd[a][b] = 2;
-            }
+            st1.insert(s);
+            return;
         }
 
-        return hd[a][b] = ans;
+        for (int j = 0; j < k; j++)
+            gen1(s + char('0' + j), i + 1, n, k);
     }
 
-    vector<string> solve(int i, int len, vector<string> &words, vector<int> &groups, unordered_map<int, unordered_map<int, vector<string>>> &dp)
+    void gen(string s, int &k)
     {
-        if (i >= words.size() || (len != -1 && words[i].length() != len))
-            return {};
-
-        if (len != -1 && dp.count(i) && dp[i].count(len))
-            return dp[i][len];
-
-        auto a1 = solve(i + 1, len, words, groups, dp);
-        int j = i + 1;
-
-        while (j < groups.size())
+        for (int i = 0; i < k; i++)
         {
-            if (groups[j] != groups[i] && (len == -1 || words[j].length() == len) && hammingDist(words[i], words[j]) == 1)
-                break;
+            string nxt = s + char(i + '0');
+            if (st.find(nxt) == st.end())
+            {
+            cout << nxt << endl;
+                // cout << s << " " << i << endl;
 
-            j++;
+                st.insert(nxt);
+                ans.push_back(nxt.back());
+                gen(nxt.substr(1), k);
+            }
         }
-
-        auto a2 = solve(j, words[i].length(), words, groups, dp);
-        a2.push_back(words[i]);
-
-        if (a2.size() > a1.size())
-            return dp[i][len] = a2;
-
-        return dp[i][len] = a1;
     }
 
 public:
-    vector<string> getWordsInLongestSubsequence(int n, vector<string> &words, vector<int> &groups)
+    string findString(int n, int k)
     {
-        unordered_map<int, unordered_map<int, vector<string>>> dp;
-        auto ans = solve(0, -1, words, groups, dp);
-        reverse(ans.begin(), ans.end());
+        string temp(n - 1, '0');
+        ans = string(n - 1, '0');
+        gen(temp, k);
+        gen1("", 0, n, k);
+
+        // ans.append(temp.begin(), temp.end());
+        cout << ans << endl;
+
+        for(auto &it : st1)
+        {
+            if(ans.find(it) == ans.npos)
+            {
+                cout << it << endl;
+            }
+            
+        }
+
         return ans;
     }
 };
 
+//{ Driver Code Starts.
 int main()
 {
+#ifndef IO_FROM_FILE
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\input.txt", "r", stdin);
+    freopen("C:\\Users\\Dhruv\\OneDrive\\Documents\\CPP + DSA\\output.txt", "w", stdout);
+#endif
+
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        int N, K;
+        cin >> N >> K;
+        Solution ob;
+        string ans = ob.findString(N, K);
+        int ok = 1;
+        for (auto i : ans)
+        {
+            if (i < '0' || i > K - 1 + '0')
+                ok = 0;
+        }
+        if (!ok)
+        {
+            cout << -1 << endl;
+            continue;
+        }
+        unordered_set<string> st;
+        for (int i = 0; i + N - 1 < ans.size(); i++)
+        {
+            st.insert(ans.substr(i, N));
+        }
+        int tot = 1;
+        for (int i = 1; i <= N; i++)
+            tot *= K;
+        if (st.size() == tot)
+        {
+            cout << ans.size() << endl;
+        }
+        else
+        {
+            cout << -1 << endl;
+        }
+    }
+    return 0;
 }
+// } Driver Code Ends

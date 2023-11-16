@@ -1,125 +1,44 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+
 using namespace std;
 
-class SegTree
+// Function to count combinations that make children happy
+int countCombinations(vector<int> &gifts, int index, int superHappyCount)
 {
-    vector<int> seg;
-    vector<bool> lazy;
-    int size;
-    long long int sum = 0;
-
-    void build(int idx, int low, int high, vector<int> &nums)
+    if (index == gifts.size())
     {
-        if (low == high)
-        {
-            seg[idx] = nums[low];
-            return;
-        }
-
-        int m = low + (high - low) / 2;
-
-        build(2 * idx + 1, low, m, nums);
-        build(2 * idx + 2, m + 1, high, nums);
-        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
+        return (superHappyCount > 0) ? 1 : 0;
     }
 
-    void merge(int idx, int low, int high)
-    {
-        if (lazy[idx])
-        {
-            seg[idx] = (high - low + 1) - seg[idx];
+    // Try not giving the gift to the current child
+    int combinationsWithoutGift = countCombinations(gifts, index + 1, superHappyCount);
 
-            // check if there are children
-            if (low != high)
-            {
-                // propagate down
-                lazy[2 * idx + 1] = !lazy[2 * idx + 1];
-                lazy[2 * idx + 2] = !lazy[2 * idx + 2];
-            }
+    // Try giving the gift to the current child
+    int combinationsWithGift = countCombinations(gifts, index + 1, superHappyCount + gifts[index]);
 
-            lazy[idx] = false;
-        }
-    }
+    // Return the sum of both cases
+    return combinationsWithoutGift + combinationsWithGift;
+}
 
-    void updateHelper(int idx, int low, int high, int &l, int &r)
-    {
-        merge(idx, low, high);
-
-        // no overlap
-        if (r < low || l > high)
-            return;
-
-        // complete overlap
-        if (low >= l && high <= r)
-        {
-            lazy[idx] = true;
-            merge(idx, low, high);
-            return;
-        }
-
-        // partial overlap
-        int m = low + (high - low) / 2;
-        updateHelper(2 * idx + 1, low, m, l, r);
-        updateHelper(2 * idx + 2, m + 1, high, l, r);
-
-        seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
-    }
-
-public:
-    SegTree(vector<int> &nums, long long int s) : sum(s)
-    {
-        seg.resize(nums.size() * 4, 0);
-        lazy.resize(nums.size() * 4, 0);
-        size = nums.size() - 1;
-        build(0, 0, nums.size() - 1, nums);
-    }
-
-    void updateRange(int l, int r)
-    {
-        updateHelper(0, 0, size, l, r);
-    }
-
-    void updateSum(int p)
-    {
-        long long int diff = 1ll * p * seg[0];
-        sum += diff;
-    }
-
-    long long int query()
-    {
-        return sum;
-    }
-};
-
-class Solution
+int countHappyCombinations(int A, vector<int> &B)
 {
-public:
-    vector<long long> handleQuery(vector<int> &nums1, vector<int> &nums2, vector<vector<int>> &queries)
-    {
-        vector<long long> ans;
-
-        long long int sum = 0;
-        for (int &i : nums2)
-            sum += i;
-
-        SegTree st(nums1, sum);
-
-        for (auto &q : queries)
-        {
-            if (q[0] == 1)
-                st.updateRange(q[1], q[2]);
-            else if (q[0] == 2)
-                st.updateSum(q[1]);
-            else
-                ans.push_back(st.query());
-        }
-
-        return ans;
-    }
-};
+    return countCombinations(B, 0, 0);
+}
 
 int main()
 {
+    int A1 = 2;
+    vector<int> B1 = {2, 2, -1, 1, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+
+    int A2 = 3;
+    vector<int> B2 = {1, 1, 3, 2, 2, 3, 1, 3, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+
+    int result1 = countHappyCombinations(A1, B1);
+    int result2 = countHappyCombinations(A2, B2);
+
+    cout << "Input 1 - Number of happy combinations: " << result1 << endl;
+    cout << "Input 2 - Number of happy combinations: " << result2 << endl;
 
     return 0;
 }
