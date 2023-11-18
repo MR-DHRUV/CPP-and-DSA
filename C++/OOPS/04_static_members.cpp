@@ -28,6 +28,7 @@ public:
 };
 
 
+// written to initialize the static member
 int Employee ::count; // bahar isliye likha taak taaki puri class ke liye ek hi count ho , alag alag member ka apna count na ho
 
 

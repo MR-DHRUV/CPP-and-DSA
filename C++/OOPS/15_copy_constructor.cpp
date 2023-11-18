@@ -14,6 +14,7 @@ public:
     };
 
     // copy constructor
+    // important: reference se hi lena padega as agar refer nahi kia toh ek copy contructor call hoga object ki copy bnane ke lie, ab uski copy ke kie ek aur baar hoga .. aise infinite loop of copy contructor me chale jayga. 
     Number(Number &num)
     {
         cout<<"Copy constructor called"<<endl;

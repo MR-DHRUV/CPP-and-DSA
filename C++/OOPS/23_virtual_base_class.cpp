@@ -12,7 +12,7 @@ class student
 
 protected:
     int roll_no;
-
+ 
 public:
     void set_roll(int a)
     {
