@@ -1,71 +1,104 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-class Solution
+typedef vector<vector<int>> Graph;
+
+int dist(int u, int v, const Graph &graph)
 {
-    int solve(int s, vector<int> &arr, int &k, vector<int> &dp)
+    vector<bool> visited(graph.size(), false);
+    queue<int> q;
+
+    q.push(u);
+    visited[u] = true;
+    int distance = 0;
+
+    while (!q.empty())
     {
-        if (s >= arr.size())
-            return 0;
+        int curr = q.front();
+        q.pop();
 
-        if (dp[s] != -1)
-            return dp[s];
-
-        int ans = 0;
-
-        // max partition can be of size k
-        for (int part = s; part < s + k && part < arr.size(); part++)
+        if (curr == v)
         {
-            int maxEle = arr[s];
-
-            for (int i = s; i <= part; i++)
-            {
-                maxEle = max(maxEle, arr[i]);
-            }
-
-            ans = max(ans, (maxEle * (part - s + 1) + solve(part + 1, arr, k, dp)));
+            return distance;
         }
 
-        return dp[s] = ans;
-    }
-
-    int solveTab(vector<int> &arr, int k)
-    {
-        int dp[501] = {0};
-        int maxEle[501][501] = {0};
-
-        for (int i = 0; i < arr.size(); i++)
+        for (int neighbor : graph[curr])
         {
-            int maxi = arr[i];
-            for (int j = i; j < arr.size(); j++)
+            if (!visited[neighbor])
             {
-                maxi = max(maxi, arr[j]);
-                maxEle[i][j] = maxi;
+                q.push(neighbor);
+                visited[neighbor] = true;
+                distance++;
             }
         }
-
-        for (int s = arr.size() - 1; s >= 0; s--)
-        {
-            // max partition can be of size k
-            for (int part = s; part < s + k && part < arr.size(); part++)
-            {
-                dp[s] = max(dp[s], (maxEle[s][part] * (part - s + 1) + dp[part + 1]));
-            }
-        }
-
-        return dp[0];
     }
 
-public:
-    int maxSumAfterPartitioning(vector<int> &arr, int k)
+    return -1; // No path between u and v
+}
+
+bool canWin(int player, int a, int b, int c, const Graph &graph)
+{
+    if (player == 1)
+    { // Player A
+        return dist(a, c, graph) <= 1;
+    }
+    else if (player == 2)
+    { // Player B
+        return dist(b, c, graph) <= 1;
+    }
+    else
+    { // Player C
+        return dist(a, b, graph) <= 1;
+    }
+}
+
+string solveTestCase()
+{
+    int n;
+    cin >> n;
+
+    int a, b, c;
+    cin >> a >> b >> c;
+
+    Graph graph(n + 1);
+    for (int i = 0; i < n - 1; i++)
     {
-        vector<int> dp(arr.size() + 1, -1);
-        return solve(0, arr, k, dp);
+        int u, v;
+        cin >> u >> v;
+
+        graph[u].push_back(v);
+        graph[v].push_back(u);
     }
-};
+
+    // Check if any player can win immediately
+    if (canWin(1, a, b, c, graph))
+    {
+        return "A";
+    }
+    else if (canWin(2, a, b, c, graph))
+    {
+        return "B";
+    }
+    else if (canWin(3, a, b, c, graph))
+    {
+        return "C";
+    }
+
+    // If no player can win immediately, the game will continue forever
+    return "DRAW";
+}
 
 int main()
 {
+    int t;
+    cin >> t;
+
+    while (t--)
+    {
+        string result = solveTestCase();
+        cout << result << endl;
+    }
 
     return 0;
 }
