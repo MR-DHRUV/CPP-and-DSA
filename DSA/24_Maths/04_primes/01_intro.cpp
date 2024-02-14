@@ -7,7 +7,7 @@ using namespace std;
 bool isPrimeNumber(int n)
 {
     // maximum divisor of a number can be rootN
-    for (int i = 2; i < sqrt(n); i++)
+    for (int i = 2; i <= sqrt(n); i++)
     {
         if (n % i == 0)
             return false;

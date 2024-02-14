@@ -68,7 +68,7 @@ public:
             baa abcd abca cab cad
 
             from 0 and 1
-            b a => 0 1
+            b a => 1 0
             d a => 3 0
             a c => 0 2
             b d => 1 3

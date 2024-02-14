@@ -9,7 +9,9 @@ using namespace std;
 string generateRandomString(int length)
 {
     // const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const char charset[] = "abcdefghijklmnopqrstuvwxyz";
+    // const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    // const char charset[] = "abcdefghijklmnopqrstuvwxyz";
+    const char charset[] = "01234500006789";
     const int charsetSize = sizeof(charset) - 1;
 
     string randomString;
@@ -27,7 +29,7 @@ int main()
     srand(static_cast<unsigned int>(time(nullptr)));
 
     // Input parameters
-    int n = 2, m = 30;
+    int n = 3, m = 100;
 
     for (int i = 0; i < n; ++i)
     {
