@@ -43,7 +43,6 @@ class Solution
 public:
     vector<int> minEdgeReversals(int n, vector<vector<int>> &edges)
     {
-
         vector<int> ans(n, 0);
         vector<vector<int>> adj(n);
         map<pair<int, int>, bool> mp;

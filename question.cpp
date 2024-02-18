@@ -1,187 +1,52 @@
-//{ Driver Code Starts
-//Initial Template for C++
-
-#include <bits/stdc++.h>
-#include <sstream>
-using namespace std;
-
-struct Node {
-    int val;
-    vector<Node*> neighbors;
-    Node() {
-        val = 0;
-        neighbors = vector<Node*>();
-    }
-    Node(int _val) {
-        val = _val;
-        neighbors = vector<Node*>();
-    }
-    Node(int _val, vector<Node*> _neighbors) {
-        val = _val;
-        neighbors = _neighbors;
-    }
-};
-vector<Node*> bfs(Node *src){
-    vector<Node*>ans;
-    map<Node*, bool> visit;
-    queue<Node*> q;
-    q.push(src);
-    visit[src] = true;
-    while (!q.empty()) {
-        Node *u = q.front();
-        ans.push_back(u);
-        q.pop();
-        vector<Node *> v = u->neighbors;
-        int n = v.size();
-        for (int i = 0; i < n; i++){
-            if (!visit[v[i]]){
-                visit[v[i]] = true;
-                q.push(v[i]);
-            }
-        }
-    }
-    return ans;
-}
-
-bool compare(Node* prev, Node* new_node, unordered_set<Node*>& prev_vis, unordered_set<Node*>& new_vis) {
-    if (prev == new_node) {
-        return false;
-    }
-    if (!prev || !new_node) {
-        if ((!prev && new_node) || (prev && !new_node)) {
-            return false;
-        }
-        return true;
-    }
-
-    if (prev_vis.count(prev) || new_vis.count(new_node)) {
-        if ((prev_vis.count(prev) && !new_vis.count(new_node)) || (!prev_vis.count(prev) && new_vis.count(new_node))) {
-            return false;
-        }
-        return true;
-    }
-    prev_vis.insert(prev);
-    new_vis.insert(new_node);
-
-    if (prev->val != new_node->val) {
-        return false;
-    }
-
-    size_t prev_n = prev->neighbors.size();
-    size_t new_n = new_node->neighbors.size();
-    if (prev_n != new_n) {
-        return false;
-    }
-
-    sort(prev->neighbors.begin(), prev->neighbors.end(), [](Node* a, Node* b) { return a->val < b->val; });
-    sort(new_node->neighbors.begin(), new_node->neighbors.end(), [](Node* a, Node* b) { return a->val < b->val; });
-
-    for (size_t i = 0; i < prev_n; ++i) {
-        if (!compare(prev->neighbors[i], new_node->neighbors[i], prev_vis, new_vis)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-
-// } Driver Code Ends
-//User function Template for C++
-
-// struct Node {
-//     int val;
-//     vector<Node*> neighbors;
-//     Node() {
-//         val = 0;
-//         neighbors = vector<Node*>();
-//     }
-//     Node(int _val) {
-//         val = _val;
-//         neighbors = vector<Node*>();
-//     }
-//     Node(int _val, vector<Node*> _neighbors) {
-//         val = _val;
-//         neighbors = _neighbors;
-//     }
-// };
-
-class Solution {
+class TrieNode
+{
 public:
-    Node* cloneGraph(Node* node) {
-        
-        queue<Node *> qt;
-        qt.push(node);
-        
-        Node *curr = new Node(node->val);
-        unordered_map<int,Node*> mp;
-        mp[node->val] = curr;
+    TrieNode *children[26];
+    long long cnt = 0;
+};
 
-        unordered_map<int,bool> vis;
-        vis[node->val] = 1;
+class Trie
+{
+public:
+    TrieNode *root;
+    Trie()
+    {
+        root = new TrieNode();
+    };
 
+    long long insertAndCountPS(string &word)
+    {
+        TrieNode *temp = root;
 
-        while(!qt.empty())
+        for (char &ch : word)
         {
-            Node *f = qt.front();
-            qt.pop();
+            if (temp->children[ch - 'a'] == NULL)
+                temp->children[ch - 'a'] = new TrieNode();
 
-            // traverse its adj
-            for(auto nbr : f->neighbors)
-            {
-                // generate a new node
-                if(!vis[nbr->val])
-                {
-                    vis[nbr->val] = 1;
-                    
-                    Node *n = new Node(nbr->val);
-                    qt.push(nbr);
-                    
-                    mp[nbr->val] = n;
-                }
-
-                // common steps: each node will be processed only once so directly push 
-                mp[f->val]->neighbors.push_back(mp[nbr->val]);
-            }
+            temp->cnt++;
+            temp = temp->children[ch - 'a'];
         }
 
+        temp->cnt++;
+        // cout<<word<<" "<<temp->cnt<<endl;
 
-
-        return curr;
+        return temp->cnt - 1;
     }
 };
 
+// intuition: We only have to  add palindrome words to trie
 
-//{ Driver Code Starts.
-int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        int N;
-        cin >> N;
-        Node* root = NULL;
-        vector<Node*>v(N);
-        std::string buffer;
-        std::getline(std::cin, buffer);
-        for (int i = 0; i < N; i++)v[i] = new Node(i);
-        for (int i = 0; i < N; i++) {
-            std::vector<Node*> vec;
-            std::string buffer;
-            int data;
-            std::getline(std::cin, buffer);
-            std::istringstream iss(buffer);
-            while (iss >> data)
-                vec.push_back(v[data]);
-            v[i]->neighbors = vec;
-        }
-        Solution ob;
-        vector<Node*>prev = bfs(v[0]);
-        Node* ans = ob.cloneGraph(v[0]);
-        //vector<Node*>now = bfs(ans);
-        unordered_set<Node*>prev_vis, new_vis;
-        cout << compare(v[0], ans, prev_vis, new_vis) << endl;
+class Solution
+{
+public:
+    long long countPrefixSuffixPairs(vector<string> &words)
+    {
+        Trie t;
+        long long ans = 0;
 
+        for (int i = words.size() - 1; i >= 0; i--)
+            ans += max(0ll, t.insertAndCountPS(words[i]));
+
+        return ans;
     }
-    return 0;
-}
-// } Driver Code Ends
+};
