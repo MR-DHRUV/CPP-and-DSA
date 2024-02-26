@@ -1,121 +1,85 @@
 #include <bits/stdc++.h>
-#define ll long long int
 using namespace std;
+#pragma GCC target("avx,avx2,fma")
+#pragma GCC optimize('unroll-loops,O3')
+#pragma GCC optimize('O3')
 
-struct Query
+#define MOD 1000000007
+#define MOD1 998244353
+#define INF 1e18
+#define pb push_back
+#define ppb pop_back
+#define ff first
+#define ss second
+#define PI 3.141592653589793238462
+#define set_bits __builtin_popcountll
+#define all(x) (x).begin(), (x).end()
+#define el "\n"
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef long double lld;
+typedef pair<int, int> pii;
+
+void print(vector<ll> arr)
 {
-    int l, r, idx;
-    Query() {}
-    Query(int l, int r, int i)
+    for (auto &i : arr)
+        cout << i << " ";
+    cout << endl;
+}
+
+void print(vector<vector<int>> arr)
+{
+    for (auto &j : arr)
     {
-        this->l = l;
-        this->r = r;
-        this->idx = i;
+        for (int &i : j)
+            cout << i << " ";
+        cout << endl;
     }
-};
+}
 
-int rootN = 1;
-const int maxN = 200005, maxNum = 1e6 + 100;
-int arr[maxN];
-ll freq[maxNum]{0};
-ll ans[maxN];
-Query queries[maxN];
+unordered_map < ll, unordered_map < ll, unordered_map < ll, unordered_map<ll,ll> >>> mp[4];
 
-// this is a code for range sum queries
+ll solve(int curr, int a, int b, int c, int d)
+{
+    // saare lag gaye
+    int min_p = min(a, min(b, min(c, d)));
+    if (min_p <= 0)
+        return min_p == 0;
+    
+    if(mp[curr].count(a) && mp[curr][a].count(b) && mp[curr][a][b].count(c) && mp[curr][a][b][c].count(d))
+        return mp[curr][a][b][c][d];
+
+    if (curr == 0)
+        return mp[curr][a][b][c][d] = (solve(1, a, b - 1, c, d) + solve(2, a, b, c - 1, d)) % MOD1;
+    else if (curr == 1)
+        return mp[curr][a][b][c][d] = (solve(0, a-1, b, c, d) + solve(3, a, b, c , d-1)) % MOD1;
+    else if (curr == 2)
+        return mp[curr][a][b][c][d] = (solve(1, a, b - 1, c, d) + solve(2, a, b, c-1, d)) % MOD1;
+    else
+        return mp[curr][a][b][c][d] = (solve(0, a - 1, b, c, d) + solve(3, a, b, c, d-1)) % MOD1;
+}
+
+void __main__()
+{
+    int t;
+    cin >> t;
+
+    while (t--)
+    {
+        ll a, b, c, d;
+        cin >> a >> b >> c >> d;
+        ll ans = (((solve(0, a-1, b, c, d) + solve(1, a, b-1, c, d)) % MOD1 + solve(2, a, b, c-1, d)) % MOD1 + solve(3, a, b, c, d-1))%MOD1;
+        cout << ans << el;
+    }
+}
+
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n, q, l, r;
-    scanf("%d%d", &n, &q);
-    rootN = sqrtl(n);
-
-    for (int i = 0; i < n; i++)
-    {
-        scanf("%d", &arr[i]);
-    }
-
-    for (int i = 0; i < q; i++)
-    {
-        scanf("%d%d", &l, &r);
-        queries[i] = Query(l, r, i);
-    }
-
-    // sorting queries
-    sort(queries, queries + q, [](Query &a, Query &b)
-         {
-        if(a.l/rootN == b.l/rootN)
-            return a.r > b.r;
-
-        return a.l < b.l; });
-
-    int curr_l = 0, curr_r = -1;
-    ll curr_ans = 0ll;
-
-    // using this stratagy net complexity = Q*rootN + N*rootN
-    for (int i = 0; i < q; i++)
-    {
-        // zero based indexing
-        l = queries[i].l - 1, r = queries[i].r - 1;
-
-        // expansion
-        while (curr_r < r)
-        {
-            curr_r++;
-
-            // remove previous from sum
-            curr_ans -= (freq[arr[curr_r]] * freq[arr[curr_r]] * arr[curr_r]);
-
-            // add new freq
-            freq[arr[curr_r]]++;
-            curr_ans += (freq[arr[curr_r]] * freq[arr[curr_r]] * arr[curr_r]);
-        }
-
-        while (curr_l > l)
-        {
-            curr_l--;
-            // remove previous from sum
-            curr_ans -= (freq[arr[curr_l]] * freq[arr[curr_l]] * arr[curr_l]);
-
-            // add new freq
-            freq[arr[curr_l]]++;
-            curr_ans += (freq[arr[curr_l]] * freq[arr[curr_l]] * arr[curr_l]);
-        }
-
-        // contraction
-        while (curr_r > r)
-        {
-            // remove previous from sum
-            curr_ans -= (freq[arr[curr_r]] * freq[arr[curr_r]] * arr[curr_r]);
-
-            // add new freq
-            freq[arr[curr_r]]--;
-            curr_ans += (freq[arr[curr_r]] * freq[arr[curr_r]] * arr[curr_r]);
-
-            curr_r--;
-        }
-
-        while (curr_l < l)
-        {
-            // remove previous from sum
-            curr_ans -= (freq[arr[curr_l]] * freq[arr[curr_l]] * arr[curr_l]);
-
-            // add new freq
-            freq[arr[curr_l]]--;
-            curr_ans += (freq[arr[curr_l]] * freq[arr[curr_l]] * arr[curr_l]);
-
-            curr_l++;
-        }
-
-        ans[queries[i].idx] = curr_ans;
-    }
-
-    for (int i = 0; i < q; i++)
-    {
-        printf("%I64d\n", ans[i]);
-    }
-
+    __main__();
     return 0;
 }

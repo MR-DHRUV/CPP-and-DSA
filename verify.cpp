@@ -54,7 +54,7 @@ public:
 int main()
 {
     // init
-    int arr[] = {2500};
+    int arr[] = {100000};
     int n = sizeof(arr) / sizeof(arr[0]);
 
     // init lcg function
