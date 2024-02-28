@@ -1,99 +1,57 @@
+#pragma GCC target("avx,avx2,fma")
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC optimize("O3")
+
 #include <bits/stdc++.h>
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+
 using namespace std;
+using namespace __gnu_pbds;
 
-class Solution
+#define MOD 1000000007
+#define MOD1 998244353
+#define INF 1e18
+#define pb push_back
+#define ppb pop_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define PI 3.141592653589793238462
+#define set_bits __builtin_popcountll
+#define all(x) (x).begin(), (x).end()
+#define el "\n"
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef long double lld;
+typedef pair<int, int> pii;
+typedef gp_hash_table<ll, ll> HashTable;
+
+void __main__()
 {
-    void print(vector<int> arr)
+    int t;
+    cin >> t;
+    ll arr[200001];
+
+    while (t--)
     {
-        for (int &i : arr)
-            cout << i << " ";
-        cout << endl;
-    }
-
-    int dx[4] = {0, 0, 1, -1};
-    int dy[4] = {1, -1, 0, 0};
-
-    int avg(int i, int j, vector<vector<int>> &image)
-    {
-        int sum = 0;
-        for (int x = 0; x < 3; x++)
+        ll n;
+        cin >> n;
+        for (int i = 0; i < n; i++)
         {
-            for (int y = 0; y < 3; y++)
-                sum += image[i - x][j - y];
+            cin >> arr[i];
+                        
         }
-
-        return sum / 9;
     }
-
-public:
-    vector<vector<int>> resultGrid(vector<vector<int>> &image, int threshold)
-    {
-        vector<vector<int>> ans(image.size(), vector<int>(image[0].size(), -1));
-
-        // process regions
-        // i and j points to end points of submatrices
-        for (int i = 2; i < image.size(); i++)
-        {
-            for (int j = 2; j < image[0].size(); j++)
-            {
-                // traversing the region: O(1)
-                int i_end = i - 3, j_end = j - 3;
-                int sum = 0;
-
-                bool isValid = 1;
-                for (int s = i; s > i_end && isValid; s--)
-                {
-                    for (int t = j; t > j_end && isValid; t--)
-                    {
-                        sum += image[s][t];
-
-                        // checking validity
-                        for (int k = 0; k < 4; k++)
-                        {
-                            int x = s + dx[k], y = t + dy[k];
-
-                            // check if x and y belong to region
-                            if (x > i_end && x <= i && y > j_end && y <= j && abs(image[i][j] - image[x][y]) > threshold)
-                            {
-                                isValid = 0;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (isValid)
-                {
-                    sum /= 9;
-                    for (int x = i; x > i_end; x--)
-                    {
-                        for (int y = j; y > j_end; y--)
-                        {
-                            if (ans[x][y] == -1)
-                                ans[x][y] = sum;
-                            else
-                                ans[x][y] = (ans[x][y] + sum) / 2;
-                        }
-                    }
-                }
-            }
-        }
-
-        for (int i = 0; i < image.size(); i++)
-        {
-            for (int j = 0; j < image[0].size(); j++)
-            {
-                if (ans[i][j] == -1)
-                    ans[i][j] = image[i][j];
-            }
-        }
-
-        return ans;
-    }
-};
+}
 
 int main()
 {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    __main__();
 
     return 0;
 }
