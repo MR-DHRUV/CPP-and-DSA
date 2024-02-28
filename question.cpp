@@ -33,12 +33,27 @@ typedef gp_hash_table<ll, ll> HashTable;
 
 /* PRINTS */
 template <class T>
-void print_v(vector<T> &v)
+void print(vector<T> &v)
 {
     cout << "{";
-    for (auto x : v)
+    for (auto &x : v)
         cout << x << " ";
     cout << "}\n";
+}
+
+template <class T>
+void print(vector<T> v)
+{
+    for (auto &x : v)
+        cout << x << " ";
+    cout << "\n";
+}
+
+template <class T>
+void print(vector<vector<T>> &v)
+{
+    for (auto &x : v)
+        print(x);
 }
 
 bool prime(ll a)
@@ -66,7 +81,6 @@ void __main__()
         for (int i = 0; i < n; i++)
         {
             cin >> arr[i];
-                        
         }
     }
 }
