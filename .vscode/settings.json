@@ -67,6 +67,11 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "typeindex": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "string_view": "cpp",
+        "any": "cpp",
+        "span": "cpp",
+        "ranges": "cpp",
+        "stacktrace": "cpp"
     }
 }

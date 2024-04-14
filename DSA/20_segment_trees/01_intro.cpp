@@ -67,7 +67,7 @@ public:
         // so here we compute 0 to mid and mid+1 to end i.e
         // 0-2 and 3-4
 
-        // 2 no over with range (l,r), so we return int max
+        // 2 no overlap with range (l,r), so we return int max
 
         // 3 complete overlap with range i.e
         // I am looking for [2,5] and node has a data of [3-4] then the range of node completely overlaps the query range

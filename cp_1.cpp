@@ -1,85 +1,47 @@
 #include <bits/stdc++.h>
 using namespace std;
-#pragma GCC target("avx,avx2,fma")
-#pragma GCC optimize('unroll-loops,O3')
-#pragma GCC optimize('O3')
 
-#define MOD 1000000007
-#define MOD1 998244353
-#define INF 1e18
-#define pb push_back
-#define ppb pop_back
-#define ff first
-#define ss second
-#define PI 3.141592653589793238462
-#define set_bits __builtin_popcountll
-#define all(x) (x).begin(), (x).end()
-#define el "\n"
-
-typedef long long ll;
-typedef unsigned long long ull;
-typedef long double lld;
-typedef pair<int, int> pii;
-
-void print(vector<ll> arr)
+class Solution
 {
-    for (auto &i : arr)
-        cout << i << " ";
-    cout << endl;
-}
-
-void print(vector<vector<int>> arr)
-{
-    for (auto &j : arr)
+public:
+    vector<long long> maximumSegmentSum(vector<int> &nums, vector<int> &removeQueries)
     {
-        for (int &i : j)
-            cout << i << " ";
-        cout << endl;
+        int n = nums.size();
+        
+        multiset<long long, greater<long long>> segmentSums;
+        set<int> removedIndices{-1, n};
+
+        vector<long long> res(n), prefix(n);
+        prefix[0] = nums[0];
+        for (int i = 1; i < n; i++)
+            prefix[i] = prefix[i - 1] + nums[i];
+
+        segmentSums.insert(prefix.back());
+
+        for (int i = 0; i < n; i++)
+        {
+            auto after = removedIndices.lower_bound(removeQueries[i]);
+            auto before = prev(after);
+
+            auto sum = prefix[*after - 1] - (*before < 0 ? 0 : prefix[*before]);
+            segmentSums.erase(segmentSums.find(sum));
+
+            segmentSums.insert(prefix[*after - 1] - prefix[removeQueries[i]]);
+            if (removeQueries[i] - 1 >= 0)
+                segmentSums.insert(prefix[removeQueries[i] - 1] - (*before < 0 ? 0 : prefix[*before]));
+
+            removedIndices.insert(removeQueries[i]);
+
+            res[i] = *segmentSums.begin();
+        }
+
+        return res;
     }
-}
-
-unordered_map < ll, unordered_map < ll, unordered_map < ll, unordered_map<ll,ll> >>> mp[4];
-
-ll solve(int curr, int a, int b, int c, int d)
-{
-    // saare lag gaye
-    int min_p = min(a, min(b, min(c, d)));
-    if (min_p <= 0)
-        return min_p == 0;
-    
-    if(mp[curr].count(a) && mp[curr][a].count(b) && mp[curr][a][b].count(c) && mp[curr][a][b][c].count(d))
-        return mp[curr][a][b][c][d];
-
-    if (curr == 0)
-        return mp[curr][a][b][c][d] = (solve(1, a, b - 1, c, d) + solve(2, a, b, c - 1, d)) % MOD1;
-    else if (curr == 1)
-        return mp[curr][a][b][c][d] = (solve(0, a-1, b, c, d) + solve(3, a, b, c , d-1)) % MOD1;
-    else if (curr == 2)
-        return mp[curr][a][b][c][d] = (solve(1, a, b - 1, c, d) + solve(2, a, b, c-1, d)) % MOD1;
-    else
-        return mp[curr][a][b][c][d] = (solve(0, a - 1, b, c, d) + solve(3, a, b, c, d-1)) % MOD1;
-}
-
-void __main__()
-{
-    int t;
-    cin >> t;
-
-    while (t--)
-    {
-        ll a, b, c, d;
-        cin >> a >> b >> c >> d;
-        ll ans = (((solve(0, a-1, b, c, d) + solve(1, a, b-1, c, d)) % MOD1 + solve(2, a, b, c-1, d)) % MOD1 + solve(3, a, b, c, d-1))%MOD1;
-        cout << ans << el;
-    }
-}
+};
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-
-    __main__();
+  
+  
     return 0;
 }

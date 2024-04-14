@@ -1,6 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class DisjointSet
 {
     vector<int> rank, parent, size;
@@ -65,9 +62,3 @@ public:
         }
     }
 };
-
-int main()
-{
-
-    return 0;
-}

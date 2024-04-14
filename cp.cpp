@@ -1,103 +1,97 @@
 #include <bits/stdc++.h>
 using namespace std;
-#pragma GCC target("avx,avx2,fma")
-#pragma GCC optimize('unroll-loops,O3')
 
-#define MOD 1000000007
-#define MOD1 998244353
-#define INF 1e18
-#define pb push_back
-#define ppb pop_back
-#define mp make_pair
-#define ff first
-#define ss second
-#define PI 3.141592653589793238462
-#define set_bits __builtin_popcountll
-#define all(x) (x).begin(), (x).end()
-#define el "\n"
+class DisjointSet
+{
+    vector<long long> sum, parent;
+    vector<bool> isPresent;
+    long long ans = 0;
 
-typedef long long ll;
-typedef unsigned long long ull;
-typedef long double lld;
-typedef pair<int, int> pii;
+public:
+    DisjointSet(int n)
+    {
+        sum.resize(n + 1, 0ll);
+        isPresent.resize(n + 1, 0);
+        parent.resize(n + 1);
+        for (int i = 0; i <= n; i++)
+            parent[i] = i;
+    }
+
+    int findSet(int node)
+    {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findSet(parent[node]);
+    }
+
+    void unite(int idx, long long val)
+    {
+        sum[idx] = val;
+        isPresent[idx] = 1;
+        ans = max(ans, val);
+
+        // check if we can unite something
+        if (idx - 1 >= 0 && isPresent[idx - 1])
+        {
+            int p1 = findSet(idx - 1), p2 = findSet(idx);
+            if (sum[p1] > sum[p2])
+            {
+                sum[p1] += sum[p2];
+                parent[p2] = p1;
+            }
+            else
+            {
+                sum[p2] += sum[p1];
+                parent[p1] = p2;
+            }
+
+            ans = max(ans, max(sum[p1], sum[p2]));
+        }
+
+        if (idx + 1 < sum.size() && isPresent[idx + 1])
+        {
+            int p1 = findSet(idx + 1), p2 = findSet(idx);
+
+            if (sum[p1] > sum[p2])
+            {
+                sum[p1] += sum[p2];
+                parent[p2] = p1;
+            }
+            else
+            {
+                sum[p2] += sum[p1];
+                parent[p1] = p2;
+            }
+
+            ans = max(ans, max(sum[p1], sum[p2]));
+        }
+    }
+
+    long long getAns() { return ans; }
+};
 
 class Solution
 {
-    using ll = long long;
-
 public:
-    Solution()
+    vector<long long> maximumSegmentSum(vector<int> &nums, vector<int> &removeQueries)
     {
-        ios_base::sync_with_stdio(false);
-        cin.tie(NULL);
-        cout.tie(NULL);
-    }
-    long long maximumSubarraySum(vector<int> &nums, int k)
-    {
-        // number to indx
-        unordered_map<int, int> mp;
-        mp[nums[0]] = 0;
-
-        // prefix sum
-        vector<ll> pfx(nums.size(), 0);
-        ll ans = LONG_MIN;
-        for (int i = 1; i < nums.size(); i++)
-            pfx[i] = nums[i] + pfx[i - 1];
-
-        for (int i = 1; i < nums.size(); i++)
-        {
-            if (mp.count(nums[i] - k))
-                ans = max(ans, pfx[i] - (mp[nums[i] - k] - 1 >= 0 ? pfx[mp[nums[i] - k] - 1] : 0));
-
-            if (mp.count(nums[i] + k))
-                ans = max(ans, pfx[i] - (mp[nums[i] + k] - 1 >= 0 ? pfx[mp[nums[i] + k] - 1] : 0));
-
-            // maximizing prefix sum
-            // see p[i] will be subtracted from further indices so we have to minimize it
-            if (mp.count(nums[i]) == 0 || pfx[mp[nums[i]]] > p[i])
-                mp[nums[i]] = i;
-        }
-
-        return ans == LONG_MIN ? 0 : ans;
-    }
-};
-
-void __main__()
-{
-    int t;
-    cin >> t;
-
-    ll arr[200000];
-
-    while (t--)
-    {
-        ll n, x, y, ans = 0;
-        cin >> n >> x >> y;
-
-        for (int i = 0; i < n; i++)
-        {
-            cin >> arr[i];
-        }
-
-        unordered_map<ll, unordered_map<ll, ll>> mp;
+        int n = nums.size();
+        DisjointSet st(n);
+        vector<long long> ans(n);
 
         for (int i = n - 1; i >= 0; i--)
         {
-            ll idx_X = (arr[i] % x == 0 ? 0 : x - (arr[i] % x)), idx_y = (arr[i] % y);
-            ans += mp[idx_X][idx_y];
-            mp[arr[i] % x][arr[i] % y]++;
+            ans[i] = st.getAns();
+            st.unite(removeQueries[i], nums[removeQueries[i]]);
         }
 
-        cout << ans << el;
+        return ans;
     }
-}
+};
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-
-    __main__();
+  
+  
     return 0;
 }

@@ -30,7 +30,7 @@ int main()
     st.insert(1);
     st.insert(7);
 
-    cout << st.order_of_key(5) << endl;
+    cout << st.order_of_key(6) << endl;
     cout << *st.find_by_order(2) << endl;
     cout << *st.find_by_order(0) << endl;
 
