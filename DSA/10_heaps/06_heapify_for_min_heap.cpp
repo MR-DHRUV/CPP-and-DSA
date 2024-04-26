@@ -1,33 +1,22 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-    void heapify(vector<int> &arr, int n, int i)
+void heapify(vector<int> &arr, int n, int i)
+{
+    // i is the element to be placed at ts correct position
+    int left = (2 * i) + 1;
+
+    while (left < n)
     {
-        // i is the element to be placed at ts correct position
-        int left = (2 * i) + 1;
+        int right = left + 1;
 
-        while (left < n)
+        // checking for right
+        if (right < n && arr[right] < arr[left])
         {
-            int right = left + 1;
-
-            // checking for right
-            if (right < n && arr[right] < arr[left])
+            if (arr[i] > arr[right])
             {
-                if (arr[i] > arr[right])
-                {
-                    swap(arr[i], arr[right]);
-                    i = right;
-                    left = (2 * i) + 1;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else if (arr[i] > arr[left])
-            {
-                swap(arr[i], arr[left]);
-                i = left;
+                swap(arr[i], arr[right]);
+                i = right;
                 left = (2 * i) + 1;
             }
             else
@@ -35,7 +24,18 @@ using namespace std;
                 break;
             }
         }
+        else if (arr[i] > arr[left])
+        {
+            swap(arr[i], arr[left]);
+            i = left;
+            left = (2 * i) + 1;
+        }
+        else
+        {
+            break;
+        }
     }
+}
 
 // reccursive
 void heapifyRec(vector<int> &arr, int n, int i)
@@ -44,30 +44,28 @@ void heapifyRec(vector<int> &arr, int n, int i)
 
     int smallest = i;
 
-    int left = (2*i)+ 1;
+    int left = (2 * i) + 1;
     int right = left + 1;
 
     // finding min child if it exisits
-    if(right < n & arr[right] < arr[smallest])
+    if (right < n & arr[right] < arr[smallest])
     {
         smallest = right;
     }
 
-    if(left < n & arr[left] < arr[smallest])
+    if (left < n & arr[left] < arr[smallest])
     {
         smallest = left;
     }
 
-
     // swapping
-    if(smallest != i)
+    if (smallest != i)
     {
-        swap(arr[i],arr[smallest]);
+        swap(arr[i], arr[smallest]);
         // placing largest at its correct index
-        heapifyRec(arr,n,smallest);
+        heapifyRec(arr, n, smallest);
     }
 }
-
 
 void heapifyArr(vector<int> &arr)
 {
@@ -113,7 +111,7 @@ int main()
     // just using this staragy we have to do very few swappings than traditional method.
 
     // vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    vector<int> a = {5,6,8,4,2,7,10,6,9,1,5,4,7,2,1};
+    vector<int> a = {5, 6, 8, 4, 2, 7, 10, 6, 9, 1, 5, 4, 7, 2, 1};
     heapifyArr(a);
     printArr(a);
 

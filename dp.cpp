@@ -1,69 +1,47 @@
-//{ Driver Code Starts
-// Initial Template for C++
-
 #include <bits/stdc++.h>
 using namespace std;
 
-// } Driver Code Ends
-// User function Template for C++
 class Solution
 {
-public:
-    vector<int> countElements(vector<int> &a, vector<int> &b, int n, vector<int> &query, int q)
+    vector<vector<int>> dp;
+    int solve(int i, int j, vector<int> &nums, int &cost)
     {
-        sort(b.begin(), b.end());
-        vector<int> ans(q, 0);
+        if (i >= j)
+            return 0;
+        if (dp[i][j] != -1)
+            return dp[i][j];
 
-        for (int i = 0; i < q; i++)
-        {
-            ans[i] = ((upper_bound(b.begin(), b.end(), a[q[i]])) - b.begin());
-        }
+        int ans = 0;
+        if (nums[i] + nums[j] == cost)
+            ans = 1 + solve(i + 1, j - 1, nums, cost);
+        if (nums[i] + nums[i + 1] == cost)
+            ans = max(ans, 1 + solve(i + 2, j, nums, cost));
+        if (nums[j - 1] + nums[j] == cost)
+            ans = max(ans, 1 + solve(i, j - 2, nums, cost));
 
-        return ans;
+        return dp[i][j] = ans;
+    }
+
+public:
+    int maxOperations(vector<int> &nums)
+    {
+        // memset(dp, -1, sizeof(dp));
+        dp.assign(2001, vector<int>(2001, -1));
+        int cost = nums[0] + nums[1], ans = solve(2, nums.size() - 1, nums, cost);
+
+        cost = nums[0] + nums.back();
+        ans = max(ans, solve(1, nums.size() - 2, nums, cost));
+
+        cost = nums.back() + nums[nums.size() - 2];
+        ans = max(ans, solve(0, nums.size() - 3, nums, cost));
+
+        return 1 + ans;
     }
 };
 
-//{ Driver Code Starts.
-
 int main()
 {
-
-    int t;
-
-    cin >> t;
-
-    while (t--)
-    {
-
-        int n;
-        cin >> n;
-        vector<int> a, b, ans;
-        int input;
-        for (int i = 0; i < n; i++)
-        {
-            cin >> input;
-            a.push_back(input);
-        }
-        for (int i = 0; i < n; i++)
-        {
-            cin >> input;
-            b.push_back(input);
-        }
-        int q;
-        cin >> q;
-        vector<int> query;
-        for (int i = 0; i < q; i++)
-        {
-            cin >> input;
-            query.push_back(input);
-        }
-        Solution obj;
-        ans = obj.countElements(a, b, n, query, q);
-        for (int i = 0; i < q; i++)
-        {
-            cout << ans[i] << endl;
-        }
-    }
+  
+  
     return 0;
 }
-// } Driver Code Ends

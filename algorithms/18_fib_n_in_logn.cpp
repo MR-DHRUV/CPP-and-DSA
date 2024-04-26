@@ -1,6 +1,23 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+void print(vector<int> arr)
+{
+    for (int &i : arr)
+        cout << i << " ";
+    cout << endl;
+}
+
+void print(vector<vector<int>> arr)
+{
+    for (auto &j : arr)
+    {
+        for (int &i : j)
+            cout << i << " ";
+       cout << endl;
+    }
+}
+
 vector<vector<int>> multiply(vector<vector<int>> &mat1, vector<vector<int>> &mat2)
 {
     vector<vector<int>> ans(2, vector<int>(2, 0));
@@ -83,7 +100,13 @@ int fib(int n)
 
     vector<vector<int>> M = {{1, 1}, {1, 0}};
     vector<vector<int>> ans = matrixExpo(M, n-1);
-    
+    vector<pair<int, int>> p;
+
+    for(auto [_,o] : p)
+    {
+
+    }
+
     return ans[0][0];
 }
 

@@ -72,6 +72,10 @@
         "any": "cpp",
         "span": "cpp",
         "ranges": "cpp",
-        "stacktrace": "cpp"
+        "stacktrace": "cpp",
+        "format": "cpp",
+        "barrier": "cpp",
+        "latch": "cpp",
+        "semaphore": "cpp"
     }
 }

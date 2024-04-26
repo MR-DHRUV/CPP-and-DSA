@@ -88,13 +88,13 @@ public:
 
         vector<bool> mst(V, false);
         vector<int> parent(V, -1);
-        vector<int> key(V, INT_MAX);
+        vector<int> weight(V, INT_MAX);
 
         set<pair<int, int>> st;
         st.insert({0, 0}); // weight then vertex
 
         parent[0] = -1;
-        key[0] = 0;
+        weight[0] = 0;
 
         while (!st.empty())
         {
@@ -111,9 +111,9 @@ public:
                 // we have to update set with minimum weights for all possible adges we have
 
                 // new weight is smaller and this vertex is not included in mst
-                if (w < key[e] && !mst[e])
+                if (w < weight[e] && !mst[e])
                 {
-                    auto inSet = st.find({key[e], e});
+                    auto inSet = st.find({weight[e], e});
 
                     if (inSet != st.end())
                     {
@@ -124,7 +124,7 @@ public:
 
                     // update parent and weight
                     parent[e] = top.second;
-                    key[e] = w;
+                    weight[e] = w;
                 }
             }
         }
@@ -134,7 +134,7 @@ public:
         for (int i = 0; i < V; i++)
         {
             // cout<<parent[i]<<" ";
-            ans += key[i];
+            ans += weight[i];
         }
 
         return ans;

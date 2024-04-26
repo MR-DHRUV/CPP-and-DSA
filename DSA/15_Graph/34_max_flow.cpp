@@ -88,10 +88,10 @@ public:
                 // the pipe is from parent[pipe]-> pipe
                 int &p = parent[pipe];
 
-                // decrease for forward edge
+                // decrease for forward edge, since water has flown
                 adj[p][pipe] -= flow;
 
-                // increase for backword edge
+                // increase for backword edge as we can have some other path to flow water
                 adj[pipe][p] += flow;
             }
         }
