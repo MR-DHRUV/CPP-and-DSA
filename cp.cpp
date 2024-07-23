@@ -1,97 +1,116 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class DisjointSet
+class SegTree
 {
-    vector<long long> sum, parent;
-    vector<bool> isPresent;
-    long long ans = 0;
-
 public:
-    DisjointSet(int n)
+    int *seg;
+
+    SegTree(int n)
     {
-        sum.resize(n + 1, 0ll);
-        isPresent.resize(n + 1, 0);
-        parent.resize(n + 1);
-        for (int i = 0; i <= n; i++)
-            parent[i] = i;
+        seg = new int[4 * n];
     }
 
-    int findSet(int node)
+    bool isPeak(int idx, vector<int> &nums)
     {
-        if (node == parent[node])
-            return node;
-        return parent[node] = findSet(parent[node]);
+        if (idx > 0 && idx < nums.size() - 1 && nums[idx] > nums[idx + 1] && nums[idx] > nums[idx - 1])
+            return 1;
+
+        return 0;
     }
 
-    void unite(int idx, long long val)
+    void buildHelper(int s, int e, int idx, vector<int> &nums)
     {
-        sum[idx] = val;
-        isPresent[idx] = 1;
-        ans = max(ans, val);
-
-        // check if we can unite something
-        if (idx - 1 >= 0 && isPresent[idx - 1])
+        if (s == e)
         {
-            int p1 = findSet(idx - 1), p2 = findSet(idx);
-            if (sum[p1] > sum[p2])
-            {
-                sum[p1] += sum[p2];
-                parent[p2] = p1;
-            }
-            else
-            {
-                sum[p2] += sum[p1];
-                parent[p1] = p2;
-            }
-
-            ans = max(ans, max(sum[p1], sum[p2]));
+            seg[idx] = isPeak(s, nums);
+            return;
         }
 
-        if (idx + 1 < sum.size() && isPresent[idx + 1])
-        {
-            int p1 = findSet(idx + 1), p2 = findSet(idx);
+        int mid = s + (e - s) / 2;
+        buildHelper(s, mid, (2 * idx) + 1, nums);
+        buildHelper(mid + 1, e, (2 * idx) + 2, nums);
 
-            if (sum[p1] > sum[p2])
-            {
-                sum[p1] += sum[p2];
-                parent[p2] = p1;
-            }
-            else
-            {
-                sum[p2] += sum[p1];
-                parent[p1] = p2;
-            }
-
-            ans = max(ans, max(sum[p1], sum[p2]));
-        }
+        seg[idx] = seg[(2 * idx) + 1] + seg[(2 * idx) + 2];
     }
 
-    long long getAns() { return ans; }
+    void build(vector<int> &nums)
+    {
+        buildHelper(0, nums.size() - 1, 0, nums);
+    }
+
+    int queryHelper(int idx, int s, int e, int l, int r)
+    {
+        if (r < s || l > e)
+            return 0;
+
+        if (s >= l && e <= r)
+            return seg[idx];
+
+        int mid = s + (e - s) / 2;
+
+        int left = queryHelper((idx * 2) + 1, s, mid, l, r);
+        int right = queryHelper((idx * 2) + 2, mid + 1, e, l, r);
+
+        return left + right;
+    }
+
+    int query(int l, int r, vector<int> &nums)
+    {
+        return queryHelper(0, 0, nums.size() - 1, l, r);
+    }
+
+    void updateHelper(int s, int e, int idx, int &target, vector<int> &nums)
+    {
+        if (target < s || target > e)
+            return;
+
+        if (s == e)
+        {
+            seg[idx] = isPeak(s, nums);
+            return;
+        }
+
+        int mid = s + (e - s) / 2;
+        if (target <= mid)
+            updateHelper(s, mid, (2 * idx) + 1, target, nums);
+        else
+            updateHelper(mid + 1, e, (2 * idx) + 2, target, nums);
+
+        seg[idx] = seg[(2 * idx) + 1] + seg[(2 * idx) + 2];
+    }
+
+    void update(int target, vector<int> &nums)
+    {
+        updateHelper(0, nums.size() - 1, 0, target, nums);
+    }
 };
 
 class Solution
 {
 public:
-    vector<long long> maximumSegmentSum(vector<int> &nums, vector<int> &removeQueries)
+    vector<int> countOfPeaks(vector<int> &nums, vector<vector<int>> &queries)
     {
-        int n = nums.size();
-        DisjointSet st(n);
-        vector<long long> ans(n);
+        SegTree st(nums.size());
+        vector<int> ans;
+        st.build(nums);
 
-        for (int i = n - 1; i >= 0; i--)
+        for (auto &q : queries)
         {
-            ans[i] = st.getAns();
-            st.unite(removeQueries[i], nums[removeQueries[i]]);
+            if (q[0] == 1)
+                ans.push_back(st.query(q[1] + 1, q[2] - 1, nums));
+            else
+            {
+                nums[q[1]] = q[2];
+                if (q[1] > 0)
+                    st.update(q[1] - 1, nums);
+
+                st.update(q[1], nums);
+                if (q[1] < nums.size() - 1)
+                    st.update(q[1] + 1, nums);
+            }
         }
 
         return ans;
     }
 };
-
-int main()
-{
-  
-  
-    return 0;
-}

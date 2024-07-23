@@ -1,0 +1,36 @@
+What is the difference between Git and GitHub?
+Can we use Git without Github?
+How Git works?
+Diff between cookies and sessions?
+Can we send sessions without cookies? How?
+What would happen if I copied your cookies and stored them in my browser? Will I get access to your data by doing this?
+What is data validation? Types? Why do we have these 2 types of validation?
+If I disable Javascript on client side, then how validation will be done?
+Is Reactjs a library or framework?
+What is faster in execution Reactjs or javascript?
+What is diff between Reactjs, vanillajs and jQuery?
+Difference between hashing and encryption.
+Which is more secure? And why?
+What is MD5?
+What is Indexing in a database?
+What is NAT?
+Is Whatsapp messages hashed or encrypted?
+How will you implement captcha on any website? How does the human verification works in captcha?
+What data structure is used in Elevator? Explain the optimized approach?
+What is Beans?
+What is the difference between a component engine and a rendering engine?
+Give examples of rendering engines?
+Suppose a server sends a greeting image to each and every client whenever they visit the website, and the image needs to be fetched from the database. How will you optimize the given scenario?
+What are rainbow tables?
+What is cherry pick in git
+What is Ajax calls?
+what are CDN’s
+encryption, decryption, hashing. AES, RSA, Hashing and encryption, symmetric and asymmetric,
+How Git Init actually works
+Can different devices connected to same router have same IP address?
+Cookies
+Where does Git store data and how it stores data
+Suppose your site is experiencing high traffic, causing lag. How would you manage it to reduce server load?
+About react life cycle and DOM's
+Difference between Cookies and Local Storage, and when we use them?
+How auto quality works in youtube/other streaming service.

@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int mod = 7;
+const int mod = 13;
 
 int addm(int a, int b)
 {
@@ -73,6 +73,7 @@ int nCrm(int n, int r)
 int main()
 {
     // cout << divm(56, 2);
-    cout << nCrm(5, 2);
+    // cout << nCrm(5, 2);
+    cout<<powr(3,256)<<endl;
     return 0;
 }

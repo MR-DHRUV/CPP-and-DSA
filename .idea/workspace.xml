@@ -7,15 +7,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c0a13783-6fd7-407c-8db5-7095a2a00075" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/tasks.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/tasks.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/algorithms/17_longest_inc_subsequence.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/algorithms/17_longest_inc_subsequence.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cph/.cp.cpp_b31ade7a6602da88a46f459b2aea59bb.prob" beforeDir="false" afterPath="$PROJECT_DIR$/.cph/.cp.cpp_b31ade7a6602da88a46f459b2aea59bb.prob" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cph/.dp.cpp_e09f6ea74df3cf2837fc3e45d2137bae.prob" beforeDir="false" afterPath="$PROJECT_DIR$/.cph/.dp.cpp_e09f6ea74df3cf2837fc3e45d2137bae.prob" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cph/.question.cpp_f1f6bd4ef614f2c04abaee125f47f61e.prob" beforeDir="false" afterPath="$PROJECT_DIR$/.cph/.question.cpp_f1f6bd4ef614f2c04abaee125f47f61e.prob" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DSA/03_Strings/15_1_kmp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/DSA/03_Strings/15_1_kmp.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DSA/04_sorting/06_shell_sort.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/DSA/04_sorting/06_shell_sort.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DSA/04_sorting/06_shell_sort.exe" beforeDir="false" afterPath="$PROJECT_DIR$/DSA/04_sorting/06_shell_sort.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DSA/24_Maths/04_primes/02_sieve.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/DSA/24_Maths/04_primes/02_sieve.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DSA/24_Maths/04_primes/02_sieve.exe" beforeDir="false" afterPath="$PROJECT_DIR$/DSA/24_Maths/04_primes/02_sieve.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cp.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cp.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cp.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cp.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dp.bin" beforeDir="false" afterPath="$PROJECT_DIR$/dp.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/dp.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dp.exe" beforeDir="false" afterPath="$PROJECT_DIR$/dp.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/input.txt" beforeDir="false" afterPath="$PROJECT_DIR$/input.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/p1.c" beforeDir="false" afterPath="$PROJECT_DIR$/p1.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ques.py" beforeDir="false" afterPath="$PROJECT_DIR$/ques.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question.bin" beforeDir="false" afterPath="$PROJECT_DIR$/question.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/question.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/question.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/question.exe" beforeDir="false" afterPath="$PROJECT_DIR$/question.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/random_1000.txt" beforeDir="false" afterPath="$PROJECT_DIR$/random_1000.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/verify.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/verify.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/verify.exe" beforeDir="false" afterPath="$PROJECT_DIR$/verify.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/question.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tempCodeRunnerFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tempCodeRunnerFile.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,18 +47,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "last_opened_file_path": "C:/Users/dhruv/OneDrive/Documents/CPP + DSA",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/dhruv/OneDrive/Documents/CPP + DSA&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -54,6 +68,7 @@
       <option name="presentableId" value="Default" />
       <updated>1684475345237</updated>
       <workItem from="1684475346009" duration="52000" />
+      <workItem from="1720119618927" duration="13000" />
     </task>
     <servers />
   </component>

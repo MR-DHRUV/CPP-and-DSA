@@ -1,84 +1,88 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+
 using namespace std;
 
-class Solution
-{
-    vector<int> getOcc(string text, string pattern)
-    {
-        int n = text.size(), m = pattern.size();
-        vector<int> lps(m, 0), ans;
 
-        int i = 1;
-        int len = 0; 
+vector<vector<int>> adj;
+vector<int> values;
+vector<unordered_map<int, int>> subtree_freq;
+vector<int> parent;
+vector<int> subtree_size;
+int k;
 
-        while (i < m)
-        {
-            if (pattern[i] == pattern[len])
-                lps[i++] = ++len;
-            else
-            {
-                if (len != 0)
-                    len = lps[len - 1];
-                else
-                {
-                    lps[i] = len;
-                    i++;
-                }
-            }
+void dfs(int node, int par) {
+    subtree_freq[node][values[node - 1]]++;
+    subtree_size[node] = 1;
+    for (int neighbor : adj[node]) {
+        if (neighbor == par) continue;
+        parent[neighbor] = node;
+        dfs(neighbor, node);
+        subtree_size[node] += subtree_size[neighbor];
+        for (const auto& entry : subtree_freq[neighbor]) {
+            subtree_freq[node][entry.first] += entry.second;
         }
+    }
+}
 
-        i = 0;
-        int j = 0;
+bool is_good_edge(int u, int v) {
+    // Ensure u is the parent of v
+    if (parent[u] == v) swap(u, v);
 
-        while (n - i >= m - j)
-        {
-            if (text[i] == pattern[j])
-            {
-                i++;
-                j++;
-            }
+    // Calculate frequencies in the "remaining" part of the tree
+    unordered_map<int, int> remaining_freq = subtree_freq[1];
+    for (const auto& entry : subtree_freq[v]) {
+        remaining_freq[entry.first] -= entry.second;
+    }
 
-            if (j == m)
-            {
-                ans.push_back(i - j);
-                j = lps[j - 1]; 
-            }
-            else if (i < n && text[i] != pattern[j])
-            {
-                if (j != 0)
-                    j = lps[j - 1];
-                else
-                    i++;
-            }
+    // Check if any frequency exceeds k in the subtree of v or in the remaining tree
+    for (const auto& entry : subtree_freq[v]) {
+        if (entry.second > k) return false;
+    }
+    for (const auto& entry : remaining_freq) {
+        if (entry.second > k) return false;
+    }
+    return true;
+}
+
+int count_good_edges(int n, const vector<pair<int, int>>& edges, int k_val, const vector<int>& values_val) {
+    k = k_val;
+    values = values_val;
+    adj.resize(n + 1);
+    subtree_freq.resize(n + 1);
+    parent.resize(n + 1, -1);
+    subtree_size.resize(n + 1, 0);
+
+    for (const auto& edge : edges) {
+        adj[edge.first].push_back(edge.second);
+        adj[edge.second].push_back(edge.first);
+    }
+
+    // Perform DFS from the root (assuming root is node 1)
+    dfs(1, -1);
+
+    int good_edges = 0;
+    for (const auto& edge : edges) {
+        int u = edge.first;
+        int v = edge.second;
+        if (is_good_edge(u, v)) {
+            good_edges++;
         }
     }
 
-public:
-    vector<int> beautifulIndices(string s, string a, string b, int k)
-    {
-        vector<int> c1 = getOcc(s, a), c2 = getOcc(s, b), ans;
+    return good_edges;
+}
 
-        for(int &i : c1)
-        {
-            int low = i - k, high = i + k;
-            int l1 = lower_bound(c2.begin(), c2.end(), low)- c2.begin();
 
-            if(l1 < c2.size() && abs(i-c2[l1]) <= k)
-                ans.push_back(i);
-            else
-            {
-                int l2 = upper_bound(c2.begin(), c2.end(), high) - c2.begin();
-                if(l2-1 >= 0 && l2-1 < c2.size() && abs(i-c2[l2-1]) <= k)
-                    ans.push_back(i);
-            }
-        }
-
-        return ans;
-    }
-};
-
-int main()
-{
-
+int main() {
+    int n = 5;
+    vector<pair<int, int>> edges = {{1, 2}, {1, 3}, {2, 4}, {3, 5}};
+    vector<int> values = {0,1, 1, 1, 2, 1};
+    int k = 1;
+    
+    cout << count_good_edges(n, edges, k, values) << endl; // Example output
+    
     return 0;
 }

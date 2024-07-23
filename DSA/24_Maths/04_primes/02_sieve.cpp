@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define int long long int
-#define max 100000
+#define max 10001
 
 // precomputing large amount of primes
 int isPrime[max], cnt[max];
@@ -34,6 +34,10 @@ void sieveOfEratosthenes()
 
         currentPrime++;
     }
+
+    for (int i = 2; i < max; i++)
+        if(isPrime[i])
+            cout << i << ",";
 }
 
 // to compute count of primes till any number
@@ -70,8 +74,9 @@ void sieveOfEratosthenesCount()
 
 int32_t main()
 {
-    sieveOfEratosthenesCount();
-    cout << cnt[1000] << endl;
+    sieveOfEratosthenes();
+     // sieveOfEratosthenesCount();
+    // cout << cnt[1000] << endl;
 
     return 0;
 }

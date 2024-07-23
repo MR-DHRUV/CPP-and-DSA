@@ -55,7 +55,7 @@ void DFS(int v, vector<bool> &visited, vector<vector<int>> &adj)
 }
 
 // returns the no of scc
-int stronglyConnectedComponents(int v, vector<vector<int>> &edges)
+int scc(int v, vector<vector<int>> &edges)
 {
     // kosaraju's algorithm to determine the strongly connected components
     // Algo
@@ -101,7 +101,7 @@ int main()
                                  {1, 4},
                                  {2, 3},
                                  {3, 2}};
-    cout << stronglyConnectedComponents(5, edges);
+    cout << scc(5, edges);
 
     return 0;
 }
